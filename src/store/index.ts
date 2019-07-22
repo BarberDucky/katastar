@@ -1,6 +1,7 @@
 import { combineReducers, createStore, applyMiddleware, compose } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { History, createBrowserHistory } from 'history'
+import reduxThunk from 'redux-thunk'
 
 export const rootReducer = (history: History) => combineReducers({
     router: connectRouter(history)
@@ -14,7 +15,8 @@ export default function configureStore() {
         compose(
             applyMiddleware(
                 routerMiddleware(history)
-            )
+            ),
+            applyMiddleware(reduxThunk)
         )
     )
 

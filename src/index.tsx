@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router-dom'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
-import configureStore, { history } from './store/reducers';
+import configureStore, { history } from './store';
 import { ConnectedRouter } from 'connected-react-router';
 
 const store = configureStore()
