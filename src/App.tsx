@@ -1,51 +1,75 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
 import './App.css'
-declare let window: any;
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router'
+import { readUser } from './services/user.service';
+import { loadUser } from './store/user/actions'
+import { AppState } from './store';
+import User from './models/user.model';
+import { ConnectedRouter } from 'connected-react-router';
+import InstallMetamask from './components/pages/InstallMetamask';
+import WrongNetwork from './components/pages/WrongNetwork';
+import Register from './components/pages/Register';
+import { Switch, Route } from 'react-router-dom'
+import { history } from './store';
+import Main from './components/pages/Main';
+
+declare let window: any
 const desiredNetwork = '3'
 
-class App extends Component{
-
-    componentDidMount() {
-      if (typeof window.ethereum === 'undefined') {
-        alert('You need metamask to continue')
-        return
-      }
-
-      if (window.ethereum.networkVersion !== desiredNetwork) {
-        alert('Select the network with id = ' + desiredNetwork)
-        return
-      }
-      window.ethereum.enable()
-        .catch((reason : string) => {
-          alert(reason)
-        })
-        .then((accounts: Array<string>) => {
-          alert('Successful connection')
-          console.log(accounts)
-        })
-    }
-
-    render() {
-      return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Edit <code>src/App.tsx</code> and save to reload.
-            </p>
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-          </header>
-        </div>
-      )
-    }
+interface AppProps {
+	push: typeof push,
+	loadUser: typeof loadUser,
+	user: User
 }
 
-export default App
+class App extends Component<AppProps> {
+
+	async componentDidMount() {
+		if (typeof window.ethereum === 'undefined') {
+			alert('You need metamask to continue')
+			this.props.push('/install-metamask')
+			return
+		}
+
+		await window.ethereum.enable()
+			.catch((reason: string) => {
+				alert(reason)
+			})
+
+		const userFromDB = await readUser(window.ethereum.selectedAddress)
+
+		if (window.ethereum.networkVersion !== desiredNetwork) {
+			this.props.push('/wrong-network')
+			return
+		}
+
+		if (!userFromDB) {
+			this.props.push('/register')
+		} else {
+			this.props.loadUser(userFromDB)
+			this.props.push('/')
+		}
+	}
+
+	render() {
+		return (
+			<div className="App">
+				<ConnectedRouter history={history}>
+					<Switch>
+						<Route exact path="/" component={Main} />
+						<Route path="/register" component={Register} />
+						<Route path="/install-metamask" component={InstallMetamask} />
+						<Route path="/wrong-network" component={WrongNetwork} />
+					</Switch>
+				</ConnectedRouter>
+			</div>
+		)
+	}
+}
+
+const mapStateToProps = (state: AppState) => ({
+	user: state.user
+})
+
+export default connect(mapStateToProps, { push, loadUser })(App)
