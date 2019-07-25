@@ -1,25 +1,24 @@
 import React, { Component } from 'react'
 import './App.css'
 import { connect } from 'react-redux';
+import { AnyAction, bindActionCreators } from "redux";
 import { push } from 'connected-react-router'
-import { readUser } from './services/user.service';
-import { loadUser } from './store/user/actions'
 import { AppState } from './store';
 import User from './models/user.model';
 import { ConnectedRouter } from 'connected-react-router';
-import InstallMetamask from './components/pages/InstallMetamask';
-import WrongNetwork from './components/pages/WrongNetwork';
-import Register from './components/pages/Register';
-import { Switch, Route } from 'react-router-dom'
 import { history } from './store';
-import Main from './components/pages/Main';
+import Routes from './routes';
+import { enableEthereum } from './services/ethereum.service';
+import { loadUserAndRoute } from './thunks/auth';
+import { ThunkDispatch } from 'redux-thunk';
 
-declare let window: any
-const desiredNetwork = '3'
+declare global {
+    interface Window { ethereum: any; }
+}
 
 interface AppProps {
 	push: typeof push,
-	loadUser: typeof loadUser,
+	loadUserAndRoute: typeof loadUserAndRoute,
 	user: User
 }
 
@@ -32,36 +31,21 @@ class App extends Component<AppProps> {
 			return
 		}
 
-		await window.ethereum.enable()
-			.catch((reason: string) => {
-				alert(reason)
-			})
+		let connectionResult = await enableEthereum(window.ethereum)
 
-		const userFromDB = await readUser(window.ethereum.selectedAddress)
-
-		if (window.ethereum.networkVersion !== desiredNetwork) {
-			this.props.push('/wrong-network')
+		if (!connectionResult) {
+			this.props.push('/no-connection')
 			return
 		}
-
-		if (!userFromDB) {
-			this.props.push('/register')
-		} else {
-			this.props.loadUser(userFromDB)
-			this.props.push('/')
-		}
+	
+		await this.props.loadUserAndRoute()
 	}
 
 	render() {
 		return (
 			<div className="App">
 				<ConnectedRouter history={history}>
-					<Switch>
-						<Route exact path="/" component={Main} />
-						<Route path="/register" component={Register} />
-						<Route path="/install-metamask" component={InstallMetamask} />
-						<Route path="/wrong-network" component={WrongNetwork} />
-					</Switch>
+					<Routes />
 				</ConnectedRouter>
 			</div>
 		)
@@ -72,4 +56,14 @@ const mapStateToProps = (state: AppState) => ({
 	user: state.user
 })
 
-export default connect(mapStateToProps, { push, loadUser })(App)
+
+  const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
+  bindActionCreators(
+    {
+	  push,
+	  loadUserAndRoute
+    },
+    dispatch
+  )
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

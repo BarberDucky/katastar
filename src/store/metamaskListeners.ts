@@ -3,21 +3,21 @@ import { LOAD_USER } from "./user/types";
 import { readUser } from "../services/user.service";
 import { push } from "connected-react-router";
 import { Dispatch } from "redux";
+import { desiredNetwork } from "../config/keys";
 
-declare let window: any
 type StoreGetState = () => AppState
 
 export default function (dispatch: Dispatch, getState: StoreGetState ) {
     window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
         const userFromDB = await readUser(accounts[0])
         if (!userFromDB) {
-            if (window.ethereum.networkVersion !== '3') {
+            if (window.ethereum.networkVersion !== desiredNetwork) {
                 dispatch(push('/wrong-network'))
             } else {
                 dispatch(push('/register'))
             }
         } else {
-            if (window.ethereum.networkVersion !== '3') {
+            if (window.ethereum.networkVersion !== desiredNetwork) {
                 dispatch(push('/wrong-network'))
             } else {
                 dispatch(push('/'))
@@ -30,8 +30,8 @@ export default function (dispatch: Dispatch, getState: StoreGetState ) {
     })
 
     window.ethereum.on('networkChanged', async (newNetwork: string) => {
-        const userFromDB = await readUser(window.ethereum.selectedAccount)
-        if (newNetwork !== '3') {
+        const userFromDB = await readUser(window.ethereum.selectedAddress)
+        if (newNetwork !== desiredNetwork) {
             dispatch(push('/wrong-network'))
         } else {
             if (!userFromDB) {

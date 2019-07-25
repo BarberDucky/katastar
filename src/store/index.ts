@@ -22,12 +22,12 @@ export default function configureStore() {
         rootReducer(history),
         compose(
             applyMiddleware(
+                reduxThunk,
                 routerMiddleware(history)
             ),
-            applyMiddleware(reduxThunk)
         )
     )
-    
+
     addMetamaskListeners(store.dispatch, store.getState)
 
     return store

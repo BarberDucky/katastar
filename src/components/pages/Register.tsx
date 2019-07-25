@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 import { loadUser } from '../../store/user/actions';
 
-declare let window: any;
-
 interface RegisterProps {
 	push: typeof push,
 	loadUser: typeof loadUser,
@@ -26,6 +24,7 @@ class Register extends Component<RegisterProps> {
 
         await createUser(user)
         this.props.push('/')
+        this.props.loadUser(user)
     }
 
     render() {
@@ -59,4 +58,4 @@ class Register extends Component<RegisterProps> {
     }
 }
 
-export default connect(null, { push })(Register)
+export default connect(null, { push, loadUser })(Register)
