@@ -13,7 +13,7 @@ import { loadUserAndRoute } from './thunks/auth';
 import { ThunkDispatch } from 'redux-thunk';
 
 declare global {
-    interface Window { ethereum: any; }
+	interface Window { ethereum: any; }
 }
 
 interface AppProps {
@@ -37,7 +37,7 @@ class App extends Component<AppProps> {
 			this.props.push('/no-connection')
 			return
 		}
-	
+
 		await this.props.loadUserAndRoute()
 	}
 
@@ -56,14 +56,13 @@ const mapStateToProps = (state: AppState) => ({
 	user: state.user
 })
 
-
-  const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
-  bindActionCreators(
-    {
-	  push,
-	  loadUserAndRoute
-    },
-    dispatch
-  )
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
+	bindActionCreators(
+		{
+			push,
+			loadUserAndRoute
+		},
+		dispatch
+	)
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

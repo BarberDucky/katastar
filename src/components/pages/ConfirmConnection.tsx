@@ -24,7 +24,7 @@ class ConfirmConnection extends Component<ConfirmConnectionProps> {
       return
     }
 
-    this.props.loadUserAndRoute()
+    await this.props.loadUserAndRoute()
 
   }
 
