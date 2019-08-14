@@ -1,5 +1,11 @@
 const HDWalletProvider = require("truffle-hdwallet-provider")
-import { metamaskMnemonics, infuraRopsten, ropstenNetworkId } from '../config/keys'
+require('babel-register')
+require('babel-polyfill')
+
+const metamaskMnemonics = 'jewel pond stove grain kangaroo head time decide cup best run snack'
+const infuraRopsten = 'https://ropsten.infura.io/v3/5cdd4cc4a6e44880b8c25168a0b62049'
+const ropstenNetworkId = '3'
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
