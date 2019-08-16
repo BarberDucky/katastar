@@ -10,16 +10,25 @@ import { history } from './store';
 import Routes from './routes';
 import { enableEthereum } from './services/ethereum.service';
 import { loadUserAndRoute } from './thunks/auth';
+import { loadEthereumProvider, loadWeb3 } from './store/ethereum/actions'
 import { ThunkDispatch } from 'redux-thunk';
+import Web3 from 'web3'
 
 declare global {
-	interface Window { ethereum: any; }
+	interface Window { 
+		ethereum: any,
+		web3: Web3
+	}
 }
 
 interface AppProps {
 	push: typeof push,
 	loadUserAndRoute: typeof loadUserAndRoute,
-	user: User
+	loadEthereumProvider: typeof loadEthereumProvider,
+	loadWeb3: typeof loadWeb3,
+	user: User,
+	ethereum: any,
+	web3: Web3 | null
 }
 
 class App extends Component<AppProps> {
@@ -39,6 +48,10 @@ class App extends Component<AppProps> {
 		}
 
 		await this.props.loadUserAndRoute()
+		this.props.loadEthereumProvider(window.ethereum)
+		this.props.loadWeb3(new Web3(this.props.ethereum))
+
+
 	}
 
 	render() {
@@ -53,14 +66,18 @@ class App extends Component<AppProps> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-	user: state.user
+	user: state.user,
+	ethereum: state.ethereumWeb3.ethereum,
+	web3: state.ethereumWeb3.web3
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
 	bindActionCreators(
 		{
 			push,
-			loadUserAndRoute
+			loadUserAndRoute,
+			loadEthereumProvider,
+			loadWeb3
 		},
 		dispatch
 	)
