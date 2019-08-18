@@ -3,22 +3,23 @@ import User from '../../models/user.model';
 import { AppState } from '../../store';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
+import Header from '../ui/Header';
+import { match } from 'react-router';
+import { RouterState } from 'connected-react-router';
 
 interface MainProps {
     user: User,
     ethereum: any,
-    web3: Web3 | null
+    web3: Web3 | null,
+    router: RouterState,
+    match: match
 }
 
 class Main extends Component<MainProps> {
     render() {
         return (
             <div>
-                Current address {this.props.user.address}
-                <br/>
-                Ethereum {this.props.ethereum != null ? this.props.ethereum.selectedAddress : 'Ethereum provider is null'}
-                <br/>
-                Web3 {this.props.web3 != null ? this.props.web3.version : 'Web3 is null'}
+                <Header />
             </div>
         )
     }
@@ -27,7 +28,8 @@ class Main extends Component<MainProps> {
 const mapStateToProps = (state: AppState) => ({
     user: state.user,
     ethereum: state.ethereumWeb3.ethereum,
-    web3: state.ethereumWeb3.web3
+    web3: state.ethereumWeb3.web3,
+    router: state.router
 })
 
 export default connect(mapStateToProps)(Main)

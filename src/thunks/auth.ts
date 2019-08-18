@@ -4,11 +4,12 @@ import { desiredNetwork } from "../config/keys";
 import { push } from "connected-react-router";
 import { loadUser } from "../store/user/actions";
 
-export function loadUserAndRoute() {
+export function loadUserAndRoute(currentRoute: string) {
     return async (dispatch: Dispatch) => {
 		const userFromDB = await readUser(window.ethereum.selectedAddress)
 		
 		if (window.ethereum.networkVersion !== desiredNetwork) {
+			console.log('ne valja nis')
 			dispatch(push('/wrong-network'))
 			return
 		}
@@ -17,7 +18,7 @@ export function loadUserAndRoute() {
 			dispatch(push('/register'))
 		} else {
 			dispatch(loadUser(userFromDB))
-			dispatch(push('/'))
+			dispatch(push(currentRoute))
 		}
     }
 } 

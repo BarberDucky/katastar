@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 import Main from '../components/pages/Main';
 import Register from '../components/pages/Register';
 import InstallMetamask from '../components/pages/InstallMetamask';
@@ -10,7 +10,8 @@ class Routes extends Component {
     render() {
         return (
             <Switch>
-                <Route exact path="/" component={Main} />
+                <Redirect exact from='/' to='/main'/>
+                <Route path="/main" component={Main} />
                 <Route path="/register" component={Register} />
                 <Route path="/install-metamask" component={InstallMetamask} />
                 <Route path="/wrong-network" component={WrongNetwork} />

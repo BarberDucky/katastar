@@ -12,7 +12,8 @@ interface ConfirmConnectionProps {
   push: typeof push,
   loadUser: typeof loadUser,
   loadUserAndRoute: typeof loadUserAndRoute,
-  user: User
+  user: User,
+  pathname: string
 }
 
 class ConfirmConnection extends Component<ConfirmConnectionProps> {
@@ -24,7 +25,7 @@ class ConfirmConnection extends Component<ConfirmConnectionProps> {
       return
     }
 
-    await this.props.loadUserAndRoute()
+    await this.props.loadUserAndRoute(this.props.pathname)
 
   }
 

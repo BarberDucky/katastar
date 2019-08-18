@@ -21,7 +21,11 @@ declare global {
 	}
 }
 
-interface AppProps {
+interface State {
+	isLoaded: boolean
+}
+
+interface Props {
 	push: typeof push,
 	loadUserAndRoute: typeof loadUserAndRoute,
 	loadEthereumProvider: typeof loadEthereumProvider,
@@ -31,9 +35,15 @@ interface AppProps {
 	web3: Web3 | null
 }
 
-class App extends Component<AppProps> {
+class App extends Component<Props, State> {
+
+	state: State = {
+		isLoaded: false
+	}
 
 	async componentDidMount() {
+		this.setState({isLoaded: false})
+		
 		if (typeof window.ethereum === 'undefined') {
 			alert('You need metamask to continue')
 			this.props.push('/install-metamask')
@@ -46,19 +56,32 @@ class App extends Component<AppProps> {
 			this.props.push('/no-connection')
 			return
 		}
+		
+		await this.props.loadUserAndRoute('/')
 
-		await this.props.loadUserAndRoute()
 		this.props.loadEthereumProvider(window.ethereum)
-		this.props.loadWeb3(new Web3(this.props.ethereum))
+		
+		//const web3Provider = new Web3(this.props.ethereum)
+		
+		this.props.loadWeb3(window.web3)
 
-
+		this.setState({isLoaded: true})
 	}
 
 	render() {
+
+		const routes = (
+			<Routes />
+		)
+		
+		const loading = (
+			<span>Loading...</span>
+		)
+
 		return (
 			<div className="App">
 				<ConnectedRouter history={history}>
-					<Routes />
+					{this.state.isLoaded ? routes : loading}
 				</ConnectedRouter>
 			</div>
 		)

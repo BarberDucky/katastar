@@ -31,6 +31,7 @@ export default function (dispatch: Dispatch, getState: StoreGetState ) {
 
     window.ethereum.on('networkChanged', async (newNetwork: string) => {
         const userFromDB = await readUser(window.ethereum.selectedAddress)
+        console.log('uslo')
         if (newNetwork !== desiredNetwork) {
             dispatch(push('/wrong-network'))
         } else {
