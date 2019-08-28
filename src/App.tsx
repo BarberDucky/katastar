@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators } from "redux";
-import { push } from 'connected-react-router'
+import { push, RouterState } from 'connected-react-router'
 import { AppState } from './store';
 import User from './models/user.model';
 import { ConnectedRouter } from 'connected-react-router';
@@ -32,7 +32,8 @@ interface Props {
 	loadWeb3: typeof loadWeb3,
 	user: User,
 	ethereum: any,
-	web3: Web3 | null
+	web3: Web3 | null,
+	router: RouterState
 }
 
 class App extends Component<Props, State> {
@@ -57,7 +58,7 @@ class App extends Component<Props, State> {
 			return
 		}
 		
-		await this.props.loadUserAndRoute('/')
+		await this.props.loadUserAndRoute(this.props.router.location.pathname)
 
 		this.props.loadEthereumProvider(window.ethereum)
 		
@@ -91,7 +92,8 @@ class App extends Component<Props, State> {
 const mapStateToProps = (state: AppState) => ({
 	user: state.user,
 	ethereum: state.ethereumWeb3.ethereum,
-	web3: state.ethereumWeb3.web3
+	web3: state.ethereumWeb3.web3,
+	router: state.router
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

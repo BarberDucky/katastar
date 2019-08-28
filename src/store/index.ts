@@ -7,9 +7,11 @@ import { ethereumReducer } from './ethereum/reducers'
 import User from '../models/user.model';
 import addMetamaskListeners from './metamaskListeners'
 import EthereumWeb3 from '../models/ethereumWeb3.model';
+import { reducer as formReducer } from 'redux-form'
 
 export const rootReducer = (history: History) => combineReducers({
     router: connectRouter(history),
+    form: formReducer,
     user: userReducer,
     ethereumWeb3: ethereumReducer
 })

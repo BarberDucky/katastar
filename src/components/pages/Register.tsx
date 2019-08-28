@@ -19,7 +19,8 @@ class Register extends Component<RegisterProps> {
             address: window.ethereum.selectedAddress,
             firstName: event.target.firstName.value,
             lastName: event.target.lastName.value,
-            location: event.target.location.value
+            location: event.target.location.value,
+            parcels: []
         }
 
         await createUser(user)

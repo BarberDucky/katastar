@@ -6,7 +6,8 @@ const initialState: User = {
     address: '',
     firstName: '',
     lastName: '',
-    location: ''
+    location: '',
+    parcels: []
 }
 
 export function userReducer(state = initialState, action: UserActionTypes): User {

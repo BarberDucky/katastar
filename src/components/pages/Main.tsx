@@ -3,9 +3,12 @@ import User from '../../models/user.model';
 import { AppState } from '../../store';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
-import Header from '../ui/Header';
-import { match } from 'react-router';
+import Header from '../ui/header';
+import { match, Switch, Route, Redirect } from 'react-router';
 import { RouterState } from 'connected-react-router';
+import Explorer from '../ui/explorer';
+import Messages from '../ui/messages';
+import PersonalInfo from '../ui/personal-info';
 
 interface MainProps {
     user: User,
@@ -19,7 +22,14 @@ class Main extends Component<MainProps> {
     render() {
         return (
             <div>
-                <Header />
+                <Header userId={this.props.user.address}/>
+
+                <Switch>
+                    <Route path="/main/explorer/:searchEntity" component={Explorer}></Route>
+                    <Route path="/main/messages/" component={Messages}></Route>
+                    <Route path="/main/users/:userId" component={PersonalInfo}></Route>
+                    <Redirect to="/main/explorer/parcels"></Redirect>
+                </Switch>
             </div>
         )
     }

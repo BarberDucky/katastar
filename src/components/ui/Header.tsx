@@ -40,16 +40,22 @@ const MenuItem = styled(Link)`
     }
 `
 
-class Header extends Component {
+interface OwnProps {
+    userId: string
+}
+
+type Props = OwnProps
+
+class Header extends Component<Props> {
     render() {
         return (
             <HeaderContainer>
                 <StyledTitle>Katastar</StyledTitle>
 
                 <Menu>
-                    <MenuItem to="/main/explore" >Explore</MenuItem>
+                    <MenuItem to="/main/explorer" >Explore</MenuItem>
                     <MenuItem to="/main/messages" >Messages</MenuItem>
-                    <MenuItem to="/main/personal" >Personal</MenuItem>
+                    <MenuItem to={`/main/users/${this.props.userId}`} >Personal</MenuItem>
                 </Menu>
             </HeaderContainer>
         )
