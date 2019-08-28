@@ -11,6 +11,7 @@ import UserBasicInfo from './basic-info';
 import { readUser } from '../../../services/user.service';
 import { Link } from 'react-router-dom';
 import ParcelList from './parcel-list';
+import AuctionsList from './auctions-list';
 
 interface StateProps {
     router: RouterState
@@ -64,7 +65,6 @@ class PersonalInfo extends Component<Props, State> {
     private async onRouteChange() {
         this.setState({isLoading: true, isOwner: false})
         const results = await readUser(this.props.match.params.userId)
-
         if (!results && this._isMounted) {
             this.setState({
                 results: undefined, 
@@ -112,7 +112,18 @@ class PersonalInfo extends Component<Props, State> {
                                 }
                             </div>
                             <Switch>
-                                <Route path="/main/users/:userId/parcels" render={props => <ParcelList {...props} parcels={user.parcels}/>} />
+                                <Route path="/main/users/:userId/parcels" 
+                                    render={props => <ParcelList {...props} parcels={user.parcels}/>} 
+                                />
+                                <Route path="/main/users/:userId/auctions" 
+                                    render={props => 
+                                        <AuctionsList {...props} 
+                                            auctions={user.auctions} 
+                                            isOwner={this.state.isOwner}
+                                            parcels={user.parcels}    
+                                        />
+                                    } 
+                                />
                             </Switch>
                         </div>
                     )
