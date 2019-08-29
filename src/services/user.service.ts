@@ -6,9 +6,10 @@ import { UserFormData } from '../components/ui/explorer/explorer-entities/user';
 export const readUser = async (metamaskAddress: string) => {
 	const userValue = await firebase.database().ref('users/' + metamaskAddress).once('value')
 	const user: User = userValue.val()
-
-	user.parcels = user.parcels ? Object.values(user.parcels) : []
-	user.auctions = user.auctions ? Object.values(user.auctions) : []
+	if (user) {
+		user.parcels = user.parcels ? Object.values(user.parcels) : []
+		user.auctions = user.auctions ? Object.values(user.auctions) : []
+	}
 
 	return user
 }

@@ -33,8 +33,9 @@ export default function configureStore() {
             ),
         )
     )
-
-    addMetamaskListeners(store.dispatch, store.getState)
+    
+    if (window.ethereum)
+        addMetamaskListeners(store.dispatch, store.getState)
 
     return store
 }

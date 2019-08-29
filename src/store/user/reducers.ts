@@ -9,6 +9,7 @@ const initialState: User = {
     location: '',
     parcels: [],
     auctions: [],
+    conversations: [],
 }
 
 export function userReducer(state = initialState, action: UserActionTypes): User {

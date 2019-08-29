@@ -7,7 +7,7 @@ import { AnyAction, bindActionCreators } from 'redux';
 import { match } from 'react-router';
 import { formDataToJson } from '../../../helper';
 import bind from 'bind-decorator';
-import { readConversationFromId } from '../../../services/conversation.service';
+import { readConversationFromId, createConversation } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
 import Conversation, { Message } from '../../../models/conversation.model';
 
@@ -32,14 +32,12 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
 	isLoading: boolean,
-	results: Message[]
 }
 
-class Chat extends Component<Props, State> {
+class NewConversation extends Component<Props, State> {
 
 	state: State = {
 		isLoading: true,
-		results: []
 	}
 
 	_isMounted = false
@@ -66,13 +64,15 @@ class Chat extends Component<Props, State> {
 			this.props.match.params.userId
 		)
 		
-		let results: Message[] = []
-		if (conversation)
-			results = Object.values(conversation.messages)
+		if (conversation) {
+      this.props.push(`/main/messages/${this.props.match.params.userId}`)
+      return
+    }
+      
 
 
 		if (this._isMounted)
-			this.setState({ results, isLoading: false })
+			this.setState({ isLoading: false })
 	}
 
 	@bind
@@ -82,7 +82,13 @@ class Chat extends Component<Props, State> {
 		const target = event.target as HTMLFormElement
 		const formData = new FormData(target)
 		const obj = formDataToJson<any>(formData)
-		console.log(obj)
+		const message: Message = {
+      fromUser: this.props.currentUser.address,
+      toUser: this.props.match.params.userId,
+      content: obj.sentMessage
+    }
+
+    createConversation(message)
 	}
 
 	render() {
@@ -94,25 +100,17 @@ class Chat extends Component<Props, State> {
 					) : (
 							<div>
 								{
-									this.state.results.map((result, index) => {
-										return (
-											<div key={`chat${index}`}>
-												{result.content}
-											</div>
-										)
-									})
+									<form onSubmit={ev => this.sendMessage(ev)}>
+                    <input
+                      name="sentMessage"
+                      placeholder="Type message..."
+                    />
+                    <button> --> </button>
+                  </form>
 								}
 							</div>
 						)
 				}
-
-				<form onSubmit={ev => this.sendMessage(ev)}>
-					<input
-						name="sentMessage"
-						placeholder="Type message..."
-					/>
-					<button> --> </button>
-				</form>
 			</div>
 		)
 	}
@@ -131,4 +129,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
 		dispatch,
 	)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat)
+export default connect(mapStateToProps, mapDispatchToProps)(NewConversation)

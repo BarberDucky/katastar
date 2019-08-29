@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { sleep } from "../../../helper";
 import { MapStateToProps, connect } from "react-redux";
 import { AppState } from "../../../store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { RouterState, Push, push } from "connected-react-router";
 import styled from 'styled-components'
+import User, { ConversationInfo } from "../../../models/user.model";
 
 interface InputProps {
     isRead: boolean
@@ -17,20 +17,14 @@ const Item = styled.div`
     }
 
     background-color: ${(props: InputProps) => 
-        props.isRead ? 'cornflowerblue' : 'inherit'
+        !props.isRead ? 'cornflowerblue' : 'inherit'
     };
     width: fit-content;
 `
 
-interface UserMessage {
-    userId: string
-    userName: string
-    isRead: boolean
-    date: Date
-}
-
 interface StateProps {
     router: RouterState
+    user: User
 }
 
 interface DispatchProps {
@@ -45,7 +39,7 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
     isLoading: boolean,
-    results: UserMessage[]
+    results: ConversationInfo[]
 }
 
 
@@ -68,35 +62,14 @@ class MessagesList extends Component<Props, State> {
 
     private async onRouteChange() {
         this.setState({isLoading : true})
-
-        await sleep(1000)
-        const results: UserMessage[] = [
-            {
-                userId: '1',
-                userName: 'Pera',
-                isRead: true,
-                date: new Date('1995-12-17T03:24:00') 
-            },
-            {
-                userId: '2',
-                userName: 'Mika',
-                isRead: false,
-                date: new Date('1995-12-17T03:25:00') 
-            },
-            {
-                userId: '3',
-                userName: 'Zika',
-                isRead: true,
-                date: new Date('1995-12-17T03:23:00') 
-            },
-        ]
-
+        const results = Object.values(this.props.user.conversations)
+        console.log(results)
         if (this._isMounted)
             this.setState({results, isLoading: false})
     }
 
-    private openDetails(item: UserMessage) {
-        this.props.push(`/main/messages/${item.userId}`)
+    private openDetails(item: ConversationInfo) {
+        this.props.push(`/main/messages/${item.fromId}`)
     }
 
     render () {
@@ -114,11 +87,10 @@ class MessagesList extends Component<Props, State> {
                                     return (
                                         <Item 
                                             isRead={result.isRead}
-                                            key={result.userId}
+                                            key={`conversationinfo${result.conversationId}`}
                                             onClick={() => this.openDetails(result)}
                                         >
-                                            <span>{result.userName}</span>
-                                            <span>{result.date.toDateString()}</span>
+                                            <span>{result.fromName}</span>
                                         </Item>
                                     )
                                 })
@@ -133,6 +105,7 @@ class MessagesList extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
     router: state.router,
+    user: state.user
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

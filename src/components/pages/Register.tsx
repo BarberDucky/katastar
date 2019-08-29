@@ -21,7 +21,8 @@ class Register extends Component<RegisterProps> {
             lastName: event.target.lastName.value,
             location: event.target.location.value,
             parcels: [],
-            auctions: []
+            auctions: [],
+            conversations: [],
         }
 
         await createUser(user)

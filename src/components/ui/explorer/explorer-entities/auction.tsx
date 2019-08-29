@@ -106,7 +106,7 @@ class AuctionPageComponent extends Component<Props, State> {
 
     private openDetails (item: Auction) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/auctions/${item.address}`)
+        this.props.push(`/main/auctions/${item.address}`)
     }
  
     render () {

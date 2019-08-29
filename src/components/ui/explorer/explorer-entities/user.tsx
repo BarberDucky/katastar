@@ -104,7 +104,7 @@ class UserPageComponent extends Component<Props, State> {
 
     private openDetails(item: User) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/users/${item.address}`)
+        this.props.push(`/main/users/${item.address}`)
     }
 
     render() {

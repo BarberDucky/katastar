@@ -106,7 +106,7 @@ class ParcelPageComponent extends Component<Props, State> {
 
     private openDetails (item: Parcel) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/parcels/${item.address}`)
+        this.props.push(`/main/parcels/${item.address}`)
     }
  
     render () {
