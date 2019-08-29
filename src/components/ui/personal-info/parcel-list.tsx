@@ -29,7 +29,6 @@ class ParcelList extends Component<Props, State> {
 
     @bind
     private openDetails(parcel: Parcel) {
-        console.log(parcel)
         this.props.push(`/parcels/${parcel.address}`)
     }
 

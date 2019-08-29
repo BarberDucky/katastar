@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import bind from 'bind-decorator'
 import { FormEvent } from "react";
-import { formDataToJson as formDataToObject, sleep } from "../../../../helper";
+import { formDataToJson as formDataToObject } from "../../../../helper";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect, MapStateToProps } from "react-redux";
@@ -9,6 +9,8 @@ import { Push, push, RouterState } from "connected-react-router";
 import qs from 'qs'
 import styled from 'styled-components';
 import { AppState } from '../../../../store';
+import { searchUsers } from '../../../../services/user.service';
+import User from '../../../../models/user.model';
 
 const Wrapper = styled.div``
 
@@ -28,11 +30,6 @@ const Label = styled.label`
 `
 
 const Main = styled.main``
-
-export interface UserModel {
-    id: number,
-    name: string
-}
 
 export interface UserFormData {
     address: string,
@@ -57,7 +54,7 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
     isLoading: boolean
-    results: UserModel[]
+    results: User[]
 }
 
 class UserPageComponent extends Component<Props, State> {
@@ -69,12 +66,12 @@ class UserPageComponent extends Component<Props, State> {
         results: [],
     }
 
-    public componentDidMount () {
+    public componentDidMount() {
         this._isMounted = true
         this.onRouteChange()
     }
 
-    public componentDidUpdate (oldProps: Props) {
+    public componentDidUpdate(oldProps: Props) {
         if (oldProps.router.location.search !== this.props.router.location.search) {
             this.onRouteChange()
         }
@@ -85,68 +82,50 @@ class UserPageComponent extends Component<Props, State> {
     }
 
     @bind
-    private handleSubmit (reactEvent: FormEvent<HTMLFormElement>) {
+    private handleSubmit(reactEvent: FormEvent<HTMLFormElement>) {
         const event = reactEvent.nativeEvent as Event
         event.preventDefault()
         const target = event.target as HTMLFormElement
         const formData = new FormData(target)
-        const obj = formDataToObject<any>(formData)
+        const obj = formDataToObject<UserFormData>(formData)
         const queryString = qs.stringify(obj)
         const pathName = this.props.router.location.pathname
         this.props.push(pathName + '?' + queryString)
     }
 
-    private async onRouteChange () {
-        // const params = qs.parse(this.props.router.location.search.slice(1)) as Partial<AuctionFormData>
-        this.setState({isLoading: true})
-        await sleep(2000)
+    private async onRouteChange() {
+        const params = qs.parse(this.props.router.location.search.slice(1)) as UserFormData
+        this.setState({ isLoading: true })
+        const results = await searchUsers(params)
 
-        const results: UserModel[] = [
-            {
-                id: 1,
-                name: 'damjan',
-            },
-            {
-                id: 2,
-                name: 'ana',
-            },
-            {
-                id: 3,
-                name: 'lazar',
-            },
-        ]
         if (this._isMounted)
-            this.setState({results, isLoading: false})
+            this.setState({ results, isLoading: false })
     }
 
-    private openDetails (item: UserModel) {
+    private openDetails(item: User) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/users/${item.id}`)
+        this.props.push(`/users/${item.address}`)
     }
- 
-    render () {
+
+    render() {
         return (
             <Wrapper>
                 <Form onSubmit={this.handleSubmit}>
                     <Label>
                         <span>Address</span>
-                        <input type="text" name="address"/>
+                        <input type="text" name="address" />
                     </Label>
                     <Label>
-                        <span>Owner</span>
-                        <input type="text" name="owner"/>
+                        <span>First Name</span>
+                        <input type="text" name="firstName" />
                     </Label>
                     <Label>
-                        <span>Region</span>
-                        <input type="text" name="region"/>
+                        <span>Last Name</span>
+                        <input type="text" name="lastName" />
                     </Label>
                     <Label>
-                        <span>Municipality</span>
-                        <input type="text" name="municipality"/>
-                    </Label>
-                    <Label>
-                        <span>Cadaste Municipality</span>
-                        <input type="text" name="cadastreMunicipality"/>
+                        <span>Location</span>
+                        <input type="text" name="location" />
                     </Label>
                     <button type="submit">
                         Search
@@ -159,35 +138,35 @@ class UserPageComponent extends Component<Props, State> {
                         ) : this.state.results.length === 0 ? (
                             `No results.`
                         ) : (
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>id</th>
-                                        <th>Owner</th>
-                                        <th>Deadline</th>
-                                        <th>Parcel Id</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        this.state.results.map(result => {
-                                            return (
-                                                <tr key={result.id} onClick={() => this.openDetails(result)}>
-                                                    <td>{result.id}</td>
-                                                    <td>{result.name}</td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                        )
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>id</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.results.map(result => {
+                                                    return (
+                                                        <tr key={result.address} onClick={() => this.openDetails(result)}>
+                                                            <td>{result.address}</td>
+                                                            <td>{result.firstName}</td>
+                                                            <td>{result.lastName}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                )
                     }
                 </Main>
             </Wrapper>
         )
     }
-    
+
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
@@ -195,11 +174,11 @@ const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state =
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
-  bindActionCreators(
-    {
-      push,
-    },
-    dispatch,
-  )
+    bindActionCreators(
+        {
+            push,
+        },
+        dispatch,
+    )
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPageComponent)

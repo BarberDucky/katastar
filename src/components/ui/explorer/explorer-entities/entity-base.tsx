@@ -1,6 +1,6 @@
 import { Component, FormEvent } from "react";
 import bind from "bind-decorator";
-import { formDataToJson, sleep } from "../../../../helper";
+import { formDataToJson } from "../../../../helper";
 import qs from 'qs'
 import { connect, MapStateToProps } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";

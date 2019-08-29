@@ -36,7 +36,7 @@ class AuctionsList extends Component<Props, State> {
 
     @bind
     private openDetails(auction: Auction) {
-        this.props.push(`/auction/${auction.address}`)
+        this.props.push(`/main/auctions/${auction.address}`)
     }
 
     @bind

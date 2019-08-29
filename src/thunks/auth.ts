@@ -9,7 +9,6 @@ export function loadUserAndRoute(currentRoute: string) {
 		const userFromDB = await readUser(window.ethereum.selectedAddress)
 		
 		if (window.ethereum.networkVersion !== desiredNetwork) {
-			console.log('ne valja nis')
 			dispatch(push('/wrong-network'))
 			return
 		}

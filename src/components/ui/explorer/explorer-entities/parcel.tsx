@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import bind from 'bind-decorator'
 import { FormEvent } from "react";
-import { formDataToJson as formDataToObject, sleep } from "../../../../helper";
+import { formDataToJson as formDataToObject } from "../../../../helper";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect, MapStateToProps } from "react-redux";
@@ -9,6 +9,8 @@ import { Push, push, RouterState } from "connected-react-router";
 import qs from 'qs'
 import styled from 'styled-components';
 import { AppState } from '../../../../store';
+import Parcel from '../../../../models/parcel.model';
+import { searchParcels } from '../../../../services/parcel.service';
 
 const Wrapper = styled.div``
 
@@ -28,12 +30,6 @@ const Label = styled.label`
 `
 
 const Main = styled.main``
-
-export interface ParcelModel {
-    id: number,
-    owner: string,
-    coordinates: number[],
-}
 
 export interface ParcelFormData {
     address: string,
@@ -59,7 +55,7 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
     isLoading: boolean
-    results: ParcelModel[]
+    results: Parcel[]
 }
 
 class ParcelPageComponent extends Component<Props, State> {
@@ -99,34 +95,18 @@ class ParcelPageComponent extends Component<Props, State> {
     }
 
     private async onRouteChange () {
-        // const params = qs.parse(this.props.router.location.search.slice(1)) as Partial<AuctionFormData>
+        const params = qs.parse(this.props.router.location.search.slice(1)) as ParcelFormData
         this.setState({isLoading: true})
-        await sleep(2000)
+        
+        const results = await searchParcels(params)
 
-        const results: ParcelModel[] = [
-            {
-                id: 1,
-                owner: 'ja',
-                coordinates: [],
-            },
-            {
-                id: 2,
-                owner: 'ti',
-                coordinates: [],
-            },
-            {
-                id: 3,
-                owner: 'onae',
-                coordinates: [],
-            },
-        ]
         if (this._isMounted)
             this.setState({results, isLoading: false})
     }
 
-    private openDetails (item: ParcelModel) {
+    private openDetails (item: Parcel) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/parcels/${item.id}`)
+        this.props.push(`/parcels/${item.address}`)
     }
  
     render () {
@@ -177,8 +157,8 @@ class ParcelPageComponent extends Component<Props, State> {
                                     {
                                         this.state.results.map(result => {
                                             return (
-                                                <tr key={result.id} onClick={() => this.openDetails(result)}>
-                                                    <td>{result.id}</td>
+                                                <tr key={result.address} onClick={() => this.openDetails(result)}>
+                                                    <td>{result.address}</td>
                                                     <td>{result.owner}</td>
                                                 </tr>
                                             )

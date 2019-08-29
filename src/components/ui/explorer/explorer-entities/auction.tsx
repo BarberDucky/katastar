@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import bind from 'bind-decorator'
 import { FormEvent } from "react";
-import { formDataToJson as formDataToObject, sleep } from "../../../../helper";
+import { formDataToJson as formDataToObject } from "../../../../helper";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect, MapStateToProps } from "react-redux";
@@ -9,6 +9,8 @@ import { Push, push, RouterState } from "connected-react-router";
 import qs from 'qs'
 import styled from 'styled-components';
 import { AppState } from '../../../../store';
+import { searchAuctions } from '../../../../services/auction.service';
+import Auction from '../../../../models/auction.model';
 
 const Wrapper = styled.div``
 
@@ -28,13 +30,6 @@ const Label = styled.label`
 `
 
 const Main = styled.main``
-
-export interface AuctionModel {
-    id: number
-    owner: string
-    deadline: string
-    parcelId: number
-}
 
 export interface AuctionFormData {
     address: string,
@@ -60,7 +55,7 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
     isLoading: boolean
-    results: AuctionModel[]
+    results: Auction[]
 }
 
 class AuctionPageComponent extends Component<Props, State> {
@@ -100,37 +95,18 @@ class AuctionPageComponent extends Component<Props, State> {
     }
 
     private async onRouteChange () {
-        // const params = qs.parse(this.props.router.location.search.slice(1)) as Partial<AuctionFormData>
+        const params = qs.parse(this.props.router.location.search.slice(1)) as AuctionFormData
         this.setState({isLoading: true})
         
-        await sleep(2000)
-        const results: AuctionModel[] = [
-            {
-                id: 1,
-                deadline: 'sutra',
-                owner: 'ja',
-                parcelId: 1,
-            },
-            {
-                id: 2,
-                deadline: 'moe',
-                owner: 'ti',
-                parcelId: 2,
-            },
-            {
-                id: 3,
-                deadline: 'ubila',
-                owner: 'onae',
-                parcelId: 3,
-            },
-        ]
+        const results = await searchAuctions(params)
+
         if (this._isMounted)
             this.setState({results, isLoading: false})
     }
 
-    private openDetails (item: AuctionModel) {
+    private openDetails (item: Auction) {
         // const currentPath = this.props.router.location.pathname
-        this.props.push(`/auctions/${item.id}`)
+        this.props.push(`/auctions/${item.address}`)
     }
  
     render () {
@@ -181,11 +157,11 @@ class AuctionPageComponent extends Component<Props, State> {
                                     {
                                         this.state.results.map(result => {
                                             return (
-                                                <tr key={result.id} onClick={() => this.openDetails(result)}>
-                                                    <td>{result.id}</td>
+                                                <tr key={result.address} onClick={() => this.openDetails(result)}>
+                                                    <td>{result.address}</td>
                                                     <td>{result.owner}</td>
                                                     <td>{result.deadline}</td>
-                                                    <td>{result.parcelId}</td>
+                                                    <td>{result.parcel.address}</td>
                                                 </tr>
                                             )
                                         })

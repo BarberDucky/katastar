@@ -9,6 +9,8 @@ import { RouterState } from 'connected-react-router';
 import Explorer from '../ui/explorer';
 import Messages from '../ui/messages';
 import PersonalInfo from '../ui/personal-info';
+import ParcelPage from '../ui/parcel'
+import AuctionPage from '../ui/auction'
 
 interface MainProps {
     user: User,
@@ -28,6 +30,8 @@ class Main extends Component<MainProps> {
                     <Route path="/main/explorer/:searchEntity" component={Explorer}></Route>
                     <Route path="/main/messages/" component={Messages}></Route>
                     <Route path="/main/users/:userId" component={PersonalInfo}></Route>
+                    <Route path="/main/parcels/:parcelId" component={ParcelPage}></Route>
+                    <Route path="/main/auctions/:auctionId" component={AuctionPage}></Route>
                     <Redirect to="/main/explorer/parcels"></Redirect>
                 </Switch>
             </div>
