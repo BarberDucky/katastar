@@ -9,6 +9,13 @@ export const createDeal = async (deal: Deal) => {
   await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals`).push(deal)
 }
 
+export const readDeal = async (dealId: string, userId: string) => {
+  const dealRes = await firebase.database().ref(`users/${userId}/deals/${dealId}`).once('value')
+  const deal: Deal = dealRes.val()
+
+  return deal
+}
+
 export const withdrawDeal = async (deal: Deal) => {
   await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.address}/withdrawn`).set(true)
   await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.address}/withdrawn`).set(true)

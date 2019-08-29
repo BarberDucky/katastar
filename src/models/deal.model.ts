@@ -3,11 +3,13 @@ export interface Asset {
   userAddress: string
   eth: number
   parcels: string[]
+  isConfirmed: boolean
 }
 
 export default interface Deal {
   address: string
-  withdrawn: boolean
+  isWithdrawn: boolean
+  isConfirmed: boolean
   user1Asset: Asset
   user2Asset: Asset
 }
