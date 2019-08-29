@@ -23,6 +23,7 @@ class Register extends Component<RegisterProps> {
             parcels: [],
             auctions: [],
             conversations: [],
+            inheritances: [],
         }
 
         await createUser(user)

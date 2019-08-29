@@ -9,6 +9,7 @@ export const readUser = async (metamaskAddress: string) => {
 	if (user) {
 		user.parcels = user.parcels ? Object.values(user.parcels) : []
 		user.auctions = user.auctions ? Object.values(user.auctions) : []
+		user.inheritances = user.inheritances ? Object.values(user.inheritances) : []
 	}
 
 	return user
@@ -24,7 +25,7 @@ export const updateUser = async (user: User) => {
 	console.log(updateRes)
 }
 
-export const searchUsers = async (userFilter: UserFormData) => {
+export const searchUsers = async (userFilter: Partial<UserFormData>) => {
 	const userValue = await firebase.database().ref('users/').once('value')
 	const result = userValue.val()
 	const users: User[] = result ? Object.values(result) : []

@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import ParcelList from './parcel-list';
 import AuctionsList from './auctions-list';
 import bind from 'bind-decorator';
+import InheritancesList from './inheritances-list';
 
 interface StateProps {
 	router: RouterState
@@ -114,10 +115,12 @@ class PersonalInfo extends Component<Props, State> {
 									<div>
 										<Link to={`/main/users/${this.props.match.params.userId}/parcels`}>Parcels</Link>
 										<Link to={`/main/users/${this.props.match.params.userId}/auctions`}>Auctions</Link>
-										<Link to={`/main/users/${this.props.match.params.userId}/ads`}>Ads</Link>
 										{
 											this.state.isOwner ? (
-												<Link to={`/main/users/${this.props.match.params.userId}/deals`}>Deals</Link>
+												<div>
+													<Link to={`/main/users/${this.props.match.params.userId}/deals`}>Deals</Link>
+													<Link to={`/main/users/${this.props.match.params.userId}/inheritances`}>Inheritances</Link>
+												</div>
 											) : ('')
 										}
 									</div>
@@ -129,6 +132,16 @@ class PersonalInfo extends Component<Props, State> {
 											render={props =>
 												<AuctionsList {...props}
 													auctions={user.auctions}
+													isOwner={this.state.isOwner}
+													parcels={user.parcels}
+												/>
+											}
+										/>
+										<Route 
+											path="/main/users/:userId/inheritances" 
+											render={props => 
+												<InheritancesList {...props} 
+													inheritances={user.inheritances} 
 													isOwner={this.state.isOwner}
 													parcels={user.parcels}
 												/>

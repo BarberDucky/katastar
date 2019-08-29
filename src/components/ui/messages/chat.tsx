@@ -9,7 +9,7 @@ import { formDataToJson } from '../../../helper';
 import bind from 'bind-decorator';
 import { readConversationFromId } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
-import Conversation, { Message } from '../../../models/conversation.model';
+import { Message } from '../../../models/conversation.model';
 
 interface StateProps {
 	router: RouterState

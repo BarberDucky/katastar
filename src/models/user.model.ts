@@ -1,5 +1,6 @@
 import Parcel from "./parcel.model";
 import Auction from "./auction.model";
+import Inheritance from "./inheritance.model";
 
 export interface ConversationInfo {
     isRead: boolean
@@ -15,5 +16,6 @@ export default interface User {
     location: string
     parcels: Parcel[]
     auctions: Auction[]
-    conversations: ConversationInfo[]
+    conversations: ConversationInfo[],
+    inheritances: Inheritance[]
 }
