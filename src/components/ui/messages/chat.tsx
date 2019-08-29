@@ -7,7 +7,7 @@ import { AnyAction, bindActionCreators } from 'redux';
 import { match } from 'react-router';
 import { formDataToJson } from '../../../helper';
 import bind from 'bind-decorator';
-import { readConversationFromId } from '../../../services/conversation.service';
+import { readConversationFromId, pushMessage } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
 import { Message } from '../../../models/conversation.model';
 
@@ -32,14 +32,16 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
 	isLoading: boolean,
-	results: Message[]
+	results: Message[],
+	conversationId: string
 }
 
 class Chat extends Component<Props, State> {
 
 	state: State = {
 		isLoading: true,
-		results: []
+		results: [],
+		conversationId: '',
 	}
 
 	_isMounted = false
@@ -63,16 +65,19 @@ class Chat extends Component<Props, State> {
 		this.setState({ isLoading: true })
 		const conversation = await readConversationFromId(
 			this.props.currentUser.address,
-			this.props.match.params.userId
+			this.props.match.params.userId,
 		)
 		
 		let results: Message[] = []
-		if (conversation)
+		let conversationId = ''
+		if (conversation) {
 			results = Object.values(conversation.messages)
+			conversationId = conversation.address
+		}
 
 
 		if (this._isMounted)
-			this.setState({ results, isLoading: false })
+			this.setState({ results, isLoading: false, conversationId })
 	}
 
 	@bind
@@ -81,8 +86,13 @@ class Chat extends Component<Props, State> {
 		event.preventDefault()
 		const target = event.target as HTMLFormElement
 		const formData = new FormData(target)
-		const obj = formDataToJson<any>(formData)
-		console.log(obj)
+		let obj = formDataToJson<Message>(formData)
+		obj = {
+			fromUser: this.props.currentUser.address,
+			toUser: this.props.match.params.userId,
+			...obj,
+		}
+		pushMessage(obj, this.state.conversationId)
 	}
 
 	render() {
@@ -108,7 +118,7 @@ class Chat extends Component<Props, State> {
 
 				<form onSubmit={ev => this.sendMessage(ev)}>
 					<input
-						name="sentMessage"
+						name="content"
 						placeholder="Type message..."
 					/>
 					<button> --> </button>

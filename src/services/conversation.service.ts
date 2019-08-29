@@ -7,11 +7,14 @@ export const createConversation = async (message: Message) => {
   const conversation: Conversation = {
     user1: message.fromUser,
     user2: message.toUser,
-    messages: [message]
+    messages: [message],
+    address: ''
   }
 
   const createRes = await firebase.database().ref(`conversations/`).push(conversation)
-
+  
+  const conversationId = createRes.key
+  await firebase.database().ref(`conversations/${conversationId}/address`).set(conversationId)
 
   // add conversation info to users
 
@@ -23,7 +26,6 @@ export const createConversation = async (message: Message) => {
   const toUser: User = toUserRes.val()
   const toUserName = toUser.firstName + ' ' + toUser.lastName
 
-  const conversationId = createRes.key
   
   if (!conversationId) {
     alert('error creating conversation')
@@ -75,7 +77,7 @@ export const readConversationFromId = async (currentUser: string, targetUser: st
   
 }
 
-export const pushMessage = async (message: Message, conversationId: string, toUser: string) => {
+export const pushMessage = async (message: Message, conversationId: string) => {
   await firebase.database().ref(`conversations/${conversationId}/messages`).push(message)
-  await firebase.database().ref(`users/${toUser}/conversations/${conversationId}/isRead`).set(false)
+  await firebase.database().ref(`users/${message.toUser}/conversations/${conversationId}/isRead`).set(false)
 }

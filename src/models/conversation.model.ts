@@ -5,6 +5,7 @@ export interface Message {
 }
 
 export default interface Conversation {
+  address: string
   user1: string
   user2: string
   messages: Message[]
