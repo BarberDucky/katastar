@@ -24,6 +24,7 @@ class Register extends Component<RegisterProps> {
             auctions: [],
             conversations: [],
             inheritances: [],
+            deals: [],
         }
 
         await createUser(user)

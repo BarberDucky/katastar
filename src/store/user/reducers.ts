@@ -11,6 +11,7 @@ const initialState: User = {
     auctions: [],
     conversations: [],
     inheritances: [],
+    deals: []
 }
 
 export function userReducer(state = initialState, action: UserActionTypes): User {

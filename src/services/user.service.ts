@@ -10,6 +10,7 @@ export const readUser = async (metamaskAddress: string) => {
 		user.parcels = user.parcels ? Object.values(user.parcels) : []
 		user.auctions = user.auctions ? Object.values(user.auctions) : []
 		user.inheritances = user.inheritances ? Object.values(user.inheritances) : []
+		user.deals = user.deals ? Object.values(user.deals) : []
 	}
 
 	return user

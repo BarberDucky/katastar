@@ -14,6 +14,7 @@ import ParcelList from './parcel-list';
 import AuctionsList from './auctions-list';
 import bind from 'bind-decorator';
 import InheritancesList from './inheritances-list';
+import DealsList from './deals-list';
 
 interface StateProps {
 	router: RouterState
@@ -144,6 +145,15 @@ class PersonalInfo extends Component<Props, State> {
 													inheritances={user.inheritances} 
 													isOwner={this.state.isOwner}
 													parcels={user.parcels}
+												/>
+											}
+										/>
+										<Route 
+											path="/main/users/:userId/deals" 
+											render={props => 
+												<DealsList {...props} 
+													deals={user.deals} 
+													isOwner={this.state.isOwner}
 												/>
 											}
 										/>
