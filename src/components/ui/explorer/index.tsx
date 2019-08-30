@@ -17,9 +17,8 @@ const Container = styled.div`
 
 const Header = styled.div`
     width: 100%;
-    height: 100%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
 `
@@ -28,7 +27,6 @@ const Title = styled.h2`
 ` 
 
 const Menu = styled.div`
-    margin-top: 4px;
     display: flex;
     height: 100%;
 `
@@ -65,19 +63,14 @@ class Explorer extends Component<Props> {
                         <MenuItem to="/main/explorer/parcels">Parcels</MenuItem>
                         <MenuItem to="/main/explorer/users">Users</MenuItem>
                         <MenuItem to="/main/explorer/auctions">Auctions</MenuItem>
-                        <MenuItem to="/main/explorer/ads">Ads</MenuItem>
+                        {/*<MenuItem to="/main/explorer/ads">Ads</MenuItem>*/}
                     </Menu>
                 </Header>
-                {/* <Searchbar searchEntity={searchable} onSubmit={this.handleSubmit}/> */}
-                {/* <Route 
-                    path="/main/explorer/:searchEntity/:searchQuery" 
-                    render={props => <List {...props} searchEntity={searchable}/>}
-                ></Route> */}
                 <Switch>
                     <Route path={'/main/explorer/auctions'} component={Pages.auctions}/>
                     <Route path={'/main/explorer/parcels'} component={Pages.parcels}/>
                     <Route path={'/main/explorer/users'} component={Pages.users}/>
-                    <Route path={'/main/explorer/ads'} component={Pages.ads}/>
+                    {/*<Route path={'/main/explorer/ads'} component={Pages.ads}/>*/}
                 </Switch>
             </Container>
         )

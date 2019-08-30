@@ -11,6 +11,14 @@ import Messages from '../ui/messages';
 import PersonalInfo from '../ui/personal-info';
 import ParcelPage from '../ui/parcel'
 import AuctionPage from '../ui/auction'
+import style from 'styled-components'
+
+const Wrapper = style.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+`
 
 interface MainProps {
     user: User,
@@ -23,7 +31,7 @@ interface MainProps {
 class Main extends Component<MainProps> {
     render() {
         return (
-            <div>
+            <Wrapper>
                 <Header userId={this.props.user.address}/>
 
                 <Switch>
@@ -34,7 +42,7 @@ class Main extends Component<MainProps> {
                     <Route path="/main/auctions/:auctionId" component={AuctionPage}></Route>
                     <Redirect to="/main/explorer/parcels"></Redirect>
                 </Switch>
-            </div>
+            </Wrapper>
         )
     }
 }

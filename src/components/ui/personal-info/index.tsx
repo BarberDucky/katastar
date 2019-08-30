@@ -105,11 +105,10 @@ class PersonalInfo extends Component<Props, State> {
 								<div>
 									{
 										this.state.isOwner ? (
-											<PersonalInfoUpdateForm user={user} />
+											<PersonalInfoUpdateForm user={this.props.user} />
 										) : (
 												<div>
-													<UserBasicInfo user={user} />
-													<button onClick={this.beginConversation}>Begin conversation</button>
+													<UserBasicInfo user={user} beginCoversation={this.beginConversation}/>
 												</div>
 											)
 									}

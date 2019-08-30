@@ -6,29 +6,23 @@ import { AnyAction, bindActionCreators } from "redux";
 import { RouterState, Push, push } from "connected-react-router";
 import styled from 'styled-components'
 import User, { ConversationInfo } from "../../../models/user.model";
+import { Loader, Menu, Icon } from "semantic-ui-react";
 
-interface InputProps {
-    isRead: boolean
-}
+const Wrapper = styled.div`
+	
+`
 
-const Item = styled.div`
-    > * + * {
-        margin-right: 0.5em
-    }
-
-    background-color: ${(props: InputProps) => 
-        !props.isRead ? 'cornflowerblue' : 'inherit'
-    };
-    width: fit-content;
+const Title = styled.h2`
+	margin: 0;
 `
 
 interface StateProps {
-    router: RouterState
-    user: User
+	router: RouterState
+	user: User
 }
 
 interface DispatchProps {
-    push: Push
+	push: Push
 }
 
 interface OwnProps {
@@ -38,82 +32,87 @@ interface OwnProps {
 type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
-    isLoading: boolean,
-    results: ConversationInfo[]
+	isLoading: boolean
+	results: ConversationInfo[]
+	activeItem: string
 }
 
 
 class MessagesList extends Component<Props, State> {
 
-    state: State = {
-        isLoading: true, 
-        results: [],
-    }
-    _isMounted = false
+	state: State = {
+		isLoading: false,
+		results: [],
+		activeItem: ''
+	}
+	_isMounted = false
 
-    public componentDidMount() {
-        this._isMounted = true
-        this.onRouteChange()
-    }
+	public componentDidMount() {
+		this._isMounted = true
+	}
 
-    public componentWillUnmount() {
-        this._isMounted = false
-    }
+	public componentWillUnmount() {
+		this._isMounted = false
+	}
 
-    private async onRouteChange() {
-        this.setState({isLoading : true})
-        const results = Object.values(this.props.user.conversations)
-        console.log(results)
-        if (this._isMounted)
-            this.setState({results, isLoading: false})
-    }
+	private onRouteChange() {
+		this.setState({ isLoading: true })
+		const results = Object.values(this.props.user.conversations)
+		console.log('list results', this.props.user)
+		if (this._isMounted)
+			this.setState({ results, isLoading: false })
+	}
 
-    private openDetails(item: ConversationInfo) {
-        this.props.push(`/main/messages/${item.fromId}`)
-    }
+	private openDetails(item: ConversationInfo) {
+		this.setState({ activeItem: item.fromId })
+		this.props.push(`/main/messages/${item.fromId}`)
+	}
 
-    render () {
-        return (
-            <div>
-                {
-                    this.state.isLoading ? (
-                        'Loading...'
-                    ) : this.state.results.length === 0 ? (
-                        'No results...'
-                    ) : (
-                        <div>
-                            {
-                                this.state.results.map(result => {
-                                    return (
-                                        <Item 
-                                            isRead={result.isRead}
-                                            key={`conversationinfo${result.conversationId}`}
-                                            onClick={() => this.openDetails(result)}
-                                        >
-                                            <span>{result.fromName}</span>
-                                        </Item>
-                                    )
-                                })
-                            }
-                        </div>    
-                    )
-                }
-            </div>
-        )
-    }
+	render() {
+
+		const conversations = this.props.user.conversations ? Object.values(this.props.user.conversations) : []
+		return (
+			<Wrapper>
+				{
+					this.state.isLoading ? (
+						<Loader active />
+					) : conversations.length === 0 ? (
+						'No results...'
+					) : (
+								<Menu pointing vertical secondary>
+									{
+										conversations.map(result => {
+											return (
+												<Menu.Item
+													active={this.state.activeItem === result.fromId}
+													key={`conversationinfo${result.conversationId}`}
+													onClick={() => this.openDetails(result)}
+												>
+													<span>{result.fromName}</span>
+													{!result.isRead ? (<Icon name="bell outline" />) : ('')}
+												</Menu.Item>
+											)
+										})
+									}
+								</Menu>
+							)
+				}
+			</Wrapper>
+		)
+	}
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
-    router: state.router,
-    user: state.user
+	router: state.router,
+	user: state.user
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
-  bindActionCreators(
-    {
-      push,
-    },
-    dispatch,
-  )
+	bindActionCreators(
+		{
+			push,
+		},
+		dispatch,
+	)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessagesList)

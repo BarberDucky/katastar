@@ -17,6 +17,7 @@ const initialState: User = {
 export function userReducer(state = initialState, action: UserActionTypes): User {
     switch (action.type) {
         case LOAD_USER: {
+            console.log('payload', action.payload)
             return action.payload
         }
         default: {

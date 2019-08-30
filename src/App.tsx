@@ -9,10 +9,11 @@ import { ConnectedRouter } from 'connected-react-router';
 import { history } from './store';
 import Routes from './routes';
 import { enableEthereum } from './services/ethereum.service';
-import { loadUserAndRoute } from './thunks/auth';
+import { loadUserAndRoute } from './thunks/auth.thunk';
 import { loadEthereumProvider, loadWeb3 } from './store/ethereum/actions'
 import { ThunkDispatch } from 'redux-thunk';
 import Web3 from 'web3'
+import 'semantic-ui-css/semantic.min.css'
 
 declare global {
 	interface Window { 

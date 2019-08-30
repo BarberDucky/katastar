@@ -10,6 +10,24 @@ import bind from 'bind-decorator';
 import { readConversationFromId, createConversation } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
 import { Message } from '../../../models/conversation.model';
+import { Loader, Input, Button } from 'semantic-ui-react';
+import styled from 'styled-components';
+
+const Segment = styled.div`
+	height: 100%;
+	width: 100%;
+	border-radius: 2px;
+	border: lightgray 0.5px solid;
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`
+
+const Form = styled.form`
+	flex-shrink: 2;
+`
 
 interface StateProps {
 	router: RouterState
@@ -76,7 +94,7 @@ class NewConversation extends Component<Props, State> {
 	}
 
 	@bind
-	private sendMessage(reactEvent: FormEvent<HTMLFormElement>) {
+	private async sendMessage(reactEvent: FormEvent<HTMLFormElement>) {
 		const event = reactEvent.nativeEvent as Event
 		event.preventDefault()
 		const target = event.target as HTMLFormElement
@@ -88,30 +106,28 @@ class NewConversation extends Component<Props, State> {
       content: obj.sentMessage
     }
 
-    createConversation(message)
+		await createConversation(message)
+		this.props.push(`/main/messages/${message.toUser}`)
 	}
 
 	render() {
 		return (
-			<div>
+			<Segment>
+				<h3>Begin the conversation with a message</h3>
 				{
 					this.state.isLoading ? (
-						'Loading...'
+						<Loader active />
 					) : (
-							<div>
-								{
-									<form onSubmit={ev => this.sendMessage(ev)}>
-                    <input
-                      name="sentMessage"
-                      placeholder="Type message..."
-                    />
-                    <button> --> </button>
-                  </form>
-								}
-							</div>
+						<Form onSubmit={ev => this.sendMessage(ev)}>
+							<Input
+								name="sentMessage"
+								placeholder="Type message..."
+							/>
+							<Button circular primary icon="paper plane outline" />
+						</Form>
 						)
 				}
-			</div>
+			</Segment>
 		)
 	}
 }

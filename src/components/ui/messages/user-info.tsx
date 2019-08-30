@@ -5,141 +5,169 @@ import { AppState } from '../../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import { match } from 'react-router';
-import { sleep } from '../../../helper';
 import bind from 'bind-decorator';
+import { Loader, Button } from 'semantic-ui-react';
+import User from '../../../models/user.model';
+import { readUser } from '../../../services/user.service';
+import styled from 'styled-components';
 
-interface UserDetails {
-    userId: string
-    firstName: string
-    lastName: string
-    parcels: string[]
-}
+const Wrapper = styled.div`
+	height: 100%;
+	width: 40%;
+`
+
+const UserName = styled.div`
+	&:hover {
+		cursor: pointer;
+	}
+`
+
+const InfoAndButton = styled.div`
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 2em;
+`
+
+const InfoAndParcel = styled.div`
+	flex-grow: 2;
+`
+
+const ParcelId = styled.div`
+	&:hover {
+		cursor: pointer;
+	}
+`
 
 interface StateProps {
-    router: RouterState
+	router: RouterState
 }
 
 interface DispatchProps {
-    push: Push
+	push: Push
 }
 
 interface ParamProps {
-    userId: string
+	userId: string
 }
 
 interface OwnProps {
-    match: match<ParamProps>
+	match: match<ParamProps>
 }
 
 type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
-    isLoading: boolean,
-    results?: UserDetails
+	isLoading: boolean,
+	results?: User
 }
 
 class UserInfo extends Component<Props, State> {
 
-    state: State = {
-        isLoading: true,
-        results: undefined
-    }
+	state: State = {
+		isLoading: true,
+		results: undefined
+	}
 
-    _isMounted = false
+	_isMounted = false
 
-    public async componentDidMount() {
-        this._isMounted = true
-        this.onRouteChange()
-    }
+	public async componentDidMount() {
+		this._isMounted = true
+		this.onRouteChange()
+	}
 
-    public componentDidUpdate(oldProps: Props) {
-        if (oldProps.router.location.pathname !== this.props.router.location.pathname) {
-            this.onRouteChange()
-        }
-    }
+	public componentDidUpdate(oldProps: Props) {
+		if (oldProps.router.location.pathname !== this.props.router.location.pathname) {
+			this.onRouteChange()
+		}
+	}
 
-    public componentWillUnmount() {
-        this._isMounted = false
-    }
+	public componentWillUnmount() {
+		this._isMounted = false
+	}
 
-    private async onRouteChange() {
-        this.setState({isLoading: true})
-        await sleep(1000)
+	private async onRouteChange() {
+		this.setState({ isLoading: true })
 
-        const results: UserDetails = {
-            userId: '1',
-            firstName: 'Bosko',
-            lastName: 'Milojkovic',
-            parcels: ['1', '2', '3']
-        }
-        if (this._isMounted)
-            this.setState({results, isLoading: false})
-    }
+		const results: User = await readUser(this.props.match.params.userId)
 
-    @bind 
-    private selectParcel (parcelId: string) {
-        this.props.push(`/parcels/${parcelId}`)
-    }
+		if (!results) {
+			this.props.push(`/main/messages`)
+			return
+		}
 
-    @bind 
-    private selectUser (userId: string) {
-        this.props.push(`/users/${userId}`)
-    }
+		if (this._isMounted)
+			this.setState({ results, isLoading: false })
+	}
 
-    render () {
-        return (
-            <div>
-                {
-                    this.state.isLoading ? (
-                        'Loading...'
-                    ) : this.state.results === undefined ? (
-                        'Select message to see user details.'
-                    ) : (
-                        <div>
-                            <div 
-                                onClick={() => this.selectUser(this.state.results ? this.state.results.userId : '')}
-                            > 
-                                <span>{this.state.results.firstName}</span>
-                                <span>{this.state.results.lastName}</span>
-                            </div>
-                            {
-                                this.state.results.parcels.length !== 0 ? (
-                                    <div>
-                                        {
-                                            this.state.results.parcels.map(result => {
-                                                return (
-                                                    <div 
-                                                        key={`userParcel${result}`}
-                                                        onClick={() => this.selectParcel(result)}       
-                                                    >
-                                                        <span>{result}</span>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                ) : (
-                                    'User has no parcels.'
-                                )
-                            }
-                        </div>
-                    )
-                }
-            </div>
-        )
-    }
+	@bind
+	private selectParcel(parcelId: string) {
+		this.props.push(`/main/parcels/${parcelId}`)
+	}
+
+	@bind
+	private selectUser(userId: string) {
+		this.props.push(`/users/${userId}`)
+	}
+
+	render() {
+		return (
+			<Wrapper>
+				{
+					this.state.isLoading ? (
+						<Loader active />
+					) : this.state.results === undefined ? (
+						'Select a message to see user details.'
+					) : (
+						<InfoAndButton>
+							<InfoAndParcel>
+								<UserName
+									onClick={() => this.selectUser(this.state.results ? this.state.results.address : '')}
+								>
+									<span>{`${this.state.results.firstName} ${this.state.results.lastName}`}</span>
+								</UserName>
+								{
+									this.state.results.parcels.length !== 0 ? (
+										<div>
+											Owned Parcels:
+											{
+												this.state.results.parcels.map(parcel => {
+													return (
+														<ParcelId
+															key={`userParcel${parcel.address}`}
+															onClick={() => this.selectParcel(parcel.address)}
+														>
+															<span>{parcel.address}</span>
+														</ParcelId>
+													)
+												})
+											}
+										</div>
+									) : (
+										'User has no parcels.'
+									)
+								}
+							</InfoAndParcel>
+							<Button secondary>Make a Deal</Button>
+						</InfoAndButton>
+					)
+				}
+			</Wrapper>
+		)
+	}
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
-    router: state.router,
+	router: state.router,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
-  bindActionCreators(
-    {
-      push,
-    },
-    dispatch,
-  )
+	bindActionCreators(
+		{
+			push,
+		},
+		dispatch,
+	)
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserInfo)

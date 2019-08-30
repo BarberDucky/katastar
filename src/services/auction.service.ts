@@ -10,7 +10,6 @@ export const createAuction = async (auction: Auction) => {
 
   // remove parcel token from user
   await firebase.database().ref('users/' + auction.owner + '/parcels/' + auction.parcel.address).remove()
-  console.log(createRes)
 }
 
 export const readAuction = async (auctionId: string) => {

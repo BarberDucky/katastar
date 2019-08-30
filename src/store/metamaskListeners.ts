@@ -4,6 +4,8 @@ import { readUser } from "../services/user.service";
 import { push } from "connected-react-router";
 import { Dispatch } from "redux";
 import { desiredNetwork } from "../config/keys";
+import firebase from '../config/firebase'
+import { LoadUserAction } from "./user/interfaces";
 
 type StoreGetState = () => AppState
 
@@ -22,10 +24,16 @@ export default function (dispatch: Dispatch, getState: StoreGetState ) {
             } else {
                 dispatch(push('/'))
             }
-            dispatch({
-                type: LOAD_USER,
-                payload: userFromDB
-            })
+            firebase.database().ref(`users`).off('value')
+            firebase.database().ref(`users/${userFromDB.address}`).on('value',
+				snapshot => {
+					const action: LoadUserAction = {
+						type: LOAD_USER,
+						payload: snapshot.val()
+					}
+					dispatch(action)
+				}
+			)
         }
     })
 

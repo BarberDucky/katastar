@@ -8,18 +8,22 @@ import User from '../models/user.model';
 import addMetamaskListeners from './metamaskListeners'
 import EthereumWeb3 from '../models/ethereumWeb3.model';
 import { reducer as formReducer } from 'redux-form'
+import { conversatinReducer } from './current-conversation/reducers';
+import Conversation from '../models/conversation.model';
 
 export const rootReducer = (history: History) => combineReducers({
     router: connectRouter(history),
     form: formReducer,
     user: userReducer,
-    ethereumWeb3: ethereumReducer
+    ethereumWeb3: ethereumReducer,
+    currentConversation: conversatinReducer,
 })
 
 export type AppState = {
     router: RouterState,
-    user: User,
+    user: User
     ethereumWeb3: EthereumWeb3
+    currentConversation: Conversation
 }
 export const history = createBrowserHistory()
 

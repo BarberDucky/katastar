@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 const HeaderContainer = styled.div`
     width: 100%;
@@ -24,7 +24,7 @@ const Menu = styled.div`
     display: flex;
 `
 
-const MenuItem = styled(Link)`
+const MenuItem = styled(NavLink)`
     height: 100%;
     width: 6em;
     padding: 0 10px 0 10px;

@@ -79,5 +79,5 @@ export const readConversationFromId = async (currentUser: string, targetUser: st
 
 export const pushMessage = async (message: Message, conversationId: string) => {
   await firebase.database().ref(`conversations/${conversationId}/messages`).push(message)
-  await firebase.database().ref(`users/${message.toUser}/conversations/${conversationId}/isRead`).set(false)
+  await firebase.database().ref(`users/${message.toUser}/conversations/${message.fromUser}/isRead`).set(false)
 }

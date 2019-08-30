@@ -9,15 +9,62 @@ import { formDataToJson } from '../../../helper';
 import bind from 'bind-decorator';
 import { readConversationFromId, pushMessage } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
-import { Message } from '../../../models/conversation.model';
+import Conversation, { Message } from '../../../models/conversation.model';
+import { Loader, Button, Icon, Input } from 'semantic-ui-react';
+import styled from 'styled-components';
+import { fetchConversation } from '../../../thunks/conversation.thunk';
+
+const Segment = styled.div`
+	height: 100%;
+	width: 100%;
+	border-radius: 2px;
+	border: lightgray 0.5px solid;
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+`
+
+const Chat = styled.div`
+	flex-grow: 2;
+	display: flex;
+	flex-direction: column;
+	overflow-y: scroll;
+	padding-bottom: 0.5em;
+	box-sizing: border-box;
+
+	> * + * {
+		margin-top: 0.5em;
+	}
+`
+
+const ChatEntry = styled.div`
+	border: lightgray 0.5px solid;
+	border-radius: 0.7em;
+	padding: 5px;
+	width: fit-content;
+	background-color: ${(props: ChatEntryProps) => props.isOwner ? "blue" : "white"};
+	color: ${(props: ChatEntryProps) => props.isOwner ? "white" : "black"};
+	align-self: ${(props: ChatEntryProps) => props.isOwner ? "flex-end" : "flex-start"};
+`
+
+interface ChatEntryProps {
+	isOwner: boolean
+}
+
+const Form = styled.form`
+	
+`
 
 interface StateProps {
 	router: RouterState
 	currentUser: User
+	currentConversation: Conversation
 }
 
 interface DispatchProps {
 	push: Push
+	fetchConversation: typeof fetchConversation
 }
 
 interface ParamProps {
@@ -36,7 +83,7 @@ interface State {
 	conversationId: string
 }
 
-class Chat extends Component<Props, State> {
+class ChatPage extends Component<Props, State> {
 
 	state: State = {
 		isLoading: true,
@@ -67,17 +114,15 @@ class Chat extends Component<Props, State> {
 			this.props.currentUser.address,
 			this.props.match.params.userId,
 		)
-		
-		let results: Message[] = []
-		let conversationId = ''
+
 		if (conversation) {
-			results = Object.values(conversation.messages)
-			conversationId = conversation.address
+			this.props.fetchConversation(
+				this.props.currentConversation.address,
+				conversation.address)
 		}
 
-
 		if (this._isMounted)
-			this.setState({ results, isLoading: false, conversationId })
+			this.setState({ isLoading: false})
 	}
 
 	@bind
@@ -92,53 +137,55 @@ class Chat extends Component<Props, State> {
 			toUser: this.props.match.params.userId,
 			...obj,
 		}
-		pushMessage(obj, this.state.conversationId)
+		pushMessage(obj, this.props.currentConversation.address)
 	}
 
 	render() {
 		return (
-			<div>
+			<Segment>
 				{
 					this.state.isLoading ? (
-						'Loading...'
+						<Loader active />
 					) : (
-							<div>
+							<Chat>
 								{
-									this.state.results.map((result, index) => {
+									this.props.currentConversation.messages.map((result, index) => {
 										return (
-											<div key={`chat${index}`}>
+											<ChatEntry key={`chat${index}`} isOwner={result.fromUser === this.props.currentUser.address}>
 												{result.content}
-											</div>
+											</ChatEntry>
 										)
 									})
 								}
-							</div>
+							</Chat>
 						)
 				}
 
-				<form onSubmit={ev => this.sendMessage(ev)}>
-					<input
+				<Form onSubmit={ev => this.sendMessage(ev)}>
+					<Input
 						name="content"
 						placeholder="Type message..."
 					/>
-					<button> --> </button>
-				</form>
-			</div>
+					<Button circular primary icon="paper plane outline" />
+				</Form>
+			</Segment>
 		)
 	}
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
 	router: state.router,
-	currentUser: state.user
+	currentUser: state.user,
+	currentConversation: state.currentConversation,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
 	bindActionCreators(
 		{
 			push,
+			fetchConversation,
 		},
 		dispatch,
 	)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat)
+export default connect(mapStateToProps, mapDispatchToProps)(ChatPage)

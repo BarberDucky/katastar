@@ -4,7 +4,7 @@ import { loadUser } from '../../store/user/actions';
 import User from '../../models/user.model';
 import { connect } from 'react-redux';
 import { enableEthereum } from '../../services/ethereum.service';
-import { loadUserAndRoute } from '../../thunks/auth';
+import { loadUserAndRoute } from '../../thunks/auth.thunk';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 
