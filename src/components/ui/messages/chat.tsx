@@ -10,7 +10,7 @@ import bind from 'bind-decorator';
 import { readConversationFromId, pushMessage } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
 import Conversation, { Message } from '../../../models/conversation.model';
-import { Loader, Button, Icon, Input } from 'semantic-ui-react';
+import { Loader, Button, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import { fetchConversation } from '../../../thunks/conversation.thunk';
 

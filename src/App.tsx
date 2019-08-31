@@ -14,6 +14,7 @@ import { loadEthereumProvider, loadWeb3 } from './store/ethereum/actions'
 import { ThunkDispatch } from 'redux-thunk';
 import Web3 from 'web3'
 import 'semantic-ui-css/semantic.min.css'
+import { Loader } from 'semantic-ui-react';
 
 declare global {
 	interface Window { 
@@ -52,6 +53,7 @@ class App extends Component<Props, State> {
 			return
 		}
 
+		window.ethereum.autoRefreshOnNetworkChange = false
 		let connectionResult = await enableEthereum(window.ethereum)
 
 		if (!connectionResult) {
@@ -77,7 +79,7 @@ class App extends Component<Props, State> {
 		)
 		
 		const loading = (
-			<span>Loading...</span>
+			<Loader active />
 		)
 
 		return (

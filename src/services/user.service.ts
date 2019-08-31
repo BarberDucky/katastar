@@ -17,11 +17,11 @@ export const readUser = async (metamaskAddress: string) => {
 }
 
 export const createUser = async (user: User) => {
-	const createRes = await firebase.database().ref('users/' + user.address).set(user)
+	await firebase.database().ref('users/' + user.address).set(user)
 }
 
 export const updateUser = async (user: User) => {
-	const updateRes = await firebase.database().ref('users/' + user.address).set(user)
+	await firebase.database().ref('users/' + user.address).set(user)
 }
 
 export const searchUsers = async (userFilter: Partial<UserFormData>) => {

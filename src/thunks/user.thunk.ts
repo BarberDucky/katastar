@@ -19,7 +19,6 @@ export const fetchUser = (userId: string) => async (dispatch: Dispatch) => {
         payload: user
       }
 
-      console.log('payload', action.payload)
       dispatch(action)
     }
   )

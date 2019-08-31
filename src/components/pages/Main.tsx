@@ -11,6 +11,7 @@ import Messages from '../ui/messages';
 import PersonalInfo from '../ui/personal-info';
 import ParcelPage from '../ui/parcel'
 import AuctionPage from '../ui/auction'
+import DealPage from '../ui/deal'
 import style from 'styled-components'
 
 const Wrapper = style.div`
@@ -40,6 +41,7 @@ class Main extends Component<MainProps> {
                     <Route path="/main/users/:userId" component={PersonalInfo}></Route>
                     <Route path="/main/parcels/:parcelId" component={ParcelPage}></Route>
                     <Route path="/main/auctions/:auctionId" component={AuctionPage}></Route>
+                    <Route path="/main/deals/:dealId" component={DealPage} ></Route>
                     <Redirect to="/main/explorer/parcels"></Redirect>
                 </Switch>
             </Wrapper>

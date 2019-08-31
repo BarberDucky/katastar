@@ -1,24 +1,44 @@
-import React, { Component, FormEvent } from 'react'
+import React, { Component } from 'react'
 import { RouterState, Push, push } from 'connected-react-router';
 import { match } from 'react-router';
 import { MapStateToProps, connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';
-import { submitBid } from '../../../services/auction.service';
 import User from '../../../models/user.model';
-import { formDataToJson } from '../../../helper';
-import Deal from '../../../models/deal.model';
+import Deal, { Asset } from '../../../models/deal.model';
 import { readDeal } from '../../../services/deal.service';
+import { fetchDeal } from '../../../thunks/deal.thunk';
+import { Loader } from 'semantic-ui-react';
+import ParcelSelector from './parcel-selector';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+`
+
+const SelectorsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+
+  > * + * {
+    margin-left: 3em;
+  }
+`
 
 interface StateProps {
   router: RouterState
   user: User
+  currentDeal: Deal
 }
 
 interface DispatchProps {
   push: Push
+  fetchDeal: typeof fetchDeal
 }
 
 interface ParamProps {
@@ -33,14 +53,12 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
   isLoading: boolean
-  results?: Deal
 }
 
 class DealPage extends Component<Props, State> {
   _isMounted = false
   state: State = {
     isLoading: true,
-    results: undefined,
   }
 
   public componentDidMount() {
@@ -53,62 +71,44 @@ class DealPage extends Component<Props, State> {
   }
 
   private async onRouteChange() {
-    this.setState({isLoading: true})
-    const deal = await readDeal(this.props.match.params.dealId, this.props.user.address)
-
-    if (!deal) {
-      this.props.push(`/main/users/${this.props.user.address}/deals`)
-      return
+    this.setState({ isLoading: true })
+    const deal = await readDeal(
+      this.props.match.params.dealId,
+      this.props.user.address,
+    )
+    if (deal) {
+      this.props.fetchDeal(
+        this.props.currentDeal.address,
+        deal.address,
+        this.props.user.address)
     }
 
-    if (this._isMounted) {
-      this.setState({
-        isLoading: false,
-        results: deal,
-      })
-    }
+    if (this._isMounted)
+      this.setState({ isLoading: false })
   }
 
-  @bind
-  private selectOwner(ownerId: string) {
-    this.props.push(`/main/users/${ownerId}`)
-  }
+  render() {
+    const deal = this.props.currentDeal
+    const userId = this.props.user.address
 
-  @bind
-  private selectParcel(parcelId: string) {
-    this.props.push(`/main/parcels/${parcelId}`)
-  }
+    const userAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user1Asset : deal.user2Asset
+    const otherAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user2Asset : deal.user1Asset
 
-  @bind
-  private async submitBid (reactEvent: FormEvent<HTMLFormElement>) {
-    const event = reactEvent.nativeEvent as Event
-    event.preventDefault()
-    const target = event.target as HTMLFormElement
-    const formData = new FormData(target)
-    let obj = formDataToJson<any>(formData)
-    if (this.state.results)
-      await submitBid(this.state.results.address, obj.bid)
-  }
-
-  render () {
-    const deal = this.state.results
     return (
-      <div>
+      <Wrapper>
         {
           this.state.isLoading ? (
-            'Loading...'
-          ) : !deal ? (
+            <Loader active />
+          ) : !deal.address ? (
             'Error loading deal.'
           ) : (
-            <div>
-
-              <span>{deal.isConfirmed}</span>
-              <span>{deal.isWithdrawn}</span>
-
-            </div>
+              <SelectorsWrapper>
+                <ParcelSelector assets={userAsset} isOwner={true} />
+                <ParcelSelector assets={otherAsset} isOwner={false} />
+              </SelectorsWrapper>
           )
         }
-      </div>
+      </Wrapper>
     )
   }
 
@@ -117,12 +117,14 @@ class DealPage extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
   user: state.user,
+  currentDeal: state.currentDeal
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
   bindActionCreators(
     {
       push,
+      fetchDeal,
     },
     dispatch,
   )

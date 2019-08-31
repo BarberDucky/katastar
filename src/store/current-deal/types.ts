@@ -1,0 +1,1 @@
+export const LOAD_DEAL = 'LOAD_DEAL'

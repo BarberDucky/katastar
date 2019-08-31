@@ -10,6 +10,8 @@ import { Loader, Button } from 'semantic-ui-react';
 import User from '../../../models/user.model';
 import { readUser } from '../../../services/user.service';
 import styled from 'styled-components';
+import { createDeal } from '../../../services/deal.service';
+import Deal from '../../../models/deal.model';
 
 const Wrapper = styled.div`
 	height: 100%;
@@ -42,6 +44,7 @@ const ParcelId = styled.div`
 
 interface StateProps {
 	router: RouterState
+	user: User
 }
 
 interface DispatchProps {
@@ -111,6 +114,32 @@ class UserInfo extends Component<Props, State> {
 		this.props.push(`/users/${userId}`)
 	}
 
+	@bind
+	private async makeADeal() {
+		const deal: Deal = {
+			address: '',
+			isConfirmed: false,
+			isWithdrawn: false,
+			isCompleted: false,
+			user1Asset: {
+				userAddress:	this.props.user.address,
+				isConfirmed: false,
+				isPayed: false,
+				eth: 0,
+				parcels: [],
+			},
+			user2Asset: {
+				userAddress:	this.props.match.params.userId,
+				isConfirmed: false,
+				isPayed: false,
+				eth: 0,
+				parcels: [],
+			},
+		}
+		const dealId = await createDeal(deal)
+		this.props.push(`/main/deals/${dealId}`)
+	}
+
 	render() {
 		return (
 			<Wrapper>
@@ -149,7 +178,7 @@ class UserInfo extends Component<Props, State> {
 									)
 								}
 							</InfoAndParcel>
-							<Button secondary>Make a Deal</Button>
+							<Button secondary onClick={() => this.makeADeal()}>Make a Deal</Button>
 						</InfoAndButton>
 					)
 				}
@@ -160,6 +189,7 @@ class UserInfo extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
 	router: state.router,
+	user: state.user,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

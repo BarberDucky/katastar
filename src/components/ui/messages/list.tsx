@@ -12,10 +12,6 @@ const Wrapper = styled.div`
 	
 `
 
-const Title = styled.h2`
-	margin: 0;
-`
-
 interface StateProps {
 	router: RouterState
 	user: User
@@ -58,7 +54,6 @@ class MessagesList extends Component<Props, State> {
 	private onRouteChange() {
 		this.setState({ isLoading: true })
 		const results = Object.values(this.props.user.conversations)
-		console.log('list results', this.props.user)
 		if (this._isMounted)
 			this.setState({ results, isLoading: false })
 	}

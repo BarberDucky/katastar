@@ -6,7 +6,7 @@ import { AuctionFormData } from "../components/ui/explorer/explorer-entities/auc
 export const createAuction = async (auction: Auction) => {
   //TODO put auction on blockchain
   auction.address = Date.now().toString()
-  const createRes = await firebase.database().ref('users/' + auction.owner + '/auctions/' + auction.address).set(auction)
+  await firebase.database().ref('users/' + auction.owner + '/auctions/' + auction.address).set(auction)
 
   // remove parcel token from user
   await firebase.database().ref('users/' + auction.owner + '/parcels/' + auction.parcel.address).remove()

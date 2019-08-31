@@ -10,10 +10,9 @@ const initialState: Conversation = {
     address: '',
 }
 
-export function conversatinReducer(state = initialState, action: ConversationActionTypes): Conversation {
+export function conversationReducer(state = initialState, action: ConversationActionTypes): Conversation {
     switch (action.type) {
         case LOAD_CONVERSATION: {
-            console.log('conversation payload', action.payload)
             return action.payload
         }
         default: {

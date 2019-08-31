@@ -36,6 +36,11 @@ class DealsList extends Component<Props, State> {
   }
 
   @bind
+  private openDetails(deal: Deal) {
+    this.props.push(`/main/deals/${deal.address}`)
+  }
+
+  @bind
   private withdrawDeal(deal: Deal) {
     withdrawDeal(deal)
   }
@@ -63,15 +68,20 @@ class DealsList extends Component<Props, State> {
                 <tbody>
                   {
                     this.props.deals.map(deal => {
+                      deal.user1Asset.parcels = deal.user1Asset.parcels ? Object.values(deal.user1Asset.parcels) : []
+                      deal.user2Asset.parcels = deal.user2Asset.parcels ? Object.values(deal.user2Asset.parcels) : []
+
                       return (
-                        <tr key={`userInheritance${deal.address}`}>
+                        <tr key={`userDeals${deal.address}`}
+                          onClick={() => this.openDetails(deal)}
+                        >
                           <td>{deal.address}</td>
                           <td>{deal.user1Asset.userAddress}</td>
                           <td>{deal.user1Asset.eth}</td>
                           <td>{deal.user1Asset.parcels.length}</td>
                           <td>{deal.user2Asset.userAddress}</td>
                           <td>{deal.user2Asset.eth}</td>
-                          <td>{deal.user2Asset.parcels.lastIndexOf}</td>
+                          <td>{deal.user2Asset.parcels.length}</td>
                           <td><button onClick={() => this.withdrawDeal(deal)}>Withdraw</button></td>
                         </tr>
                       )
