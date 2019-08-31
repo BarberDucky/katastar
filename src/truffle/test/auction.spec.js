@@ -59,8 +59,7 @@ contract('Testing auction contract', function (accounts) {
 
     const userBalanceAfter = await web3.eth.getBalance(accounts[0])
     const isOver = await auction.isOver()
-
-    assert.equal(userBalanceBefore.toString() - cost.toString(), userBalanceAfter - 10)
+    assert.equal(Number(userBalanceBefore) - Number(cost) + 10, Number(userBalanceAfter))
     assert.equal(isOver, true)
   })
 
