@@ -32,10 +32,14 @@ contract Auction is IERC721Receiver {
     function getHighestBid() public view returns (uint256) {
         return _highestBid;
     }
+
+    function getParcelId() public view returns (uint256) {
+        return _parcelId;
+    }
     
-    function bid(uint256 amount) public payable {
+    function bid() public payable {
         require (now < _deadline, "Auction: auction has ended");
-        require (_highestBid < amount, "Auction: bid is too low");
+        require (_highestBid < msg.value, "Auction: bid is too low");
         require (msg.sender != _owner, "Auction: owner can't bid");
         
         if (_highestBid != 0) {
