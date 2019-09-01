@@ -1,6 +1,7 @@
 const ParcelToken = artifacts.require("ParcelToken")
 const Inheritance = artifacts.require("Inheritance")
 const InheritanceFactory = artifacts.require("InheritanceFactory")
+const helper = require("./helpers/truffleTestHelper")
 
 contract('Testing Inheritance contract', function (accounts) {
 
@@ -18,17 +19,18 @@ contract('Testing Inheritance contract', function (accounts) {
     tokenId = await token.tokenOfOwnerByIndex(accounts[0], 0)
 
     await token.approve(factory.address, tokenId)
-  })
 
-  it('should withdraw token to sender', async () => {
     await factory.createInheritance(
       tokenId,
       accounts[1],
-      2 * 24 * 60 * 60 // 2 days
+      200 // 200 secs
     )
 
     inheritanceAddress = await factory.getInheritanceByParcelId(tokenId);
     inheritance = await Inheritance.at(inheritanceAddress)
+  })
+
+  it('should withdraw token to sender', async () => {
 
     let isParcelFree = await factory.isParcelFree(tokenId)
     assert.equal(isParcelFree, false)
@@ -49,17 +51,12 @@ contract('Testing Inheritance contract', function (accounts) {
   })
 
   it('should withdraw token to receiver', async () => {
-    await factory.createInheritance(
-      tokenId,
-      accounts[1],
-      0 // 0 sec
-    )
 
-    inheritanceAddress = await factory.getInheritanceByParcelId(tokenId);
-    inheritance = await Inheritance.at(inheritanceAddress)
     
     let isParcelFree = await factory.isParcelFree(tokenId)
     assert.equal(isParcelFree, false)
+
+    await helper.advanceTime(300) 
 
     await inheritance.withdraw({from: accounts[1]})
 
