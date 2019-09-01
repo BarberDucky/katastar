@@ -46,7 +46,7 @@ contract Deal is IERC721Receiver {
         return (userRequests[user].eth, userRequests[user].parcel);
     }
 
-    function getuserReceives(address user) public view returns (uint256, uint256) {
+    function getUserReceives(address user) public view returns (uint256, uint256) {
         require (user == user1 || user == user2, "Deal: user isn't part of the deal");
         return (userReceives[user].eth, userReceives[user].parcel);
     }
@@ -81,6 +81,8 @@ contract Deal is IERC721Receiver {
                 token.safeTransferFrom(address(this), msg.sender, userReceives[other].parcel);
             if (userReceives[other].eth != 0) 
                 msg.sender.transfer(userReceives[other].eth);
+            userReceives[other].eth = 0;
+            userReceives[other].parcel = 0;
         } 
     }
     
@@ -88,7 +90,7 @@ contract Deal is IERC721Receiver {
         require (!isSettled(), "Deal: deal already settled");
         address other = msg.sender == user1 ? user2 : user1;
         
-        require (userReceives[other].eth != 0 , "Deal: eth already payed");
+        require (userReceives[other].eth == 0 , "Deal: eth already payed");
         require (msg.value == userRequests[other].eth, "Deal: please pay the requested amount");
         
         userReceives[other].eth = msg.value;
@@ -99,7 +101,7 @@ contract Deal is IERC721Receiver {
         require (!isSettled(), "Deal: deal already settled");
         require (from == user1 || from == user2, "Deal: user isn't part of the deal");
         
-        address other = msg.sender == user1 ? user2 : user1;
+        address other = from == user1 ? user2 : user1;
         require (userRequests[other].parcel == tokenId, "Deal: received unrequested parcel");
         
         userReceives[other].parcel = tokenId;
