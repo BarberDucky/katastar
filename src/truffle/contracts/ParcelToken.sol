@@ -9,10 +9,19 @@ contract ParcelToken is ERC721Full {
 
     constructor () ERC721Full("Parcel Token", "PAT") public {}
 
+    function getTokenIds() public view returns (uint256) {
+        return tokenIds.current();
+    }
+
     function mintToken(address owner) public {
         tokenIds.increment();
 
         uint256 newTokenId = tokenIds.current();
         _mint(owner, newTokenId);
+    }
+
+    function burnToken(uint256 tokenId) public {
+        tokenIds.decrement();
+        _burn(tokenId);
     }
 }
