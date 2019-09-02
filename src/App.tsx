@@ -67,7 +67,9 @@ class App extends Component<Props, State> {
 		
 		//const web3Provider = new Web3(this.props.ethereum)
 		
-		this.props.loadWeb3(window.web3)
+		const web3 = new Web3(window.web3.currentProvider)
+
+		this.props.loadWeb3(web3)
 
 		this.setState({isLoaded: true})
 	}

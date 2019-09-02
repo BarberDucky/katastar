@@ -5,6 +5,7 @@ import Register from '../components/pages/Register';
 import InstallMetamask from '../components/pages/InstallMetamask';
 import WrongNetwork from '../components/pages/WrongNetwork';
 import ConfirmConnection from '../components/pages/ConfirmConnection';
+import AdminPage from '../components/pages/AdminPage';
 
 class Routes extends Component {
     render() {
@@ -16,6 +17,7 @@ class Routes extends Component {
                 <Route path="/install-metamask" component={InstallMetamask} />
                 <Route path="/wrong-network" component={WrongNetwork} />
                 <Route path="/no-connection" component={ConfirmConnection} />
+                <Route path="/admin" component={AdminPage} />
             </Switch>
         )
     }
