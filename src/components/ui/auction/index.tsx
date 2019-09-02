@@ -99,7 +99,7 @@ class AuctionPage extends Component<Props, State> {
           ) : (
             <div>
               <span>{auction.address}</span>
-              <span>{auction.deadline}</span>
+              <span>{auction.duration}</span>
               <span>{auction.isDone}</span>
               <span>{auction.startingPrice}</span>
               <span onClick={() => this.selectOwner(auction.owner)}>{auction.owner}</span>

@@ -172,7 +172,7 @@ class AuctionPageComponent extends Component<Props, State> {
 														<Table.Row key={result.address} onClick={() => this.openDetails(result)}>
 															<Table.Cell>{result.address}</Table.Cell>
 															<Table.Cell>{result.owner}</Table.Cell>
-															<Table.Cell>{result.deadline}</Table.Cell>
+															<Table.Cell>{result.duration}</Table.Cell>
 															<Table.Cell>{result.parcel.address}</Table.Cell>
 															<Table.Cell>{result.parcel.region}</Table.Cell>
 															<Table.Cell>{result.parcel.municipality}</Table.Cell>

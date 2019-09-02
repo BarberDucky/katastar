@@ -3,6 +3,7 @@ import { DealActionTypes } from "./interfaces";
 import { LOAD_DEAL } from "./types";
 
 const initialState: Deal = {
+    id: '',
     address: '',
     isWithdrawn: false,
     isConfirmed: false,
@@ -10,14 +11,14 @@ const initialState: Deal = {
     user1Asset: {
         userAddress: '',
         eth: 0,
-        parcels: [],
+        parcels: '',
         isConfirmed: false,
         isPayed: false
     },
     user2Asset: {
         userAddress: '',
         eth: 0,
-        parcels: [],
+        parcels: '',
         isConfirmed: false,
         isPayed: false
     },

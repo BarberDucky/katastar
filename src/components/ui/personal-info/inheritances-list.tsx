@@ -11,10 +11,12 @@ import User from '../../../models/user.model';
 import Inheritance from '../../../models/inheritance.model';
 import { createInheritance } from '../../../services/inheritance.service';
 import { searchUsers } from '../../../services/user.service';
+import Web3 from 'web3'
 
 interface StateProps {
   router: RouterState
   user: User
+  web3: Web3 | null
 }
 
 interface DispatchProps {
@@ -62,7 +64,11 @@ class InheritancesList extends Component<Props, State> {
       address: '',
       ...obj
     }
-    await createInheritance(obj)
+    if (this.props.web3) {
+      await createInheritance(obj, this.props.web3)
+    } else {
+      alert('no web3')
+    }
   }
 
   render() {
@@ -73,7 +79,7 @@ class InheritancesList extends Component<Props, State> {
             <div>
               <span>Create new Inheritance</span>
               <form onSubmit={this.handleSubmit}>
-                <input name="deadline" required />
+                <input name="duration" required />
                 <select name="parcel" required>
                   {
                     this.props.parcels.map(parcel => {
@@ -131,7 +137,7 @@ class InheritancesList extends Component<Props, State> {
                           <td>{inheritance.address}</td>
                           <td>{inheritance.from}</td>
                           <td>{inheritance.to}</td>
-                          <td>{inheritance.deadline}</td>
+                          <td>{inheritance.duration}</td>
                           <td>{inheritance.parcel}</td>
                         </tr>
                       )
@@ -149,7 +155,8 @@ class InheritancesList extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
-  user: state.user
+  user: state.user,
+  web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

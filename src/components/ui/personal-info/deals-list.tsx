@@ -37,7 +37,7 @@ class DealsList extends Component<Props, State> {
 
   @bind
   private openDetails(deal: Deal) {
-    this.props.push(`/main/deals/${deal.address}`)
+    this.props.push(`/main/deals/${deal.id}`)
   }
 
   @bind
@@ -68,9 +68,6 @@ class DealsList extends Component<Props, State> {
                 <tbody>
                   {
                     this.props.deals.map(deal => {
-                      deal.user1Asset.parcels = deal.user1Asset.parcels ? Object.values(deal.user1Asset.parcels) : []
-                      deal.user2Asset.parcels = deal.user2Asset.parcels ? Object.values(deal.user2Asset.parcels) : []
-
                       return (
                         <tr key={`userDeals${deal.address}`}
                           onClick={() => this.openDetails(deal)}

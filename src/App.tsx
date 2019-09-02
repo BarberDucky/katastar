@@ -60,6 +60,8 @@ class App extends Component<Props, State> {
 			this.props.push('/no-connection')
 			return
 		}
+
+		const web3 = new Web3(window.web3.currentProvider)
 		
 		await this.props.loadUserAndRoute(this.props.router.location.pathname)
 
@@ -67,7 +69,6 @@ class App extends Component<Props, State> {
 		
 		//const web3Provider = new Web3(this.props.ethereum)
 		
-		const web3 = new Web3(window.web3.currentProvider)
 
 		this.props.loadWeb3(web3)
 

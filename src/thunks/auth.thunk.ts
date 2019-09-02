@@ -15,7 +15,9 @@ export function loadUserAndRoute(currentRoute: string) {
 			return
 		}
 
-		if (!userFromDB) {
+		console.log(userFromDB)
+
+		if (!userFromDB || !userFromDB.address) {
 			dispatch(push('/register'))
 		} else {
 

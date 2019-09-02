@@ -12,6 +12,13 @@ export const readParcel = async (parcelId: string) => {
   return parcel
 }
 
+export const readParcelsFromChain = async (web3: Web3) => {
+  const parcelToken = ParcelTokenContract(web3)
+  const tokenNumber = await parcelToken.methods.getTokenIds().call()
+  
+  return tokenNumber
+}
+
 export const searchParcels = async (parcelFilter: ParcelFormData) => {
   const parcelValue = await firebase.database().ref('parcels/').once('value')
   const result = parcelValue.val()
@@ -38,7 +45,7 @@ export const createParcel = async (parcel: Parcel, web3: Web3, userId: string, a
   const owner = await parcelToken.methods.ownerOf(tokenId).call()
 
   parcel.address = tokenId
-  parcel.owner = owner
+  parcel.owner = userId
 
   await firebase.database().ref(`parcels/${tokenId}`).set(parcel)
   await firebase.database().ref(`users/${userId}/parcels/${tokenId}`).set(parcel)

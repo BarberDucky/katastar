@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, SyntheticEvent, SelectHTMLAttributes, ChangeEvent } from 'react'
 import styled from 'styled-components';
 import { Input, Button, Checkbox } from 'semantic-ui-react';
 import User from '../../../models/user.model';
@@ -7,6 +7,10 @@ import { MapStateToProps, connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
+import bind from 'bind-decorator';
+import Parcel from '../../../models/parcel.model';
+import { updateDeal, putDealOnChain } from '../../../services/deal.service';
+import Web3 from 'web3'
 
 
 const Wrapper = styled.div`
@@ -51,6 +55,7 @@ const Buttons = styled.div`
 interface StateProps {
   user: User
   currentDeal: Deal
+  web3: Web3 | null
 }
 
 interface DispatchProps {
@@ -77,63 +82,104 @@ class ParcelSelector extends Component<Props, State> {
       this.props.currentDeal.user2Asset.isConfirmed
   }
 
+  @bind
+  async selectParcel(parcel: Parcel) {
+    let newDeal = this.props.currentDeal
+    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+      newDeal.user1Asset.parcels = parcel.address
+    } else {
+      newDeal.user2Asset.parcels = parcel.address
+    }
+    await updateDeal(newDeal)
+  }
+
+  @bind
+  async deselectParcel() {
+    let newDeal = this.props.currentDeal
+    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+      newDeal.user1Asset.parcels = ''
+    } else {
+      newDeal.user2Asset.parcels = ''
+    }
+    await updateDeal(newDeal)
+  }
+
+  @bind 
+  async checkDeal() {
+    let newDeal = this.props.currentDeal
+    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+      newDeal.user1Asset.isConfirmed = !newDeal.user1Asset.isConfirmed
+    } else {
+      newDeal.user2Asset.isConfirmed = !newDeal.user2Asset.isConfirmed
+    }
+    await updateDeal(newDeal)
+  }
+
+  @bind 
+  async changeEthereum(ev: ChangeEvent<HTMLInputElement>) {
+    const value = ev.target.value
+    let newDeal = this.props.currentDeal
+    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+      newDeal.user1Asset.eth = +value
+    } else {
+      newDeal.user2Asset.eth = +value
+    }
+    await updateDeal(newDeal)
+  }
+
+  @bind
+  async confirmDeal() {
+    if (this.props.web3) {
+      await putDealOnChain(
+        this.props.currentDeal, 
+        this.props.web3,
+        this.props.user.address,
+        )
+    } else {
+      alert('no web3')
+    }
+  }
 
   render() {
-    const assetParcels = this.props.assets.parcels ? Object.values(this.props.assets.parcels) : []
+    const assetParcel = this.props.assets.parcels
     let userParcels = this.props.user.parcels
-    userParcels = userParcels ? Object.values(userParcels) : [] 
+    userParcels = userParcels ? Object.values(userParcels) : []
     return (
       <Wrapper>
-        <Parcels>
-          <span>Choose parcels:</span>
-          <ParcelsList>
-            { 
-              assetParcels.map(assetParcel => {
-                return (
-                  <ParcelItem key={`parcelItem${assetParcel}`}>
-                    <span>{assetParcel}</span>
-                    {
-                      this.props.isOwner && !this.isConfirmed() ? (
-                        <Buttons>
-                          <Button icon="plus"/>
-                          <Button icon="delete"/>
-                        </Buttons>
-                      ) : ('')
-                    }
-                  </ParcelItem>
-                )
-              })
-            }
-            {
-              this.props.isOwner && !this.isConfirmed() ? (
-                <form>
-                  <select>
-                    {
-                      userParcels
-                        .filter(parcel => assetParcels.indexOf(parcel.address) !== -1)
-                        .map(parcel => {
-                          return (
-                            <option
-                              key={`userParcelOptions${parcel.address}`}
-                              value={parcel.address}
-                            >
-                              {parcel.address}
-                            </option>
-                          )
-                        })
-                    }
-                  </select>
-                  <button>+</button>
-                </form>
-              ) : ('')
-            }
-          </ParcelsList>
-        </Parcels>
+        {
+          this.props.isOwner && !this.isConfirmed() ? (
+          <Parcels>
+            <span>Choose parcels:</span>
+            <ParcelsList>
+              { 
+                userParcels.map(parcel => {
+                  return (
+                    <ParcelItem 
+                      key={`parcelItem${parcel}`}
+                      onClick={() => this.selectParcel(parcel)}
+                    >
+                      <span>{parcel.address}</span>
+                      
+                    </ParcelItem>
+                  )
+                })
+              }
+              <button onClick={() => this.deselectParcel()}>Clear</button>
+            </ParcelsList>
+          </Parcels> 
+          ) : ('') 
+        }
+        <span>Chosen parcel: {assetParcel}</span>
         <Ethereum>
           <span>Choose ethereum amount:</span>
           {
             this.props.isOwner && !this.isConfirmed() ? (
-              <Input placeholder="eg. 3" defaultValue={this.props.assets.eth}/>
+              <Input 
+                type="number"
+                placeholder="eg. 3" 
+                value={this.props.assets.eth}
+                onChange={(ev) => this.changeEthereum(ev)}
+              />
             ) : (
               <span>{this.props.assets.eth}</span>
             )
@@ -141,7 +187,8 @@ class ParcelSelector extends Component<Props, State> {
         </Ethereum>
         <Confirms>
           <Checkbox 
-            checked={this.props.assets.isConfirmed} 
+            checked={this.props.assets.isConfirmed}
+            onChange={() => this.checkDeal()}
             label="Confirm action" 
             disabled={
               this.props.currentDeal.isConfirmed ||
@@ -170,7 +217,7 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.user1Asset.isConfirmed &&
             this.props.currentDeal.user2Asset.isConfirmed &&
             !this.props.currentDeal.isConfirmed ? (
-              <Button>Confirm</Button>
+              <Button onClick={() => this.confirmDeal()}>Confirm</Button>
             ) : ('')
           }
         </Confirms>
@@ -181,7 +228,8 @@ class ParcelSelector extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   user: state.user,
-  currentDeal: state.currentDeal
+  currentDeal: state.currentDeal,
+  web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

@@ -3,5 +3,5 @@ export default interface Inheritance {
   from: string
   to: string
   parcel: string
-  deadline: string
+  duration: string
 }

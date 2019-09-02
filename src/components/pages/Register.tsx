@@ -4,11 +4,13 @@ import User from '../../models/user.model';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 import { loadUser } from '../../store/user/actions';
+import Web3 from 'web3'
 
 interface RegisterProps {
-	push: typeof push,
-	loadUser: typeof loadUser,
-	user: User
+	push: typeof push
+	loadUser: typeof loadUser
+    user: User
+    web3: Web3
 }
 
 class Register extends Component<RegisterProps> {

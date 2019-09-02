@@ -2033,12 +2033,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x092F3e84d8ca999aC4C0e347C700bC4107e441a2",
-      "transactionHash": "0x150d5842f655673338e7f8e156e5effd432f1cd97c1a474b497fc10572aeb82c"
+      "address": "0x6e632d1aB88a301863e15C9011804cF9685935D7",
+      "transactionHash": "0x429d4ab858c315b2c8af104e85321874e811c929d734d1ba8ce85e1a1c2e28c0"
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-09-02T06:52:43.894Z",
+  "updatedAt": "2019-09-02T17:23:32.318Z",
   "devdoc": {
     "methods": {
       "approve(address,uint256)": {

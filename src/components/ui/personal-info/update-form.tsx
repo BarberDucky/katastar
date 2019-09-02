@@ -33,7 +33,9 @@ class PersonalInfoUpdateForm extends Component<Props, State> {
 		const formData = new FormData(target)
 		const obj = formDataToJson<User>(formData)
 		obj.address = this.state.address
+
 		await updateUser(obj)
+		
 	}
 
 	render() {

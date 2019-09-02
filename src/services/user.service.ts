@@ -1,7 +1,7 @@
 import firebase from '../config/firebase'
 import User from '../models/user.model';
 import { UserFormData } from '../components/ui/explorer/explorer-entities/user';
-
+import Web3 from 'web3'
 
 export const readUser = async (metamaskAddress: string) => {
 	const userValue = await firebase.database().ref('users/' + metamaskAddress).once('value')
@@ -17,11 +17,32 @@ export const readUser = async (metamaskAddress: string) => {
 }
 
 export const createUser = async (user: User) => {
-	await firebase.database().ref('users/' + user.address).set(user)
+	const existingUserValue = await firebase.database().ref('users/' + user.address).once('value')
+	let existingUser: User = existingUserValue.val()
+
+	console.log(existingUser)
+	if (!existingUser) {
+		await firebase.database().ref('users/' + user.address).set(user)
+	} else {
+		await updateUser(user)
+	}
 }
 
 export const updateUser = async (user: User) => {
-	await firebase.database().ref('users/' + user.address).set(user)
+	const userValue = await firebase.database().ref('users/' + user.address).once('value')
+	let currentUser: User = userValue.val()
+
+	const {address, firstName, lastName, location} = user
+
+	currentUser = {
+		...currentUser,
+		address,
+		firstName,
+		lastName,
+		location,
+	}
+
+	await firebase.database().ref('users/' + user.address).set(currentUser)
 }
 
 export const searchUsers = async (userFilter: Partial<UserFormData>) => {
@@ -30,6 +51,7 @@ export const searchUsers = async (userFilter: Partial<UserFormData>) => {
 	const users: User[] = result ? Object.values(result) : []
 
 	return users
+		.filter(user => user.address)
 		.filter(user => {
 			return user.address.indexOf(userFilter.address || '') !== -1 &&
 				user.firstName.indexOf(userFilter.firstName || '') !== -1 &&

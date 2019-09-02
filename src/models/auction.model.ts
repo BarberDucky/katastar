@@ -6,5 +6,5 @@ export default interface Auction {
     parcel: Parcel
     startingPrice: number
     isDone: boolean
-    deadline: string
+    duration: number
 }

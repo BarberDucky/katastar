@@ -2,12 +2,29 @@ import Auction from "../models/auction.model";
 import firebase from '../config/firebase'
 import { sleep } from "../helper";
 import { AuctionFormData } from "../components/ui/explorer/explorer-entities/auction";
+import AuctionFactory from "./contracts/auctionFactory"
+import ParcelToken from "./contracts/parcelToken"
+import Web3 from 'web3'
+import { readParcel } from "./parcel.service";
 
-export const createAuction = async (auction: Auction) => {
-  //TODO put auction on blockchain
-  auction.address = Date.now().toString()
-  await firebase.database().ref('users/' + auction.owner + '/auctions/' + auction.address).set(auction)
+export const createAuction = async (auction: Auction, parcelId: string, web3: Web3) => {
+  const auctionFactory = AuctionFactory(web3)
+  const parcelToken = ParcelToken(web3)
+  
+  const parcel = await readParcel(parcelId)
+  
+  const owner = auction.owner
 
+  await parcelToken.methods.approve(auctionFactory.options.address, auction.parcel.address).send({from: owner})
+  await auctionFactory.methods.createAuction(auction.parcel.address, auction.startingPrice, auction.duration).send({from: owner})
+
+  const auctionId = await auctionFactory.methods.getAuctionByParcelId(auction.parcel).call()
+  
+  auction.parcel = parcel
+  auction.address = auctionId
+
+  await firebase.database().ref('users/' + owner + '/auctions/' + auction.address).set(auction)
+  await firebase.database().ref(`auctions/${auction.address}`).set(auction)
   // remove parcel token from user
   await firebase.database().ref('users/' + auction.owner + '/parcels/' + auction.parcel.address).remove()
 }

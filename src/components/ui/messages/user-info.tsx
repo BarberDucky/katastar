@@ -117,6 +117,7 @@ class UserInfo extends Component<Props, State> {
 	@bind
 	private async makeADeal() {
 		const deal: Deal = {
+			id: '',
 			address: '',
 			isConfirmed: false,
 			isWithdrawn: false,
@@ -126,14 +127,14 @@ class UserInfo extends Component<Props, State> {
 				isConfirmed: false,
 				isPayed: false,
 				eth: 0,
-				parcels: [],
+				parcels: '',
 			},
 			user2Asset: {
 				userAddress:	this.props.match.params.userId,
 				isConfirmed: false,
 				isPayed: false,
 				eth: 0,
-				parcels: [],
+				parcels: '',
 			},
 		}
 		const dealId = await createDeal(deal)

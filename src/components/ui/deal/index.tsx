@@ -78,8 +78,8 @@ class DealPage extends Component<Props, State> {
     )
     if (deal) {
       this.props.fetchDeal(
-        this.props.currentDeal.address,
-        deal.address,
+        this.props.currentDeal.id,
+        deal.id,
         this.props.user.address)
     }
 
@@ -93,6 +93,8 @@ class DealPage extends Component<Props, State> {
 
     const userAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user1Asset : deal.user2Asset
     const otherAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user2Asset : deal.user1Asset
+
+    console.log('ASSETS', userAsset, otherAsset)
 
     return (
       <Wrapper>
