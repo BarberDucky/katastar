@@ -76,6 +76,9 @@ class DealPage extends Component<Props, State> {
       this.props.match.params.dealId,
       this.props.user.address,
     )
+
+      console.log(deal)
+
     if (deal) {
       this.props.fetchDeal(
         this.props.currentDeal.id,
@@ -101,7 +104,7 @@ class DealPage extends Component<Props, State> {
         {
           this.state.isLoading ? (
             <Loader active />
-          ) : !deal.address ? (
+          ) : !deal.id ? (
             'Error loading deal.'
           ) : (
               <SelectorsWrapper>

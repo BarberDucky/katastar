@@ -9,7 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import bind from 'bind-decorator';
 import Parcel from '../../../models/parcel.model';
-import { updateDeal, putDealOnChain } from '../../../services/deal.service';
+import { updateDeal, putDealOnChain, payDeal } from '../../../services/deal.service';
 import Web3 from 'web3'
 
 
@@ -85,7 +85,7 @@ class ParcelSelector extends Component<Props, State> {
   @bind
   async selectParcel(parcel: Parcel) {
     let newDeal = this.props.currentDeal
-    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+    if (newDeal.user1Asset.userAddress === this.props.user.address) {
       newDeal.user1Asset.parcels = parcel.address
     } else {
       newDeal.user2Asset.parcels = parcel.address
@@ -96,7 +96,7 @@ class ParcelSelector extends Component<Props, State> {
   @bind
   async deselectParcel() {
     let newDeal = this.props.currentDeal
-    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+    if (newDeal.user1Asset.userAddress === this.props.user.address) {
       newDeal.user1Asset.parcels = ''
     } else {
       newDeal.user2Asset.parcels = ''
@@ -107,7 +107,7 @@ class ParcelSelector extends Component<Props, State> {
   @bind 
   async checkDeal() {
     let newDeal = this.props.currentDeal
-    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+    if (newDeal.user1Asset.userAddress === this.props.user.address) {
       newDeal.user1Asset.isConfirmed = !newDeal.user1Asset.isConfirmed
     } else {
       newDeal.user2Asset.isConfirmed = !newDeal.user2Asset.isConfirmed
@@ -119,7 +119,7 @@ class ParcelSelector extends Component<Props, State> {
   async changeEthereum(ev: ChangeEvent<HTMLInputElement>) {
     const value = ev.target.value
     let newDeal = this.props.currentDeal
-    if (newDeal.user1Asset.userAddress == this.props.user.address) {
+    if (newDeal.user1Asset.userAddress === this.props.user.address) {
       newDeal.user1Asset.eth = +value
     } else {
       newDeal.user2Asset.eth = +value
@@ -137,6 +137,18 @@ class ParcelSelector extends Component<Props, State> {
         )
     } else {
       alert('no web3')
+    }
+  }
+
+  @bind
+  async pay() {
+    const {parcels, eth} = this.props.assets
+    if (this.props.web3) {
+      const res = await payDeal(
+        this.props.currentDeal,
+        this.props.user.address,
+        this.props.web3,
+        )
     }
   }
 
@@ -209,7 +221,7 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.isConfirmed && (
             !this.props.currentDeal.isCompleted ||
             !this.props.currentDeal.isWithdrawn) ? (
-              <Button>Pay</Button>
+              <Button onClick={() => this.pay()}>Pay</Button>
             ) : ('')
           }
           {

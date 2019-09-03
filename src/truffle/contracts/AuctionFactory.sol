@@ -16,7 +16,7 @@ contract AuctionFactory {
         require (isParcelFree(parcelId), "AuctionFactory: parcel is already on auction");
         require (_token.ownerOf(parcelId) == msg.sender, "AuctionFactory: sender must be owner of token");
         require (_token.getApproved(parcelId) == address(this), "AuctionFactory: factory must have approval for token");
-        require (startPrice >= 0, "AuctionFactory: starting price must be greater than 0");
+        require (startPrice >= 0, "AuctionFactory: starting price must be greater or equal to 0");
         require (duration > 0, "AuctionFactory: auction needs to last at least 1 sec");
         
         Auction newAuction = new Auction (msg.sender, parcelId, address(_token), startPrice, duration);

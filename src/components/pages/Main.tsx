@@ -12,6 +12,7 @@ import PersonalInfo from '../ui/personal-info';
 import ParcelPage from '../ui/parcel'
 import AuctionPage from '../ui/auction'
 import DealPage from '../ui/deal'
+import InheritancePage from '../ui/inheritance'
 import style from 'styled-components'
 
 const Wrapper = style.div`
@@ -42,6 +43,7 @@ class Main extends Component<MainProps> {
                     <Route path="/main/parcels/:parcelId" component={ParcelPage}></Route>
                     <Route path="/main/auctions/:auctionId" component={AuctionPage}></Route>
                     <Route path="/main/deals/:dealId" component={DealPage} ></Route>
+                    <Route path="/main/inheritances/:inheritanceId" component={InheritancePage} ></Route>
                     <Redirect to="/main/explorer/parcels"></Redirect>
                 </Switch>
             </Wrapper>

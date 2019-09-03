@@ -70,7 +70,7 @@ contract('Testing auction contract', function (accounts) {
 
     await helper.advanceTimeAndBlock(200)
 
-    await auction.endAuction()
+    await auction.withdrawParcel({from: accounts[1]})
 
     const newTokenOwner = await token.ownerOf(tokenId)
     const isOver = await auction.isOver()

@@ -10,6 +10,9 @@ contract Auction is IERC721Receiver {
     uint256 _highestBid;
     address _highestBidder;
     uint256 _deadline;
+    bool _isWithdrawnWinner;
+    bool _isWithdrawnOwner;
+    bool _isBid;
     
     mapping(address => uint) _bidderToAmount;
     
@@ -20,7 +23,7 @@ contract Auction is IERC721Receiver {
         _owner = owner;
         _parcelId = parcelId;
         _startPrice = startPrice;
-        _highestBid = 0;
+        _highestBid = startPrice;
         _highestBidder = address(0);
         _deadline = now + duration;
     }
@@ -28,7 +31,29 @@ contract Auction is IERC721Receiver {
     function isOver() public view returns (bool) {
         return now >= _deadline;
     }
-    
+
+    function returnDeadline() public view returns (uint) {
+        if (now > _deadline) {
+            return 0;
+
+        } else {
+            return _deadline - now;
+        
+        }
+    }
+
+    function getIsWithdrawnOwner() public view returns (bool) {
+        return _isWithdrawnOwner;
+    }
+
+    function getIsWithdrawnWinner() public view returns (bool) {
+        return _isWithdrawnWinner;
+    }
+
+    function getIsBid() public view returns (bool) {
+        return _isBid;
+    }
+     
     function getHighestBid() public view returns (uint256) {
         return _highestBid;
     }
@@ -39,11 +64,13 @@ contract Auction is IERC721Receiver {
     
     function bid() public payable {
         require (now < _deadline, "Auction: auction has ended");
-        require (_highestBid < msg.value, "Auction: bid is too low");
+        require (msg.value > _highestBid, "Auction: bid is too low");
         require (msg.sender != _owner, "Auction: owner can't bid");
         
-        if (_highestBid != 0) {
+        if (_isBid) {
             _bidderToAmount[_highestBidder] += _highestBid;
+        } else {
+            _isBid = true;
         }
         
         _highestBidder = msg.sender;
@@ -65,18 +92,28 @@ contract Auction is IERC721Receiver {
             }
         }
     }
+
+    function withdrawParcel() public {
+        require (msg.sender == _highestBidder, "Auction: only winner can withdraw token");
+        require (now >= _deadline, "Auction: the auction isn't over");
+        require (!_isWithdrawnWinner, "Auction: winner already withdrew");
+
+        _isWithdrawnWinner = true;
+        _token.safeTransferFrom(address(this), _highestBidder, _parcelId);
+    }
     
     function endAuction() public {
         require (msg.sender == _owner, "Auction: only owner can end the auction");
         require (now >= _deadline, "Auction: the auction isn't over");
-        
+        require (!_isWithdrawnOwner, "Auction: owner already withdrew");
+
         if (_highestBidder == address(0)) {
             _token.safeTransferFrom(address(this), msg.sender, _parcelId);
         } 
         else {
             msg.sender.transfer(_highestBid);
-            _token.safeTransferFrom(address(this), _highestBidder, _parcelId);
         }
+        _isWithdrawnOwner = true;
     }
     
     function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data)

@@ -1,4 +1,4 @@
-import Deal from "../models/deal.model";
+import Deal, { Asset } from "../models/deal.model";
 import firebase from '../config/firebase'
 import Web3 from 'web3'
 import DealContract from "./contracts/deal"
@@ -54,8 +54,37 @@ export const putDealOnChain = async (deal: Deal, web3: Web3, currentUser: string
   await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}`).set(deal)
 }
 
-export const withdrawDeal = async (deal: Deal) => {
-  await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/withdrawn`).set(true)
-  await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/withdrawn`).set(true)
+export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
+  const dealContract = DealContract(web3, deal.address)
+  const parcelToken = ParcelToken(web3)
+
+  const isSettled = await dealContract.methods.isSettled().call()
+  if (isSettled) return false
+
+  const assetsForPayment: Asset = userId === deal.user1Asset.userAddress ? deal.user1Asset : deal.user2Asset 
+
+  const {parcels, eth} = assetsForPayment
+
+  console.log(parcels, eth)
+  
+  if (eth > 0)
+    await dealContract.methods.payEth().send({from: userId, value: eth})
+  
+  if (parcels !== '') {
+    await parcelToken.methods.safeTransferFrom(userId, deal.address, parcels).send({from: userId})
+  }
+  
+  return true
+}
+
+export const withdrawDeal = async (deal: Deal, userId: string, web3: Web3) => {
+  const dealContract = DealContract(web3, deal.address)
+
+  const isSettled = await dealContract.methods.isSettled().call()
+  if (isSettled) return false
+
+  await dealContract.methods.withdraw().send({from: userId})
+
+  return true
 }
 

@@ -29,17 +29,17 @@ contract('Testing deal contract', function (accounts) {
     const user1Requests = await deal.getUserRequests(accounts[0])
     const user2Requests = await deal.getUserRequests(accounts[1])
     
-    assert.equal(user1Requests[0].toNumber(), 100);
-    assert.equal(user1Requests[1].toNumber(), tokenId1);
-    assert.equal(user2Requests[0].toNumber(), 20);
-    assert.equal(user2Requests[1].toNumber(), tokenId2);
+    assert.equal(user1Requests[0].toNumber(), 20);
+    assert.equal(user1Requests[1].toNumber(), tokenId2);
+    assert.equal(user2Requests[0].toNumber(), 100);
+    assert.equal(user2Requests[1].toNumber(), tokenId1);
   })
 
   it('should pay eth', async () => {
     const deal = await Deal.new(
       token.address,
       accounts[0], accounts[1],
-      100, 0,
+      0, 100,
       0, 0
     )
 
@@ -57,7 +57,7 @@ contract('Testing deal contract', function (accounts) {
       token.address,
       accounts[0], accounts[1],
       0, 0,
-      0, tokenId1
+      tokenId1, 0
     )
 
     await token.safeTransferFrom(accounts[0], deal.address, tokenId1)
@@ -72,8 +72,8 @@ contract('Testing deal contract', function (accounts) {
     const deal = await Deal.new(
       token.address,
       accounts[0], accounts[1],
-      40, 60,
-      tokenId2, tokenId1
+      60, 40,
+      tokenId1, tokenId2
     )
 
     await token.safeTransferFrom(accounts[0], deal.address, tokenId1)
@@ -93,8 +93,8 @@ contract('Testing deal contract', function (accounts) {
     const deal = await Deal.new(
       token.address,
       accounts[0], accounts[1],
-      100, 0,
-      tokenId2, tokenId1
+      0, 100,
+      tokenId1, tokenId2
     )
 
     await token.safeTransferFrom(accounts[0], deal.address, tokenId1)
@@ -117,8 +117,8 @@ contract('Testing deal contract', function (accounts) {
     const deal = await Deal.new(
       token.address,
       accounts[0], accounts[1],
-      100, 0,
-      tokenId2, tokenId1
+      0, 100,
+      tokenId1, tokenId2
     )
 
     await token.safeTransferFrom(accounts[0], deal.address, tokenId1)

@@ -8,10 +8,12 @@ import bind from 'bind-decorator';
 import User from '../../../models/user.model';
 import Deal from '../../../models/deal.model';
 import { withdrawDeal } from '../../../services/deal.service';
+import Web3 from 'web3'
 
 interface StateProps {
   router: RouterState
   user: User
+  web3: Web3 | null
 }
 
 interface DispatchProps {
@@ -42,8 +44,13 @@ class DealsList extends Component<Props, State> {
 
   @bind
   private withdrawDeal(deal: Deal) {
-    withdrawDeal(deal)
+    if (this.props.web3) {
+      withdrawDeal(deal, this.props.user.address, this.props.web3)
+    } else {
+      alert('no web3')
+    }
   }
+
 
   render() {
     return (
@@ -96,7 +103,8 @@ class DealsList extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
-  user: state.user
+  user: state.user,
+  web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

@@ -34,8 +34,8 @@ contract Deal is IERC721Receiver {
         
         token = ParcelToken(_tokenContract);
         
-        userRequests[_user1] = Asset(_user1, eth1, parcel1);
-        userRequests[_user2] = Asset(_user2, eth2, parcel2);
+        userRequests[_user2] = Asset(_user1, eth1, parcel1);
+        userRequests[_user1] = Asset(_user2, eth2, parcel2);
         
         user1 = _user1;
         user2 = _user2;
@@ -61,6 +61,11 @@ contract Deal is IERC721Receiver {
           userReceives[user].parcel == userRequests[user].parcel;
     }
     
+    function checkUserCollected(address user) public view returns (bool) {
+        require (user == user1 || user == user2, "Deal: user isn't part of the deal");
+        return userCollected[user];
+    }
+
     function isSettled() public view returns (bool) {
         return _checkUserSettled(user1) &&
           _checkUserSettled(user2);

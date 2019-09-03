@@ -62,6 +62,7 @@ class InheritancesList extends Component<Props, State> {
     obj = {
       from: this.props.user.address,
       address: '',
+      isWithdrawn: false,
       ...obj
     }
     if (this.props.web3) {
@@ -133,7 +134,9 @@ class InheritancesList extends Component<Props, State> {
                   {
                     this.props.inheritances.map(inheritance => {
                       return (
-                        <tr key={`userInheritance${inheritance.address}`}>
+                        <tr key={`userInheritance${inheritance.address}`}
+                          onClick={() => this.openDetails(inheritance)}
+                        >
                           <td>{inheritance.address}</td>
                           <td>{inheritance.from}</td>
                           <td>{inheritance.to}</td>

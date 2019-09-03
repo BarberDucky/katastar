@@ -25,7 +25,13 @@ contract Inheritance is IERC721Receiver{
     }
     
     function getDeadline() public view returns(uint) {
-        return _deadline;
+        if (now > _deadline) {
+            return 0;
+
+        } else {
+            return _deadline - now;
+        
+        }
     }
     
     function getParcelId() public view returns(uint256) {

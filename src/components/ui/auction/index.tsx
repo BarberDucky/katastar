@@ -7,13 +7,16 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import bind from 'bind-decorator';
 import Auction from '../../../models/auction.model';
-import { readAuction, submitBid } from '../../../services/auction.service';
+import { readAuction, submitBid, readAuctionTime, readHighestBid, withdrawBids, endAuction, withdrawParcel } from '../../../services/auction.service';
 import User from '../../../models/user.model';
 import { formDataToJson } from '../../../helper';
+import { Button } from 'semantic-ui-react';
+import Web3 from 'web3'
 
 interface StateProps {
   router: RouterState
   user: User
+  web3: Web3 | null
 }
 
 interface DispatchProps {
@@ -34,6 +37,8 @@ interface State {
   isOwner: boolean
   isLoading: boolean
   results?: Auction
+  highestBid: number
+  duration: number
 }
 
 class AuctionPage extends Component<Props, State> {
@@ -42,6 +47,8 @@ class AuctionPage extends Component<Props, State> {
     isLoading: true,
     results: undefined,
     isOwner: false,
+    highestBid: -1,
+    duration: -1,
   }
 
   public componentDidMount() {
@@ -57,11 +64,23 @@ class AuctionPage extends Component<Props, State> {
     this.setState({isLoading: true})
     const auction = await readAuction(this.props.match.params.auctionId)
 
+    let remainingTime = -1
+    let highestBid = -1
+
+    if (this.props.web3) {
+      remainingTime = await readAuctionTime(auction.address, this.props.web3)
+      highestBid = await readHighestBid(auction.address, this.props.web3)
+    } else {
+      alert('no web3')
+    }
+    
     if (this._isMounted) {
       this.setState({
         isLoading: false,
         results: auction,
-        isOwner: auction ? this.props.user.address === auction.owner : false
+        isOwner: auction ? this.props.user.address === auction.owner : false,
+        duration: remainingTime,
+        highestBid
       })
     }
   }
@@ -83,8 +102,42 @@ class AuctionPage extends Component<Props, State> {
     const target = event.target as HTMLFormElement
     const formData = new FormData(target)
     let obj = formDataToJson<any>(formData)
-    if (this.state.results)
-      await submitBid(this.state.results.address, obj.bid)
+    if (this.state.results && this.props.web3) {
+      const result = await submitBid(this.state.results, obj.bid, this.props.user.address, this.props.web3)
+      alert(result)
+    } else {
+      alert('no auction or no web3')
+    }
+  }
+
+  @bind
+  async withdrawBids() {
+    if (this.state.results && this.props.web3) {
+      const result = await withdrawBids(this.state.results, this.props.user.address, this.props.web3)
+      alert(result)
+    } else {
+      alert('no auction or no web3')
+    }
+  }
+
+  @bind
+  async withdrawWinner() {
+    if (this.state.results && this.props.web3) {
+      const result = await withdrawParcel(this.state.results, this.props.user.address, this.props.web3)
+      alert(result)
+    } else {
+      alert('no auction or no web3')
+    }
+  }
+
+  @bind
+  async endAuction() {
+    if (this.state.results && this.props.web3) {
+      const result = await endAuction(this.state.results, this.props.user.address, this.props.web3)
+      alert(result)
+    } else {
+      alert('no auction or no web3')
+    }
   }
 
   render () {
@@ -99,11 +152,12 @@ class AuctionPage extends Component<Props, State> {
           ) : (
             <div>
               <span>{auction.address}</span>
-              <span>{auction.duration}</span>
+              <span>Remaining Time: {this.state.duration}</span>
+              <span>Highest Bid: {this.state.highestBid}</span>
               <span>{auction.isDone}</span>
               <span>{auction.startingPrice}</span>
               <span onClick={() => this.selectOwner(auction.owner)}>{auction.owner}</span>
-              <span onClick={() => this.selectParcel(auction.parcel.address)}>{auction.parcel}</span>
+              <span onClick={() => this.selectParcel(auction.parcel.address)}>{auction.parcel.address}</span>
 
               {
                 !this.state.isOwner ? (
@@ -112,9 +166,12 @@ class AuctionPage extends Component<Props, State> {
                       <input name="bid"/>
                       <button>Bid</button>
                     </form>
+                    <Button onClick={() => this.withdrawBids()}>Withdraw</Button>
+                    <Button onClick={() => this.withdrawWinner()}>Withdraw Won Parcel</Button>
+                  
                   </div>
                 ) : (
-                  ''
+                  <Button onClick={() => this.endAuction()}>Withdraw Eth</Button>
                 )
               }
 
@@ -130,6 +187,7 @@ class AuctionPage extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
   user: state.user,
+  web3: state.ethereumWeb3.web3
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

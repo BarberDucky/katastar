@@ -114,7 +114,7 @@ class AuctionsList extends Component<Props, State> {
 												<tr key={`userAuction${auction.address}`} onClick={() => this.openDetails(auction)}>
 													<td>{auction.address}</td>
 													<td>{auction.owner}</td>
-													<td>{auction.parcel}</td>
+													<td>{auction.parcel.address}</td>
 													<td>{auction.duration}</td>
 													<td>{auction.isDone}</td>
 													<td>{auction.startingPrice}</td>

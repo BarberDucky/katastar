@@ -4,4 +4,5 @@ export default interface Inheritance {
   to: string
   parcel: string
   duration: string
+  isWithdrawn: boolean
 }
