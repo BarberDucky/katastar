@@ -117,9 +117,11 @@ export const endAuction = async (auction: Auction, userId: string, web3: Web3) =
 
   const auctionRemainingTime = await readAuctionTime(auction.address, web3)
 
-  if (auctionRemainingTime !== 0) return false
+  //if (auctionRemainingTime !== 0) return false
 
   const auctionContract = AuctionContract(web3, auction.address)
+
+
 
   try{
     await auctionContract.methods.endAuction().send({from: userId})

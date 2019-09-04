@@ -3,17 +3,40 @@ import { Dispatch } from 'redux';
 import Conversation from '../models/conversation.model';
 import { LoadConversationAction } from '../store/current-conversation/interfaces';
 import { LOAD_CONVERSATION } from '../store/current-conversation/types';
+import { readConversationFromId, readConversation } from '../services/conversation.service';
 
-export const fetchConversation = (oldConversationId: string, newConversationId: string) => async (dispatch: Dispatch) => {
+export const unsubscribeConversation = async (conversationId: string) => {
+  await firebase.database().ref(`conversations/${conversationId}`).off('value') 
+}
+
+export const fetchConversation = (oldConversationId: string, targetUser: string, currentUserAddress: string) => async (dispatch: Dispatch) => {
   if (oldConversationId) {
-    await firebase.database().ref(`conversations/${oldConversationId}`).off('value')
+    unsubscribeConversation(oldConversationId)
   }
-  
-  firebase.database().ref(`conversations/${newConversationId}`).on('value', 
-    snapshot => {
+
+  const conversation = await readConversationFromId(
+    currentUserAddress,
+    targetUser,
+  )
+
+  if (!conversation) return
+
+  conversation.messages = conversation.messages ? Object.values(conversation.messages) : []
+  const action: LoadConversationAction = {
+    type: LOAD_CONVERSATION,
+    payload: conversation,
+  }
+  dispatch(action)
+
+  firebase.database().ref(`conversations/${conversation.address}`).on('value', 
+    async snapshot => {
       const conversation: Conversation = snapshot.val()
       conversation.messages = conversation.messages ? Object.values(conversation.messages) : []
 
+      //await readConversation(currentUserAddress, targetUser)
+
+      const res = await firebase.database().ref(`users/${currentUserAddress}/conversations/${targetUser}/isRead`).set(true)
+      console.log('read...', res)
       const action: LoadConversationAction = {
         type: LOAD_CONVERSATION,
         payload: conversation

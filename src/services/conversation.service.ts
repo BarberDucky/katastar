@@ -31,11 +31,15 @@ export const createConversation = async (message: Message) => {
     alert('error creating conversation')
     return
   }
+
+  const now = Date.now()
+
   const toConversationInfo: ConversationInfo = {
     isRead: false,
     fromId: message.fromUser,
     fromName: fromUserName,
     conversationId,
+    date: now,
   }
 
   const fromConversationInfo: ConversationInfo = {
@@ -43,19 +47,25 @@ export const createConversation = async (message: Message) => {
     fromId: message.toUser,
     fromName: toUserName,
     conversationId,
+    date: now,
   }
 
   await firebase.database().ref(`users/${message.fromUser}/conversations/${message.toUser}`).set(fromConversationInfo)
   await firebase.database().ref(`users/${message.toUser}/conversations/${message.fromUser}`).set(toConversationInfo)
 }
 
-export const readConversation = async (conversationId: string, readingUserId: string) => {
-  const conversationValue = await firebase.database().ref(`conversations/${conversationId}`).once('value')
-  const conversation: Conversation = conversationValue.val()
+export const readConversation = async (readingUserId: string, targetUserId: string) => {
+  const conversationInfoValue = await firebase.database().ref(`users/${readingUserId}/conversations/${targetUserId}`).once('value')
+  const conversationInfo: ConversationInfo = conversationInfoValue.val()
 
-  await firebase.database().ref(`users/${readingUserId}/conversations/${conversationId}/isRead`).set(true)
+  if (conversationInfo) {
+    console.log(readingUserId, targetUserId)
+    await firebase.database().ref(`users/${readingUserId}/conversations/${targetUserId}/isRead`).set(true)
 
-  return conversation
+    return conversationInfo
+  } else {
+    return null
+  }
 }
 
 export const readConversationFromId = async (currentUser: string, targetUser: string) => {
@@ -78,6 +88,10 @@ export const readConversationFromId = async (currentUser: string, targetUser: st
 }
 
 export const pushMessage = async (message: Message, conversationId: string) => {
-  await firebase.database().ref(`conversations/${conversationId}/messages`).push(message)
+  const now = Date.now() 
+
+  await firebase.database().ref(`users/${message.toUser}/conversations/${message.fromUser}/date`).set(now)
+  await firebase.database().ref(`users/${message.fromUser}/conversations/${message.toUser}/date`).set(now)
   await firebase.database().ref(`users/${message.toUser}/conversations/${message.fromUser}/isRead`).set(false)
+  await firebase.database().ref(`conversations/${conversationId}/messages`).push(message)
 }
