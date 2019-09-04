@@ -8,6 +8,7 @@ export interface ConversationInfo {
     fromId: string
     fromName: string
     conversationId: string
+    date: number
 }
 
 export default interface User {

@@ -12,7 +12,7 @@ import User from '../../../models/user.model';
 import Conversation, { Message } from '../../../models/conversation.model';
 import { Loader, Button, Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import { fetchConversation } from '../../../thunks/conversation.thunk';
+import { fetchConversation, unsubscribeConversation } from '../../../thunks/conversation.thunk';
 
 const Segment = styled.div`
 	height: 100%;
@@ -104,22 +104,21 @@ class ChatPage extends Component<Props, State> {
 		}
 	}
 
-	public componentWillUnmount() {
+	public async componentWillUnmount() {
 		this._isMounted = false
+		await unsubscribeConversation(this.props.currentConversation.address)
 	}
 
 	private async onRouteChange() {
 		this.setState({ isLoading: true })
-		const conversation = await readConversationFromId(
-			this.props.currentUser.address,
-			this.props.match.params.userId,
-		)
+		
+		console.log(this.props)
 
-		if (conversation) {
-			this.props.fetchConversation(
-				this.props.currentConversation.address,
-				conversation.address)
-		}
+		this.props.fetchConversation(
+			this.props.currentConversation.address,
+			this.props.match.params.userId,
+			this.props.currentUser.address,
+		)
 
 		if (this._isMounted)
 			this.setState({ isLoading: false})
@@ -144,7 +143,7 @@ class ChatPage extends Component<Props, State> {
 		return (
 			<Segment>
 				{
-					this.state.isLoading ? (
+					this.state.isLoading && !this.props.currentUser ? (
 						<Loader active />
 					) : (
 							<Chat>

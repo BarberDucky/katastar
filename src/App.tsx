@@ -73,6 +73,8 @@ class App extends Component<Props, State> {
 
 		this.props.loadWeb3(web3)
 
+		console.log(this.props.user)
+
 		this.setState({isLoaded: true})
 	}
 
