@@ -8,6 +8,10 @@ import styled from 'styled-components'
 import User, { ConversationInfo } from "../../../models/user.model";
 import { Loader, Menu, Icon } from "semantic-ui-react";
 import { match } from "react-router";
+<<<<<<< HEAD
+=======
+import bind from "bind-decorator";
+>>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 
 const Wrapper = styled.div`
 	
@@ -49,8 +53,14 @@ class MessagesList extends Component<Props, State> {
 		this.onRouteChange()
 	}
 
+<<<<<<< HEAD
 	public componentWillMount() {
 		this.onRouteChange()
+=======
+	public componentWillUpdate(oldProps: Props) {
+		if (this.props.router.location.pathname !== oldProps.router.location.pathname)
+			this.onRouteChange()
+>>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 	}
 
 	public componentWillUnmount() {
@@ -64,16 +74,25 @@ class MessagesList extends Component<Props, State> {
 		if (this._isMounted)
 			this.setState({ results, isLoading: false })
 		*/
+<<<<<<< HEAD
 		console.log(this.props.match)
+=======
+	}
+
+	@bind
+	private getActiveUser () {
+		const pathnameParams = this.props.router.location.pathname.split('/')
+		const activeUser = pathnameParams[pathnameParams.length-1]
+		return activeUser
+>>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 	}
 
 	private openDetails(item: ConversationInfo) {
-		this.setState({ activeItem: item.fromId })
 		this.props.push(`/main/messages/${item.fromId}`)
 	}
 
 	render() {
-
+		const activeUser = this.getActiveUser()
 		const conversations = this.props.user.conversations ? Object.values(this.props.user.conversations) : []
 		return (
 			<Wrapper>
@@ -85,15 +104,16 @@ class MessagesList extends Component<Props, State> {
 					) : (
 								<Menu pointing vertical secondary>
 									{
-										conversations.map(result => {
+										conversations.sort((a, b) => b.date - a.date)
+										.map(result => {
 											return (
 												<Menu.Item
-													active={this.state.activeItem === result.fromId}
+													active={activeUser === result.fromId}
 													key={`conversationinfo${result.conversationId}`}
 													onClick={() => this.openDetails(result)}
 												>
 													<span>{result.fromName}</span>
-													{!result.isRead ? (<Icon name="bell outline" />) : ('')}
+													{!result.isRead &&  activeUser !== result.fromId? (<Icon name="bell outline" />) : ('')}
 												</Menu.Item>
 											)
 										})

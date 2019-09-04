@@ -20,6 +20,11 @@ export function loadUserAndRoute(currentRoute: string) {
 		if (!userFromDB || !userFromDB.address) {
 			dispatch(push('/register'))
 		} else {
+			const action: LoadUserAction = {
+				type: LOAD_USER,
+				payload: userFromDB
+			}
+			dispatch(action)
 
 			firebase.database().ref(`users/${userFromDB.address}`).on('value',
 				snapshot => {

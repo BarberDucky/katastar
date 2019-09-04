@@ -3,6 +3,7 @@ export default interface Inheritance {
   from: string
   to: string
   parcel: string
-  duration: string
+  duration: number
   isWithdrawn: boolean
+  deadline: number
 }

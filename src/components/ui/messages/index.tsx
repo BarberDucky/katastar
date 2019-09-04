@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import MessagesList from './list'
-import { Route, Switch } from "react-router";
+import { Route, Switch, match } from "react-router";
 import Chat from "./chat";
 import UserInfo from "./user-info"
 import NewConversation from "./new-conversation";
@@ -43,13 +43,17 @@ const Title = styled.h2`
   margin: 0;
 `
 
-class Messages extends Component {
+interface Props {
+	match: match
+}
+
+class Messages extends Component<Props> {
 	render() {
 		return (
 			<Wrapper>
 				<Title>Messages</Title>
 				<ListAndChat>
-					<MessagesList />
+					<MessagesList match={this.props.match}/>
 					<Switch>
 						<Route path="/main/messages/new/:userId" render={props => {
 							return (
