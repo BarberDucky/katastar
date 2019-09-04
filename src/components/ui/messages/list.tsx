@@ -8,10 +8,7 @@ import styled from 'styled-components'
 import User, { ConversationInfo } from "../../../models/user.model";
 import { Loader, Menu, Icon } from "semantic-ui-react";
 import { match } from "react-router";
-<<<<<<< HEAD
-=======
 import bind from "bind-decorator";
->>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 
 const Wrapper = styled.div`
 	
@@ -53,14 +50,9 @@ class MessagesList extends Component<Props, State> {
 		this.onRouteChange()
 	}
 
-<<<<<<< HEAD
-	public componentWillMount() {
-		this.onRouteChange()
-=======
 	public componentWillUpdate(oldProps: Props) {
 		if (this.props.router.location.pathname !== oldProps.router.location.pathname)
 			this.onRouteChange()
->>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 	}
 
 	public componentWillUnmount() {
@@ -74,9 +66,6 @@ class MessagesList extends Component<Props, State> {
 		if (this._isMounted)
 			this.setState({ results, isLoading: false })
 		*/
-<<<<<<< HEAD
-		console.log(this.props.match)
-=======
 	}
 
 	@bind
@@ -84,7 +73,6 @@ class MessagesList extends Component<Props, State> {
 		const pathnameParams = this.props.router.location.pathname.split('/')
 		const activeUser = pathnameParams[pathnameParams.length-1]
 		return activeUser
->>>>>>> d14bdf96d2d8f3db53208808799b5bac0815af8a
 	}
 
 	private openDetails(item: ConversationInfo) {
