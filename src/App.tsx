@@ -19,7 +19,8 @@ import { Loader } from 'semantic-ui-react';
 declare global {
 	interface Window { 
 		ethereum: any,
-		web3: Web3
+		web3: Web3,
+		__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any,
 	}
 }
 

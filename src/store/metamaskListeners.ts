@@ -12,7 +12,7 @@ type StoreGetState = () => AppState
 export default function (dispatch: Dispatch, getState: StoreGetState ) {
     window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
         const userFromDB = await readUser(accounts[0])
-        if (!userFromDB) {
+        if (!userFromDB || !userFromDB.address) {
             if (window.ethereum.networkVersion !== desiredNetwork) {
                 dispatch(push('/wrong-network'))
             } else {
@@ -42,7 +42,7 @@ export default function (dispatch: Dispatch, getState: StoreGetState ) {
         if (newNetwork !== desiredNetwork) {
             dispatch(push('/wrong-network'))
         } else {
-            if (!userFromDB) {
+            if (!userFromDB || !userFromDB.address) {
                 dispatch(push('/register'))
             } else {
                 dispatch({
