@@ -7,6 +7,7 @@ import { RouterState, Push, push } from "connected-react-router";
 import styled from 'styled-components'
 import User, { ConversationInfo } from "../../../models/user.model";
 import { Loader, Menu, Icon } from "semantic-ui-react";
+import { match } from "react-router";
 
 const Wrapper = styled.div`
 	
@@ -22,7 +23,7 @@ interface DispatchProps {
 }
 
 interface OwnProps {
-
+	match: match
 }
 
 type Props = StateProps & DispatchProps & OwnProps
@@ -45,6 +46,11 @@ class MessagesList extends Component<Props, State> {
 
 	public componentDidMount() {
 		this._isMounted = true
+		this.onRouteChange()
+	}
+
+	public componentWillMount() {
+		this.onRouteChange()
 	}
 
 	public componentWillUnmount() {
@@ -52,10 +58,13 @@ class MessagesList extends Component<Props, State> {
 	}
 
 	private onRouteChange() {
+		/*
 		this.setState({ isLoading: true })
 		const results = Object.values(this.props.user.conversations)
 		if (this._isMounted)
 			this.setState({ results, isLoading: false })
+		*/
+		console.log(this.props.match)
 	}
 
 	private openDetails(item: ConversationInfo) {
@@ -99,7 +108,7 @@ class MessagesList extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
 	router: state.router,
-	user: state.user
+	user: state.user,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

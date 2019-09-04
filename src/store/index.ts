@@ -31,10 +31,12 @@ export type AppState = {
 }
 export const history = createBrowserHistory()
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export default function configureStore() {
     const store = createStore(
         rootReducer(history),
-        compose(
+        composeEnhancers(
             applyMiddleware(
                 reduxThunk,
                 routerMiddleware(history)
