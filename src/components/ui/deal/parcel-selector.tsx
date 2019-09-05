@@ -9,7 +9,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import bind from 'bind-decorator';
 import Parcel from '../../../models/parcel.model';
-import { updateDeal, putDealOnChain, payDeal } from '../../../services/deal.service';
+import { updateDeal, putDealOnChain, payDeal, withdrawDeal } from '../../../services/deal.service';
 import Web3 from 'web3'
 
 
@@ -152,6 +152,20 @@ class ParcelSelector extends Component<Props, State> {
     }
   }
 
+  @bind
+  async withdraw() {
+    if (this.props.web3) {
+      const res = await withdrawDeal(
+        this.props.currentDeal,
+        this.props.user.address,
+        this.props.web3,
+        )
+        alert(res)
+    } else {
+      alert('no web3')
+    }
+  }
+
   render() {
     const assetParcel = this.props.assets.parcels
     let userParcels = this.props.user.parcels
@@ -213,7 +227,7 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.isConfirmed && (
             !this.props.currentDeal.isCompleted ||
             !this.props.currentDeal.isWithdrawn) ? (
-              <Button>Withdraw</Button>
+              <Button onClick={() => this.withdraw()}>Withdraw</Button>
             ) : ('')
           }
           {

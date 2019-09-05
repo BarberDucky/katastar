@@ -20,8 +20,12 @@ export const createAuction = async (auction: Auction, parcelId: string, web3: We
   await parcelToken.methods.approve(auctionFactory.options.address, auction.parcel.address).send({ from: owner })
   await auctionFactory.methods.createAuction(auction.parcel.address, auction.startingPrice, auction.duration).send({ from: owner })
 
+  const now = Date.now()
+  const deadline = now + Number(auction.duration) * 1000
+
   const auctionId = await auctionFactory.methods.getAuctionByParcelId(auction.parcel.address).call()
 
+  auction.deadline = deadline
   auction.address = auctionId
 
   await firebase.database().ref('users/' + owner + '/auctions/' + auction.address).set(auction)
@@ -69,62 +73,96 @@ export const readHighestBid = async (auctionId: string, web3: Web3) => {
 export const submitBid = async (auction: Auction, bid: number, userId: string, web3: Web3) => {
   if (auction.owner === userId) return false
 
-  const auctionRemainingTime = await readAuctionTime(auction.address, web3)
+  const now = Date.now()
+  const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime === 0) return false
-
+  console.log(now, auction.deadline, auctionRemainingTime)
+  if (auctionRemainingTime <= 0) return false
   const auctionContract = AuctionContract(web3, auction.address)
 
   const highestBid = await auctionContract.methods.getHighestBid().call()
+  if (bid <= Number(highestBid)) return false
 
-  if (bid <= highestBid) return false
+  try {
+    await auctionContract.methods.bid().send({from: userId, value: bid})
+    await firebase.database().ref(`users/${userId}/auctions/${auction.address}`).set(auction)
+    
+    return true
+  
+  } catch (error) {
 
-  await auctionContract.methods.bid().send({from: userId, value: bid})
-
-  return true
+    alert(error)
+    return false
+  }
 }
 
 export const withdrawBids = async (auction: Auction, userId: string, web3: Web3) => {
   if (auction.owner === userId) return false
 
-  const auctionRemainingTime = await readAuctionTime(auction.address, web3)
+  const now = Date.now()
+  const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime !== 0) return false
+  if (auctionRemainingTime > 0) return false
 
   const auctionContract = AuctionContract(web3, auction.address)
+  try{ 
+    await auctionContract.methods.withdrawBids().send({from: userId})
 
-  await auctionContract.methods.withdrawBids().send({from: userId})
+    return true
 
-  return true 
+  } catch (error) {
+
+    alert(error)
+    return false
+  }
 }
 
 export const withdrawParcel = async (auction: Auction, userId: string, web3: Web3) => {
   if (auction.owner === userId) return false
 
-  const auctionRemainingTime = await readAuctionTime(auction.address, web3)
+  const now = Date.now()
+  const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime !== 0) return false
+  if (auctionRemainingTime > 0) return false
 
   const auctionContract = AuctionContract(web3, auction.address)
 
-  await auctionContract.methods.withdrawParcel().send({from: userId})
+  try{ 
+    await auctionContract.methods.withdrawParcel().send({from: userId})
+    await firebase.database().ref(`parcels/${auction.parcel.address}/owner`).set(userId)
+    const parcel = await readParcel(auction.parcel.address)
+    await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)
 
-  return true 
+    return true 
+
+  } catch (error) {
+    alert(error)
+    return false
+  }
 }
 
 export const endAuction = async (auction: Auction, userId: string, web3: Web3) => {
   if (auction.owner !== userId) return false
 
-  const auctionRemainingTime = await readAuctionTime(auction.address, web3)
+  const now = Date.now()
+  const auctionRemainingTime = auction.deadline - now
 
-  //if (auctionRemainingTime !== 0) return false
+  if (auctionRemainingTime > 0) return false
 
   const auctionContract = AuctionContract(web3, auction.address)
-
-
+  const parcelToken = ParcelToken(web3)
 
   try{
     await auctionContract.methods.endAuction().send({from: userId})
+
+    let newTokenOwner = await parcelToken.methods.ownerOf(auction.parcel.address).call()
+    newTokenOwner = web3.utils.toChecksumAddress(newTokenOwner)
+    const userIdChecksum = web3.utils.toChecksumAddress(userId)
+
+    if (newTokenOwner === userIdChecksum) {
+      const parcel = await readParcel(auction.parcel.address)
+      await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)
+    }
 
     return true
   }
@@ -132,6 +170,4 @@ export const endAuction = async (auction: Auction, userId: string, web3: Web3) =
     console.log(error.payload)
     return false
   }
-
-
 }

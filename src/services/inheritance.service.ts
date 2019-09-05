@@ -73,6 +73,7 @@ export const withdraw = async (inheritance: Inheritance, web3: Web3, userId: str
     const parcel = await readParcel(inheritance.parcel)
     parcel.owner = userId
   
+    await firebase.database().ref(`parcels/${parcel.address}/owner`).set(userId)
     await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)
   
     return true

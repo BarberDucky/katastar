@@ -7,4 +7,5 @@ export default interface Auction {
     startingPrice: number
     isDone: boolean
     duration: number
+    deadline: number
 }
