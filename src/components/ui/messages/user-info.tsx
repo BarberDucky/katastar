@@ -6,12 +6,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import { match } from 'react-router';
 import bind from 'bind-decorator';
-import { Loader, Button } from 'semantic-ui-react';
+import { Loader, Button, List, Image } from 'semantic-ui-react';
 import User from '../../../models/user.model';
 import { readUser } from '../../../services/user.service';
 import styled from 'styled-components';
 import { createDeal } from '../../../services/deal.service';
 import Deal from '../../../models/deal.model';
+import { generateIdenticon } from '../../../helper';
 
 const Wrapper = styled.div`
 	height: 100%;
@@ -19,6 +20,9 @@ const Wrapper = styled.div`
 `
 
 const UserName = styled.div`
+	width: fit-content;
+	font-weight: bold;
+	font-size: 1.2em;
 	&:hover {
 		cursor: pointer;
 	}
@@ -29,17 +33,11 @@ const InfoAndButton = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	padding: 2em;
+	padding: 0 2em 1em 0;
 `
 
 const InfoAndParcel = styled.div`
 	flex-grow: 2;
-`
-
-const ParcelId = styled.div`
-	&:hover {
-		cursor: pointer;
-	}
 `
 
 interface StateProps {
@@ -155,25 +153,28 @@ class UserInfo extends Component<Props, State> {
 								<UserName
 									onClick={() => this.selectUser(this.state.results ? this.state.results.address : '')}
 								>
-									<span>{`${this.state.results.firstName} ${this.state.results.lastName}`}</span>
+									{`${this.state.results.firstName} ${this.state.results.lastName}`}
 								</UserName>
 								{
 									this.state.results.parcels.length !== 0 ? (
-										<div>
+										<List selection verticalAlign='middle'>
 											Owned Parcels:
 											{
 												this.state.results.parcels.map(parcel => {
 													return (
-														<ParcelId
+														<List.Item
 															key={`userParcel${parcel.address}`}
 															onClick={() => this.selectParcel(parcel.address)}
 														>
-															<span>{parcel.address}</span>
-														</ParcelId>
+															<Image src={generateIdenticon(parcel.address)} size='mini'/>
+															<List.Content>
+																<List.Header as='span'>{`Parcel ${parcel.address}`}</List.Header>
+															</List.Content>
+														</List.Item>
 													)
 												})
 											}
-										</div>
+										</List>
 									) : (
 										'User has no parcels.'
 									)

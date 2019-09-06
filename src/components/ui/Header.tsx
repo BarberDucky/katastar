@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
+import PatImg from '../../assets/pat-coin-rich.png'
 
 const HeaderContainer = styled.div`
     width: 100%;
-    height: 4em;
+    height: 4.5em;
     color: white;
     background-color: cornflowerblue;
     display: flex;
@@ -14,7 +15,15 @@ const HeaderContainer = styled.div`
     box-sizing: border-box;
 `
 
-const StyledTitle = styled.h1`
+const TitleAndImage = styled.div`
+	display: flex;
+	align-items: center;
+	> * {
+		margin-right: 1em;
+	}
+`
+
+const Title = styled.h1`
     margin: 0;
     margin-top: -5px;
 `
@@ -41,25 +50,28 @@ const MenuItem = styled(NavLink)`
 `
 
 interface OwnProps {
-    userId: string
+	userId: string
 }
 
 type Props = OwnProps
 
 class Header extends Component<Props> {
-    render() {
-        return (
-            <HeaderContainer>
-                <StyledTitle>Katastar</StyledTitle>
+	render() {
+		return (
+			<HeaderContainer>
+				<TitleAndImage>
+					<img src={PatImg} alt='cadastre-logo' height='48' />
+					<Title>Cadastre</Title>
+				</TitleAndImage>
 
-                <Menu>
-                    <MenuItem to="/main/explorer" >Explore</MenuItem>
-                    <MenuItem to="/main/messages" >Messages</MenuItem>
-                    <MenuItem to={`/main/users/${this.props.userId}`} >Personal</MenuItem>
-                </Menu>
-            </HeaderContainer>
-        )
-    }
+				<Menu>
+					<MenuItem to="/main/explorer" >Explore</MenuItem>
+					<MenuItem to="/main/messages" >Messages</MenuItem>
+					<MenuItem to={`/main/users/${this.props.userId}`} >Personal</MenuItem>
+				</Menu>
+			</HeaderContainer>
+		)
+	}
 }
 
 export default Header

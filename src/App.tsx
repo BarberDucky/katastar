@@ -15,6 +15,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import Web3 from 'web3'
 import 'semantic-ui-css/semantic.min.css'
 import { Loader } from 'semantic-ui-react';
+import styled from 'styled-components';
+
+const LoadingScreen = styled.div`
+	display: flex;
+	flex-direction: column;
+`
 
 declare global {
 	interface Window { 
@@ -49,7 +55,7 @@ class App extends Component<Props, State> {
 		this.setState({isLoaded: false})
 		
 		if (typeof window.ethereum === 'undefined') {
-			alert('You need metamask to continue')
+			this.setState({isLoaded: true})
 			this.props.push('/install-metamask')
 			return
 		}
@@ -67,13 +73,8 @@ class App extends Component<Props, State> {
 		await this.props.loadUserAndRoute(this.props.router.location.pathname)
 
 		this.props.loadEthereumProvider(window.ethereum)
-		
-		//const web3Provider = new Web3(this.props.ethereum)
-		
 
 		this.props.loadWeb3(web3)
-
-		console.log(this.props.user)
 
 		this.setState({isLoaded: true})
 	}
@@ -85,7 +86,10 @@ class App extends Component<Props, State> {
 		)
 		
 		const loading = (
-			<Loader active />
+			<LoadingScreen>
+				<h1>Waiting for Metamask...</h1>
+				<Loader active />
+			</LoadingScreen>
 		)
 
 		return (

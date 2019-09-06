@@ -5,6 +5,7 @@ import Chat from "./chat";
 import UserInfo from "./user-info"
 import NewConversation from "./new-conversation";
 import styled from 'styled-components'
+import Envelope from '../../../assets/envelope.png'
 
 const Wrapper = styled.div`
 	display: flex;
@@ -16,6 +17,18 @@ const Wrapper = styled.div`
 	> * + * {
 		margin-top: 2em;
 	}
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h2`
+  margin: 0;
 `
 
 const ListAndChat = styled.div`
@@ -39,10 +52,6 @@ const ChatAndInfo = styled.div`
 	}
 `
 
-const Title = styled.h2`
-  margin: 0;
-`
-
 interface Props {
 	match: match
 }
@@ -51,7 +60,10 @@ class Messages extends Component<Props> {
 	render() {
 		return (
 			<Wrapper>
-				<Title>Messages</Title>
+				<TitleImage>
+					<img src={Envelope} alt="envelope" height='64'/>
+					<Title>Messages</Title>
+				</TitleImage>
 				<ListAndChat>
 					<MessagesList match={this.props.match}/>
 					<Switch>

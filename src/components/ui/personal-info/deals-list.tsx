@@ -9,6 +9,29 @@ import User from '../../../models/user.model';
 import Deal from '../../../models/deal.model';
 import { withdrawDeal } from '../../../services/deal.service';
 import Web3 from 'web3'
+import styled from 'styled-components';
+import DealImg from '../../../assets/diploma.png'
+import { Table } from 'semantic-ui-react';
+
+const Wrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	margin-left: 1em;
+	display: flex;
+	flex-direction: column;
+`
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: 1em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+`
 
 interface StateProps {
   router: RouterState
@@ -54,48 +77,48 @@ class DealsList extends Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <Wrapper>
+        <TitleImage>
+					<img src={DealImg} alt="explorer" height='64'/>
+					<Title>Deals</Title>
+				</TitleImage>
         {
           this.props.deals.length === 0 ? (
             'User has made no deals.'
           ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>User 1 address</th>
-                    <th>User 1 Eth</th>
-                    <th>User 1 Parcel Number</th>
-                    <th>User 2 address</th>
-                    <th>User 2 Eth</th>
-                    <th>User 2 Parcel Number</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table striped selectable>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>User 1</Table.HeaderCell>
+                    <Table.HeaderCell>User 1 Eth</Table.HeaderCell>
+                    <Table.HeaderCell>User 1 Parcel</Table.HeaderCell>
+                    <Table.HeaderCell>User 2</Table.HeaderCell>
+                    <Table.HeaderCell>User 2 Eth</Table.HeaderCell>
+                    <Table.HeaderCell>User 2 Parcel</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {
                     this.props.deals.map(deal => {
                       return (
-                        <tr key={`userDeals${deal.address}`}
+                        <Table.Row key={`userDeals${deal.address}`}
                           onClick={() => this.openDetails(deal)}
                         >
-                          <td>{deal.address}</td>
-                          <td>{deal.user1Asset.userAddress}</td>
-                          <td>{deal.user1Asset.eth}</td>
-                          <td>{deal.user1Asset.parcels.length}</td>
-                          <td>{deal.user2Asset.userAddress}</td>
-                          <td>{deal.user2Asset.eth}</td>
-                          <td>{deal.user2Asset.parcels.length}</td>
-                          <td><button onClick={() => this.withdrawDeal(deal)}>Withdraw</button></td>
-                        </tr>
+                          <Table.Cell>{deal.user1Asset.userAddress}</Table.Cell>
+                          <Table.Cell>{deal.user1Asset.eth}</Table.Cell>
+                          <Table.Cell>{deal.user1Asset.parcels.length}</Table.Cell>
+                          <Table.Cell>{deal.user2Asset.userAddress}</Table.Cell>
+                          <Table.Cell>{deal.user2Asset.eth}</Table.Cell>
+                          <Table.Cell>{deal.user2Asset.parcels.length}</Table.Cell>
+                        </Table.Row>
                       )
                     })
                   }
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             )
         }
-      </div>
+      </Wrapper>
     )
   }
 }

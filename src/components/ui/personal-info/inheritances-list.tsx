@@ -12,6 +12,50 @@ import Inheritance from '../../../models/inheritance.model';
 import { createInheritance } from '../../../services/inheritance.service';
 import { searchUsers } from '../../../services/user.service';
 import Web3 from 'web3'
+import styled from 'styled-components';
+import InheritanceImg from '../../../assets/payment.png'
+import { Input, Select, Button, Table } from 'semantic-ui-react';
+
+const Wrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	margin-left: 1em;
+	display: flex;
+	flex-direction: column;
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+  margin-bottom: 2em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+`
+
+const Form = styled.form`
+	display: flex;
+  > * + * {
+    margin-left: 1em;
+  }
+`
+
+const Label = styled.label`
+    display: flex;
+    flex-direction: column;
+    > * + * {
+        margin-top: 0.33em;
+    }
+`
+
+const StyledButton = styled.div`
+	align-self: flex-end;
+	margin-bottom: 3px;
+`
 
 interface StateProps {
   router: RouterState
@@ -33,23 +77,38 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
   users: User[]
+  isLoading: boolean
 }
 
 class InheritancesList extends Component<Props, State> {
 
+  _isMounted = false
   state: State = {
-    users: []
+    users: [],
+    isLoading: false
+  }
+
+  async componentDidMount() {
+    this._isMounted = true
+    this.onRouteChange()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
+  async onRouteChange() {
+    this.setState({isLoading: true})
+
+    const users = await searchUsers({})
+
+    if(this._isMounted)
+      this.setState({users, isLoading: false})
   }
 
   @bind
   private openDetails(inheritance: Inheritance) {
     this.props.push(`/main/inheritances/${inheritance.address}`)
-  }
-
-  @bind
-  private async loadUsers() {
-    const users = await searchUsers({})
-    this.setState({users})
   }
 
   @bind
@@ -74,43 +133,48 @@ class InheritancesList extends Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <Wrapper>
+        <TitleImage>
+          <img src={InheritanceImg} alt="explorer" height='64' />
+          <Title>Inheritances</Title>
+        </TitleImage>
         {
           this.props.isOwner ? (
             <div>
-              <span>Create new Inheritance</span>
-              <form onSubmit={this.handleSubmit}>
-                <input name="duration" required />
-                <select name="parcel" required>
-                  {
-                    this.props.parcels.map(parcel => {
-                      return (
-                        <option
-                          value={parcel.address}
-                          key={`inheritanceParcel${parcel.address}`}
-                        >
-                          {parcel.address}
-                        </option>
-                      )
-                    })
-                  }
-                </select>
-                <select name="to" onClick={this.loadUsers} required>
-                  {
-                    this.state.users.map(user => {
-                      return (
-                        <option
-                          value={user.address}
-                          key={`inheritanceUser${user.address}`}
-                        >
-                          {user.address}
-                        </option>
-                      )
-                    })
-                  }
-                </select>
-                <button>Create New Inheritance Contract</button>
-              </form>
+              <h4>Create new Inheritance</h4>
+              <Form onSubmit={this.handleSubmit}>
+                <Label>
+                  <span>Duration (seconds)</span>
+                  <Input name="duration" type="number" min="0" placeholder="eg. 300" required />
+                </Label>
+                <Label>
+                  <span>Parcel</span>
+                  <Select name="parcel" required
+                    options={
+                      this.props.parcels.map(parcel => ({
+                        key: `inheritanceParcel${parcel.address}`,
+                        value: parcel.address,
+                        text: parcel.address,
+                      }))
+                    }
+                  />
+                </Label>
+                <Label>
+                  <span>To User</span>
+                  <Select name="to" required loading={this.state.isLoading}
+                    options={
+                      this.state.users.map(user => ({
+                        key: `inheritanceUser${user.address}`,
+                        value: user.address,
+                        text: `${user.firstName} ${user.lastName}, ${user.location}`,
+                      }))
+                    }
+                  />
+                </Label>
+                <StyledButton>
+									<Button>Create New Auction</Button>
+								</StyledButton>
+							</Form>
             </div>
           ) : (
               ''
@@ -120,37 +184,36 @@ class InheritancesList extends Component<Props, State> {
           this.props.inheritances.length === 0 ? (
             'User has no inheritance.'
           ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Deadline</th>
-                    <th>Number of Parcels</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table striped selectable>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>From</Table.HeaderCell>
+                    <Table.HeaderCell>To</Table.HeaderCell>
+                    <Table.HeaderCell>Deadline</Table.HeaderCell>
+                    <Table.HeaderCell>Parcel</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {
                     this.props.inheritances.map(inheritance => {
+                      const deadline = new Date(inheritance.deadline)
                       return (
-                        <tr key={`userInheritance${inheritance.address}`}
+                        <Table.Row key={`userInheritance${inheritance.address}`}
                           onClick={() => this.openDetails(inheritance)}
                         >
-                          <td>{inheritance.address}</td>
-                          <td>{inheritance.from}</td>
-                          <td>{inheritance.to}</td>
-                          <td>{inheritance.duration}</td>
-                          <td>{inheritance.parcel}</td>
-                        </tr>
+                          <Table.Cell>{inheritance.from}</Table.Cell>
+                          <Table.Cell>{inheritance.to}</Table.Cell>
+                          <Table.Cell>{deadline.toLocaleString()}</Table.Cell>
+                          <Table.Cell>{inheritance.parcel}</Table.Cell>
+                        </Table.Row>
                       )
                     })
                   }
-                </tbody>
-              </table>
+                </Table.Body>
+              </Table>
             )
         }
-      </div>
+      </Wrapper>
     )
   }
 }

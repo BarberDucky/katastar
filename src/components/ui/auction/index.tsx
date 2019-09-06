@@ -7,11 +7,78 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
 import bind from 'bind-decorator';
 import Auction from '../../../models/auction.model';
-import { readAuction, submitBid, readAuctionTime, readHighestBid, withdrawBids, endAuction, withdrawParcel } from '../../../services/auction.service';
+import { readAuction, submitBid, readHighestBid, withdrawBids, endAuction, withdrawParcel } from '../../../services/auction.service';
 import User from '../../../models/user.model';
 import { formDataToJson } from '../../../helper';
-import { Button } from 'semantic-ui-react';
+import { Button, Loader, Segment, Input } from 'semantic-ui-react';
 import Web3 from 'web3'
+import styled from 'styled-components';
+import AuctionImg from '../../../assets/currency-exchange.png'
+
+const Wrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	padding: 2em;
+  box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+  margin-bottom: 2em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+`
+
+const AuctionInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 1.5em;
+  }
+`
+
+const TitleInfo = styled.h3` 
+  margin-bottom: 2em;
+`
+
+const InfoEntry = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > span:last-child {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+`
+
+const SegmentWrapper = styled.div`
+  padding: 2em;
+  box-sizing: border-box;
+`
+
+const StyledSegment = styled(Segment)`
+  display: flex;
+
+  flex-direction: row;
+  height: 100%;
+  justify-content: space-between;
+`
+
+const Label = styled.label`
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
+`
 
 interface StateProps {
   router: RouterState
@@ -38,7 +105,6 @@ interface State {
   isLoading: boolean
   results?: Auction
   highestBid: number
-  duration: number
 }
 
 class AuctionPage extends Component<Props, State> {
@@ -48,7 +114,6 @@ class AuctionPage extends Component<Props, State> {
     results: undefined,
     isOwner: false,
     highestBid: -1,
-    duration: -1,
   }
 
   public componentDidMount() {
@@ -64,11 +129,9 @@ class AuctionPage extends Component<Props, State> {
     this.setState({isLoading: true})
     const auction = await readAuction(this.props.match.params.auctionId)
 
-    let remainingTime = -1
     let highestBid = -1
 
     if (this.props.web3) {
-      remainingTime = await readAuctionTime(auction.address, this.props.web3)
       highestBid = await readHighestBid(auction.address, this.props.web3)
     } else {
       alert('no web3')
@@ -79,8 +142,7 @@ class AuctionPage extends Component<Props, State> {
         isLoading: false,
         results: auction,
         isOwner: auction ? this.props.user.address === auction.owner : false,
-        duration: remainingTime,
-        highestBid
+        highestBid,
       })
     }
   }
@@ -142,43 +204,84 @@ class AuctionPage extends Component<Props, State> {
 
   render () {
     const auction = this.state.results
+    let deadline = 'error loading deadline'
+    if(auction) {
+      deadline = (new Date(auction.deadline)).toLocaleString()
+    }
     return (
-      <div>
+      <Wrapper>
+        <TitleImage>
+          <img src={AuctionImg} alt="explorer" height='64' />
+          <Title>Parcel Token</Title>
+        </TitleImage>
         {
           this.state.isLoading ? (
-            'Loading...'
+            <Loader active />
           ) : !auction ? (
             'Error loading auction.'
           ) : (
-            <div>
-              <span>{auction.address}</span>
-              <span>Remaining Time: {this.state.duration}</span>
-              <span>Highest Bid: {this.state.highestBid}</span>
-              <span>{auction.isDone}</span>
-              <span>{auction.startingPrice}</span>
-              <span onClick={() => this.selectOwner(auction.owner)}>{auction.owner}</span>
-              <span onClick={() => this.selectParcel(auction.parcel.address)}>{auction.parcel.address}</span>
+            <SegmentWrapper>
+              <StyledSegment>
+              <AuctionInfo>
+                <TitleInfo>Auction Info:</TitleInfo>
+                <InfoEntry onClick={() => this.selectOwner(auction.owner)}>
+                  <span>Auction Owner</span>
+                  <span>{auction.owner}</span>
+                </InfoEntry>
+                <InfoEntry onClick={() => this.selectParcel(auction.parcel.address)}>
+                  <span>Auctioned Parcel</span>
+                  <span>{auction.parcel.address}</span>
+                </InfoEntry>
+                <InfoEntry>
+                  <span>Estimated Deadline</span>
+                  <span>{deadline}</span>
+                </InfoEntry>
+                <InfoEntry>
+                  <span>Highest Bid</span>
+                  <span>{this.state.highestBid}</span>
+                </InfoEntry>
+                <InfoEntry>
+                  <span>Starting Price</span>
+                  <span>{auction.startingPrice}</span>
+                </InfoEntry>
+                
+              </AuctionInfo>
 
+              <AuctionInfo>
               {
                 !this.state.isOwner ? (
                   <div>
-                    <form onSubmit={this.submitBid}>
-                      <input name="bid"/>
-                      <button>Bid</button>
-                    </form>
-                    <Button onClick={() => this.withdrawBids()}>Withdraw</Button>
-                    <Button onClick={() => this.withdrawWinner()}>Withdraw Won Parcel</Button>
-                  
+                    {
+                      auction.deadline > Date.now() ? (
+                        <form onSubmit={this.submitBid}>
+                          <h4>Bid</h4>
+                          <Label>
+                            <span>Bid Amount</span>
+                            <Input name='bid' placeholder='eg. 1000'/>
+                          </Label>
+                          <Button>Send Bid</Button>
+                        </form>
+                      ) : (
+                        <div>
+                          <Button onClick={() => this.withdrawBids()}>Withdraw Payed Bids</Button>
+                          <Button onClick={() => this.withdrawWinner()}>Withdraw Won Parcel</Button>
+                         </div> 
+                      )
+                    }
                   </div>
-                ) : (
+                ) :  auction.deadline <= Date.now() ? (
                   <Button onClick={() => this.endAuction()}>Withdraw Eth</Button>
+                ) : (
+                  'Auction is not over yet.'
                 )
               }
-
-            </div>
+              </AuctionInfo>
+              
+              </StyledSegment>
+            </SegmentWrapper>
           )
         }
-      </div>
+      </Wrapper>
     )
   }
 

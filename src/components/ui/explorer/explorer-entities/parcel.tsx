@@ -12,30 +12,48 @@ import { AppState } from '../../../../store';
 import Parcel from '../../../../models/parcel.model';
 import { searchParcels } from '../../../../services/parcel.service';
 import { Table, Loader, Button, Input } from 'semantic-ui-react'
+import PatImg from '../../../../assets/pat.png'
 
 const Wrapper = styled.div`
-    padding: 1em 2em 2em 2em;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 2em;
-    }
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 2em;
+	}
 `
 
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	flex-grow: 2;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+  margin: 0;
+` 
+
 const Form = styled.form`
-    display: flex;
-    > * + * {
-        margin-left: 1em;
-    }
+  display: flex;
+  > * + * {
+    margin-left: 1em;
+  }
 `
 
 const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 0.33em;
-    }
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
+`
+
+const StyledButton = styled.div`
+	align-self: flex-end;
+	margin-bottom: 3px;
 `
 
 const Main = styled.main``
@@ -122,29 +140,35 @@ class ParcelPageComponent extends Component<Props, State> {
 		return (
 			<Wrapper>
 				<Form onSubmit={this.handleSubmit}>
+					<TitleImage>
+							<img src={PatImg} alt="explorer" height='64'/>
+							<Title>Parcels</Title>
+					</TitleImage>
 					<Label>
 						<span>Address</span>
-						<Input type="text" name="address" />
+						<Input type="text" name="address" placeholder="eg. 3" />
 					</Label>
 					<Label>
 						<span>Owner</span>
-						<Input type="text" name="owner" />
+						<Input type="text" name="owner" placeholder="eg. 0x1bC23..." />
 					</Label>
 					<Label>
 						<span>Region</span>
-						<Input type="text" name="region" />
+						<Input type="text" name="region" placeholder="eg. East Serbia" />
 					</Label>
 					<Label>
 						<span>Municipality</span>
-						<Input type="text" name="municipality" />
+						<Input type="text" name="municipality" placeholder="eg. Niš" />
 					</Label>
 					<Label>
 						<span>Cadaste Municipality</span>
-						<Input type="text" name="cadastreMunicipality" />
+						<Input type="text" name="cadastreMunicipality" placeholder="eg. Brzi Brod" />
 					</Label>
-					<Button type="submit" primary>
-						Search
-          </Button>
+					<StyledButton>
+						<Button type="submit" primary>
+							Search
+						</Button>
+					</StyledButton>
 				</Form>
 				<Main>
 					{

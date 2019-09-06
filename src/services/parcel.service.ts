@@ -38,11 +38,9 @@ export const createParcel = async (parcel: Parcel, web3: Web3, userId: string, a
   const parcelToken = ParcelTokenContract(web3)
   await parcelToken.methods.mintToken(userId).send({from: adminUser})
   
-  const tokenNumber = await parcelToken.methods.getTokenIds().call()
   let tokenIndex = await parcelToken.methods.balanceOf(userId).call()
   tokenIndex--
   const tokenId = await parcelToken.methods.tokenOfOwnerByIndex(userId, tokenIndex).call()
-  const owner = await parcelToken.methods.ownerOf(tokenId).call()
 
   parcel.address = tokenId
   parcel.owner = userId

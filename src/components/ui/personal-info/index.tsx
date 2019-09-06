@@ -9,12 +9,50 @@ import { match, Switch, Route } from 'react-router';
 import PersonalInfoUpdateForm from './update-form';
 import UserBasicInfo from './basic-info';
 import { readUser } from '../../../services/user.service';
-import { Link } from 'react-router-dom';
 import ParcelList from './parcel-list';
 import AuctionsList from './auctions-list';
 import bind from 'bind-decorator';
 import InheritancesList from './inheritances-list';
 import DealsList from './deals-list';
+import styled from 'styled-components';
+import UserImg from '../../../assets/cv.png'
+import UserInfoMenu from './menu'
+import { Loader } from 'semantic-ui-react';
+
+const Wrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	padding: 2em;
+
+	> * + * {
+		margin-top: 2em;
+	}
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h2`
+  margin: 0;
+`
+
+const Main = styled.div`
+	display: flex;
+	width: 100%;
+	height: 100%;
+`
+
+const InfoAndMenu = styled.div`
+	display: flex;
+	flex-direction: column;
+`
 
 interface StateProps {
 	router: RouterState
@@ -95,35 +133,30 @@ class PersonalInfo extends Component<Props, State> {
 	render() {
 		const user = this.state.results
 		return (
-			<div>
+			<Wrapper>
+				<TitleImage>
+						<img src={UserImg} alt="explorer" height='64'/>
+						<Title>User Info</Title>
+				</TitleImage>
 				{
 					this.state.isLoading ? (
-						'Loading...'
+						<Loader active/>
 					) : user === undefined ? (
 						'Error loading user'
 					) : (
-								<div>
-									{
-										this.state.isOwner ? (
-											<PersonalInfoUpdateForm user={this.props.user} />
-										) : (
-												<div>
-													<UserBasicInfo user={user} beginCoversation={this.beginConversation}/>
-												</div>
-											)
-									}
-									<div>
-										<Link to={`/main/users/${this.props.match.params.userId}/parcels`}>Parcels</Link>
-										<Link to={`/main/users/${this.props.match.params.userId}/auctions`}>Auctions</Link>
+								<Main>
+									<InfoAndMenu>
 										{
 											this.state.isOwner ? (
-												<div>
-													<Link to={`/main/users/${this.props.match.params.userId}/deals`}>Deals</Link>
-													<Link to={`/main/users/${this.props.match.params.userId}/inheritances`}>Inheritances</Link>
-												</div>
-											) : ('')
+												<PersonalInfoUpdateForm user={this.props.user} />
+											) : (
+													<div>
+														<UserBasicInfo user={user} beginCoversation={this.beginConversation}/>
+													</div>
+												)
 										}
-									</div>
+										<UserInfoMenu match={this.props.match} isOwner={this.state.isOwner}/>			
+									</InfoAndMenu>
 									<Switch>
 										<Route path="/main/users/:userId/parcels"
 											render={props => <ParcelList {...props} parcels={user.parcels} />}
@@ -157,10 +190,10 @@ class PersonalInfo extends Component<Props, State> {
 											}
 										/>
 									</Switch>
-								</div>
+								</Main>
 							)
 				}
-			</div>
+			</Wrapper>
 		)
 	}
 }

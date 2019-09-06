@@ -12,9 +12,9 @@ import { AppState } from '../../../../store';
 import { searchUsers } from '../../../../services/user.service';
 import User from '../../../../models/user.model';
 import { Input, Table, Button, Loader } from 'semantic-ui-react';
+import UsersImg from '../../../../assets/network.png'
 
 const Wrapper = styled.div`
-    padding: 1em 2em 2em 2em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -22,6 +22,19 @@ const Wrapper = styled.div`
         margin-top: 2em;
     }
 `
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	flex-grow: 2;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+` 
 
 const Form = styled.form`
     display: flex;
@@ -36,6 +49,11 @@ const Label = styled.label`
     > * + * {
         margin-top: 0.33em;
     }
+`
+
+const StyledButton = styled.div`
+	align-self: flex-end;
+	margin-bottom: 3px;
 `
 
 const Main = styled.main``
@@ -120,25 +138,31 @@ class UserPageComponent extends Component<Props, State> {
 		return (
 			<Wrapper>
 				<Form onSubmit={this.handleSubmit}>
+					<TitleImage>
+							<img src={UsersImg} alt="explorer" height='64'/>
+							<Title>Users</Title>
+					</TitleImage>
 					<Label>
 						<span>Address</span>
-						<Input type="text" name="address" />
+						<Input type="text" name="address" placeholder="eg. 0x1bC23..." />
 					</Label>
 					<Label>
 						<span>First Name</span>
-						<Input type="text" name="firstName" />
+						<Input type="text" name="firstName" placeholder="eg. John" />
 					</Label>
 					<Label>
 						<span>Last Name</span>
-						<Input type="text" name="lastName" />
+						<Input type="text" name="lastName" placeholder="eg. Doe" />
 					</Label>
 					<Label>
 						<span>Location</span>
-						<Input type="text" name="location" />
+						<Input type="text" name="location" placeholder="eg. Niš" />
 					</Label>
-					<Button type="submit" primary>
-						Search
-					</Button>
+					<StyledButton>
+						<Button type="submit" primary>
+							Search
+						</Button>
+					</StyledButton>
 				</Form>
 				<Main>
 					{

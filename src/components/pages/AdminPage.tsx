@@ -3,8 +3,7 @@ import { AppState } from '../../store';
 import { connect } from 'react-redux';
 import User from '../../models/user.model';
 import Web3 from 'web3'
-import Parcel from '../../models/parcel.model';
-import { createParcel, burnAllTokens, generateParcels, readParcelsFromChain } from '../../services/parcel.service';
+import { burnAllTokens, generateParcels, readParcelsFromChain } from '../../services/parcel.service';
 import bind from 'bind-decorator';
 
 const adminUser = '0x0311c5f1722f1cd61e16c6e0cf5cbdd4d0a14ed8'
@@ -41,7 +40,6 @@ class AdminPage extends Component<Props> {
   async generateParcels() {
     if (this.props.user.address !== adminUser) {
       alert('must be admin user')
-      console.log(this.props.user.address, adminUser)
       return
     }
     if (this.props.web3) {

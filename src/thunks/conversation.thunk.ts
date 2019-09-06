@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import Conversation from '../models/conversation.model';
 import { LoadConversationAction } from '../store/current-conversation/interfaces';
 import { LOAD_CONVERSATION } from '../store/current-conversation/types';
-import { readConversationFromId, readConversation } from '../services/conversation.service';
+import { readConversationFromId } from '../services/conversation.service';
 
 export const unsubscribeConversation = async (conversationId: string) => {
   await firebase.database().ref(`conversations/${conversationId}`).off('value') 
@@ -35,8 +35,7 @@ export const fetchConversation = (oldConversationId: string, targetUser: string,
 
       //await readConversation(currentUserAddress, targetUser)
 
-      const res = await firebase.database().ref(`users/${currentUserAddress}/conversations/${targetUser}/isRead`).set(true)
-      console.log('read...', res)
+      await firebase.database().ref(`users/${currentUserAddress}/conversations/${targetUser}/isRead`).set(true)
       const action: LoadConversationAction = {
         type: LOAD_CONVERSATION,
         payload: conversation

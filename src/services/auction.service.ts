@@ -1,6 +1,5 @@
 import Auction from "../models/auction.model";
 import firebase from '../config/firebase'
-import { sleep } from "../helper";
 import { AuctionFormData } from "../components/ui/explorer/explorer-entities/auction";
 import AuctionFactory from "./contracts/auctionFactory"
 import ParcelToken from "./contracts/parcelToken"
@@ -76,7 +75,7 @@ export const submitBid = async (auction: Auction, bid: number, userId: string, w
   const now = Date.now()
   const auctionRemainingTime = auction.deadline - now
 
-  console.log(now, auction.deadline, auctionRemainingTime)
+  
   if (auctionRemainingTime <= 0) return false
   const auctionContract = AuctionContract(web3, auction.address)
 
@@ -167,7 +166,7 @@ export const endAuction = async (auction: Auction, userId: string, web3: Web3) =
     return true
   }
   catch(error) {
-    console.log(error.payload)
+    alert(error)
     return false
   }
 }

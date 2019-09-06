@@ -1,19 +1,74 @@
-import React, { Component, FormEvent } from 'react'
+import React, { Component } from 'react'
 import { RouterState, Push, push } from 'connected-react-router';
 import { match } from 'react-router';
 import { MapStateToProps, connect } from 'react-redux';
 import { AppState } from '../../../store';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';
-import Auction from '../../../models/auction.model';
-import { readAuction, submitBid } from '../../../services/auction.service';
-import User from '../../../models/user.model';
-import { formDataToJson } from '../../../helper';
+import bind from 'bind-decorator';import User from '../../../models/user.model';
 import Inheritance from '../../../models/inheritance.model';
-import { readInheritance, readInheritanceTime, withdraw } from '../../../services/inheritance.service';
+import { readInheritance, withdraw } from '../../../services/inheritance.service';
 import Web3 from 'web3'
-import { Button } from 'semantic-ui-react';
+import { Button, Segment, Loader } from 'semantic-ui-react';
+import styled from 'styled-components';
+import InheritanceImg from '../../../assets/payment.png'
+
+const Wrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	padding: 2em;
+  box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+  margin-bottom: 2em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+`
+
+const AuctionInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 1.5em;
+  }
+`
+
+const TitleInfo = styled.h3` 
+  margin-bottom: 2em;
+`
+
+const InfoEntry = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > span:last-child {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+`
+
+const SegmentWrapper = styled.div`
+  padding: 2em;
+  box-sizing: border-box;
+`
+
+const StyledSegment = styled(Segment)`
+  display: flex;
+
+  flex-direction: row;
+  height: 100%;
+  justify-content: space-between;
+`
 
 interface StateProps {
   router: RouterState
@@ -65,14 +120,6 @@ class InheritancePage extends Component<Props, State> {
     const inheritance = await readInheritance(this.props.match.params.inheritanceId, this.props.user.address)
 
     let remainingTime = -1
-
-    if (this.props.web3) {
-      console.log('getting time')
-      remainingTime = await readInheritanceTime(this.props.match.params.inheritanceId, this.props.web3)
-      console.log(remainingTime)
-    } else {
-      alert('no web3')
-    }
     
     if (this._isMounted) {
       this.setState({
@@ -117,34 +164,70 @@ class InheritancePage extends Component<Props, State> {
 
   render () {
     const inheritance = this.state.results
+    let deadline = 'error loading deadline'
+    if(inheritance) {
+      deadline = (new Date(inheritance.deadline)).toLocaleString()
+    }
     return (
-      <div>
+      <Wrapper>
+        <TitleImage>
+          <img src={InheritanceImg} alt="explorer" height='64' />
+          <Title>Parcel Token</Title>
+        </TitleImage>
         {
           this.state.isLoading ? (
-            'Loading...'
+            <Loader active />
           ) : !inheritance ? (
-            'Error loading Inheritance.'
+            'Error loading auction.'
           ) : (
-            <div>
-              <span>{inheritance.address}</span>
-              <span>Remaining Time: {this.state.remainingTime}</span>
-              <span>Is Withdrawn: {inheritance.isWithdrawn}</span>
-              <span onClick={() => this.selectOwner(inheritance.from)}>{inheritance.from}</span>
-              <span onClick={() => this.selectOwner(inheritance.to)}>{inheritance.to}</span>
-              <span onClick={() => this.selectParcel(inheritance.parcel)}>{inheritance.parcel}</span>
+            <SegmentWrapper>
+              <StyledSegment>
+              <AuctionInfo>
+                <TitleInfo>Inheritance Info:</TitleInfo>
+                <InfoEntry onClick={() => this.selectOwner(inheritance.from)}>
+                  <span>From</span>
+                  <span>{inheritance.from}</span>
+                </InfoEntry>
+                <InfoEntry onClick={() => this.selectOwner(inheritance.to)}>
+                  <span>To</span>
+                  <span>{inheritance.to}</span>
+                </InfoEntry>
+                <InfoEntry onClick={() => this.selectParcel(inheritance.parcel)}>
+                  <span>Inherited Parcel</span>
+                  <span>{inheritance.parcel}</span>
+                </InfoEntry>
+                <InfoEntry>
+                  <span>Estimated Deadline</span>
+                  <span>{deadline}</span>
+                </InfoEntry>
+                <InfoEntry>
+                  <span>Is Withdrawn</span>
+                  {
+                    inheritance.isWithdrawn ? (
+                      <span>Yes</span>
+                    ) : (
+                      <span>No</span>
+                    )
+                  }
+                </InfoEntry>
+                
+              </AuctionInfo>
 
+              <AuctionInfo>
               {
-                this.state.isOwner ? (
-                  <Button onClick={() => this.withdraw()}>Withdraw</Button>
+                !inheritance.isWithdrawn ? (
+                  <Button onClick={() => this.withdraw()} active={this.state.isOwner}>Withdraw</Button>
                 ) : (
                   ''
                 )
               }
-
-            </div>
+              </AuctionInfo>
+              
+              </StyledSegment>
+            </SegmentWrapper>
           )
         }
-      </div>
+      </Wrapper>
     )
   }
 

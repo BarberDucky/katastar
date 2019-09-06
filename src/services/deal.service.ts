@@ -19,8 +19,6 @@ export const createDeal = async (deal: Deal) => {
 export const readDeal = async (dealId: string, userId: string) => {
   const dealRes = await firebase.database().ref(`users/${userId}/deals/${dealId}`).once('value')
   const deal: Deal = dealRes.val()
-  
-  console.log(deal, dealId, userId)
 
   return deal
 }
@@ -64,11 +62,9 @@ export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
   if (isSettled) return false
 
   const assetsForPayment: Asset = userId === deal.user1Asset.userAddress ? deal.user1Asset : deal.user2Asset 
-  const payingUser: string = userId == deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
+  const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
 
   const {parcels, eth} = assetsForPayment
-
-  console.log(parcels, eth)
   
   try {
     if (eth > 0)
@@ -114,7 +110,7 @@ export const withdrawDeal = async (deal: Deal, userId: string, web3: Web3) => {
 
 const withdrawPayed = async (deal: Deal, userId: string, web3: Web3, dealContract: Contract) => {
   const assetsForPayment: Asset = userId === deal.user1Asset.userAddress ? deal.user1Asset : deal.user2Asset 
-  const payingUser: string = userId == deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
+  const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
 
   if (!assetsForPayment.isPayed) return false
 

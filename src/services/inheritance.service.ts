@@ -3,7 +3,6 @@ import Inheritance from '../models/inheritance.model';
 import InheritanceFactory from './contracts/inheritanceFactory'
 import ParcelToken from './contracts/parcelToken'
 import InheritanceContract from './contracts/inheritance'
-import InheritanceAbi from '../truffle/build/contracts/Inheritance.json'
 import Web3 from 'web3'
 import { readParcel } from './parcel.service';
 
@@ -57,8 +56,7 @@ export const withdraw = async (inheritance: Inheritance, web3: Web3, userId: str
   }
   const now = Date.now()
   const remainingTime = inheritance.deadline - now
-  console.log('REMAINING TIME', remainingTime, inheritance.deadline, now)
-
+  
   if (
     (remainingTime > 0 && userId !== inheritance.from) ||
     (remainingTime <= 0 && userId !== inheritance.to) 

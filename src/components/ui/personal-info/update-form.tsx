@@ -47,9 +47,9 @@ class PersonalInfoUpdateForm extends Component<Props, State> {
 					<Card.Meta>User Description</Card.Meta>
 					<Card.Description>
 						<form onSubmit={this.handleSubmit}>
-							<Input name="firstName" defaultValue={this.state.firstName} required />
-							<Input name="lastName" defaultValue={this.state.lastName} required />
-							<Input name="location" defaultValue={this.state.location} required />
+							<Input name="firstName" defaultValue={this.state.firstName} placeholder="eg. John" required />
+							<Input name="lastName" defaultValue={this.state.lastName} placeholder="eg. Doe" required />
+							<Input name="location" defaultValue={this.state.location} placeholder="eg. Niš" required />
 							<Button primary>Save</Button>
 						</form>	
 					</Card.Description>

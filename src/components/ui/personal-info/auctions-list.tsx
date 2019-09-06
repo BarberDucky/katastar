@@ -11,6 +11,49 @@ import { formDataToJson } from '../../../helper';
 import User from '../../../models/user.model';
 import { createAuction } from '../../../services/auction.service';
 import Web3 from 'web3'
+import styled from 'styled-components';
+import AuctionImg from '../../../assets/currency-exchange.png'
+import { Table, Input, Button, Select } from 'semantic-ui-react';
+
+const Wrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	margin-left: 1em;
+	display: flex;
+	flex-direction: column;
+`
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	margin-bottom: 2em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+`
+
+const Form = styled.form`
+	display: flex;
+  > * + * {
+    margin-left: 1em;
+  }
+`
+
+const Label = styled.label`
+    display: flex;
+    flex-direction: column;
+    > * + * {
+        margin-top: 0.33em;
+    }
+`
+
+const StyledButton = styled.div`
+	align-self: flex-end;
+	margin-bottom: 3px;
+`
 
 interface StateProps {
 	router: RouterState
@@ -63,30 +106,40 @@ class AuctionsList extends Component<Props, State> {
 
 	render() {
 		return (
-			<div>
+			<Wrapper>
+				<TitleImage>
+					<img src={AuctionImg} alt="explorer" height='64' />
+					<Title>Auctions</Title>
+				</TitleImage>
 				{
 					this.props.isOwner ? (
 						<div>
-							<span>Create new auction</span>
-							<form onSubmit={this.handleSubmit}>
-								<input name="startingPrice" type="number" min="0" required />
-								<input name="duration" required />
-								<select name="parcel" required>
-									{
-										this.props.parcels.map(parcel => {
-											return (
-												<option
-													value={parcel.address}
-													key={`auctionParcel${parcel.address}`}
-												>
-													{parcel.address}
-												</option>
-											)
-										})
-									}
-								</select>
-								<button>Create New Auction</button>
-							</form>
+							<h4>Create new auction</h4>
+							<Form onSubmit={this.handleSubmit}>
+								<Label>
+									<span>Starting Price</span>
+									<Input name="startingPrice" type="number" min="0" placeholder="eg. 1000" required />
+								</Label>
+								<Label>
+									<span>Duration (seconds)</span>
+									<Input name="duration" type="number" min="0" placeholder="eg. 300" required />
+								</Label>
+								<Label>
+									<span>Parcel</span>
+									<Select name="parcel" required
+										options={
+											this.props.parcels.map(parcel => ({
+													key: `auctionParcel${parcel.address}`,
+													value: parcel.address,
+													text: parcel.address,
+											}))
+										}
+									/>
+								</Label>
+								<StyledButton>
+									<Button>Create New Auction</Button>
+								</StyledButton>
+							</Form>
 						</div>
 					) : (
 							''
@@ -96,37 +149,34 @@ class AuctionsList extends Component<Props, State> {
 					this.props.auctions.length === 0 ? (
 						'User has no auctions.'
 					) : (
-							<table>
-								<thead>
-									<tr>
-										<th>id</th>
-										<th>Owner</th>
-										<th>Parcel</th>
-										<th>Deadline</th>
-										<th>Is Done?</th>
-										<th>Starting Price</th>
-									</tr>
-								</thead>
-								<tbody>
+							<Table striped selectable>
+								<Table.Header>
+									<Table.Row>
+										<Table.HeaderCell>Owner</Table.HeaderCell>
+										<Table.HeaderCell>Parcel</Table.HeaderCell>
+										<Table.HeaderCell>Deadline</Table.HeaderCell>
+										<Table.HeaderCell>Starting Price</Table.HeaderCell>
+									</Table.Row>
+								</Table.Header>
+								<Table.Body>
 									{
 										this.props.auctions.map(auction => {
+											const deadline = new Date(auction.deadline)
 											return (
-												<tr key={`userAuction${auction.address}`} onClick={() => this.openDetails(auction)}>
-													<td>{auction.address}</td>
-													<td>{auction.owner}</td>
-													<td>{auction.parcel.address}</td>
-													<td>{auction.duration}</td>
-													<td>{auction.isDone}</td>
-													<td>{auction.startingPrice}</td>
-												</tr>
+												<Table.Row key={`userAuction${auction.address}`} onClick={() => this.openDetails(auction)}>
+													<Table.Cell>{auction.owner}</Table.Cell>
+													<Table.Cell>{auction.parcel.address}</Table.Cell>
+													<Table.Cell>{deadline.toLocaleString()}</Table.Cell>
+													<Table.Cell>{auction.startingPrice}</Table.Cell>
+												</Table.Row>
 											)
 										})
 									}
-								</tbody>
-							</table>
+								</Table.Body>
+							</Table>
 						)
 				}
-			</div>
+			</Wrapper>
 		)
 	}
 }

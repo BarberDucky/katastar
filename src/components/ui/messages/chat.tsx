@@ -7,7 +7,7 @@ import { AnyAction, bindActionCreators } from 'redux';
 import { match } from 'react-router';
 import { formDataToJson } from '../../../helper';
 import bind from 'bind-decorator';
-import { readConversationFromId, pushMessage } from '../../../services/conversation.service';
+import { pushMessage } from '../../../services/conversation.service';
 import User from '../../../models/user.model';
 import Conversation, { Message } from '../../../models/conversation.model';
 import { Loader, Button, Input } from 'semantic-ui-react';
@@ -48,13 +48,18 @@ const ChatEntry = styled.div`
 	align-self: ${(props: ChatEntryProps) => props.isOwner ? "flex-end" : "flex-start"};
 `
 
+const Form = styled.form`
+	display: flex;
+	margin-top: 1em;
+
+	> *:first-child {
+		flex-grow: 2;
+	}
+`
+
 interface ChatEntryProps {
 	isOwner: boolean
 }
-
-const Form = styled.form`
-	
-`
 
 interface StateProps {
 	router: RouterState
@@ -96,12 +101,14 @@ class ChatPage extends Component<Props, State> {
 	public async componentDidMount() {
 		this._isMounted = true
 		this.onRouteChange()
+		this.scrollToBottom()
 	}
 
 	public componentDidUpdate(oldProps: Props) {
 		if (oldProps.router.location.pathname !== this.props.router.location.pathname) {
 			this.onRouteChange()
 		}
+		this.scrollToBottom()
 	}
 
 	public async componentWillUnmount() {
@@ -111,8 +118,6 @@ class ChatPage extends Component<Props, State> {
 
 	private async onRouteChange() {
 		this.setState({ isLoading: true })
-		
-		console.log(this.props)
 
 		this.props.fetchConversation(
 			this.props.currentConversation.address,
@@ -139,6 +144,12 @@ class ChatPage extends Component<Props, State> {
 		pushMessage(obj, this.props.currentConversation.address)
 	}
 
+	private scrollToBottom() {
+		var objDiv = document.getElementById("message-list");
+    if (objDiv)
+      objDiv.scrollTop = objDiv.scrollHeight;
+	}	
+	
 	render() {
 		return (
 			<Segment>
@@ -146,7 +157,7 @@ class ChatPage extends Component<Props, State> {
 					this.state.isLoading && !this.props.currentUser ? (
 						<Loader active />
 					) : (
-							<Chat>
+							<Chat id='message-list'>
 								{
 									this.props.currentConversation.messages.map((result, index) => {
 										return (

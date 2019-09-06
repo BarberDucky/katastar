@@ -59,7 +59,6 @@ export const readConversation = async (readingUserId: string, targetUserId: stri
   const conversationInfo: ConversationInfo = conversationInfoValue.val()
 
   if (conversationInfo) {
-    console.log(readingUserId, targetUserId)
     await firebase.database().ref(`users/${readingUserId}/conversations/${targetUserId}/isRead`).set(true)
 
     return conversationInfo

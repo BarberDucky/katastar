@@ -12,9 +12,9 @@ import { AppState } from '../../../../store';
 import { searchAuctions } from '../../../../services/auction.service';
 import Auction from '../../../../models/auction.model';
 import { Input, Button, Table, Loader } from 'semantic-ui-react';
+import AuctionImg from '../../../../assets/currency-exchange.png'
 
 const Wrapper = styled.div`
-    padding: 1em 2em 2em 2em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -22,6 +22,19 @@ const Wrapper = styled.div`
         margin-top: 2em;
     }
 `
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+	flex-grow: 2;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h3`
+    margin: 0;
+` 
 
 const Form = styled.form`
     display: flex;
@@ -36,6 +49,11 @@ const Label = styled.label`
     > * + * {
         margin-top: 0.33em;
     }
+`
+
+const StyledButton = styled.div`
+	align-self: flex-end;
+	margin-bottom: 3px;
 `
 
 const Main = styled.main``
@@ -122,29 +140,35 @@ class AuctionPageComponent extends Component<Props, State> {
 		return (
 			<Wrapper>
 				<Form onSubmit={this.handleSubmit}>
+					<TitleImage>
+							<img src={AuctionImg} alt="explorer" height='64'/>
+							<Title>Auctions</Title>
+					</TitleImage>
 					<Label>
 						<span>Address</span>
-						<Input type="text" name="address" />
+						<Input type="text" name="address" placeholder="eg. 0x1bC23..."/>
 					</Label>
 					<Label>
 						<span>Owner</span>
-						<Input type="text" name="owner" />
+						<Input type="text" name="owner" placeholder="eg. 0x1bC23..."/>
 					</Label>
 					<Label>
 						<span>Region</span>
-						<Input type="text" name="region" />
+						<Input type="text" name="region" placeholder="eg. East Serbia"/>
 					</Label>
 					<Label>
 						<span>Municipality</span>
-						<Input type="text" name="municipality" />
+						<Input type="text" name="municipality" placeholder="eg. Niš"/>
 					</Label>
 					<Label>
 						<span>Cadaste Municipality</span>
-						<Input type="text" name="cadastreMunicipality" />
+						<Input type="text" name="cadastreMunicipality" placeholder="eg. Brzi Brod"/>
 					</Label>
-					<Button type="submit" primary>
-						Search
-					</Button>
+					<StyledButton>
+						<Button type="submit" primary>
+							Search
+						</Button>
+					</StyledButton>
 				</Form>
 				<Main>
 					{

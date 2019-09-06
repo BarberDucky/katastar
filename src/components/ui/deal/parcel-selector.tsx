@@ -1,4 +1,4 @@
-import React, { Component, SyntheticEvent, SelectHTMLAttributes, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 import styled from 'styled-components';
 import { Input, Button, Checkbox } from 'semantic-ui-react';
 import User from '../../../models/user.model';
@@ -11,33 +11,28 @@ import bind from 'bind-decorator';
 import Parcel from '../../../models/parcel.model';
 import { updateDeal, putDealOnChain, payDeal, withdrawDeal } from '../../../services/deal.service';
 import Web3 from 'web3'
+import PatImg from '../../../assets/pat-coin-rich.png'
+import EthImg from '../../../assets/eth.png'
 
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
-`
-
-const Parcels = styled.div`
-  display: flex;
-  flex-grow: 2;
-  width: 100%;
+  > * + * {
+    margin-top: 2em;
+  }
 `
 
 const Ethereum = styled.div`
   display: flex;
-  width: 100%;
 `
 
 const Confirms = styled.div`
   display: flex;
+  flex-direction: column;
 `
 
 const ParcelsList = styled.div`
-  width: 100%;
-  height: 100%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
@@ -48,8 +43,17 @@ const ParcelItem = styled.div`
   justify-content: space-between;
 `
 
-const Buttons = styled.div`
+const Chooser = styled.div`
   display: flex;
+  align-items: center;
+  > * + * {
+    margin-left: 1em;
+  }
+`
+
+const StyledButton = styled.div`
+  width: fit-content;
+  margin-top: 2em;
 `
 
 interface StateProps {
@@ -142,9 +146,8 @@ class ParcelSelector extends Component<Props, State> {
 
   @bind
   async pay() {
-    const {parcels, eth} = this.props.assets
     if (this.props.web3) {
-      const res = await payDeal(
+      await payDeal(
         this.props.currentDeal,
         this.props.user.address,
         this.props.web3,
@@ -172,32 +175,44 @@ class ParcelSelector extends Component<Props, State> {
     userParcels = userParcels ? Object.values(userParcels) : []
     return (
       <Wrapper>
+        <h3>{`User offers:`}</h3>
         {
           this.props.isOwner && !this.isConfirmed() ? (
-          <Parcels>
-            <span>Choose parcels:</span>
-            <ParcelsList>
-              { 
-                userParcels.map(parcel => {
-                  return (
-                    <ParcelItem 
-                      key={`parcelItem${parcel}`}
-                      onClick={() => this.selectParcel(parcel)}
-                    >
-                      <span>{parcel.address}</span>
-                      
-                    </ParcelItem>
-                  )
-                })
-              }
-              <button onClick={() => this.deselectParcel()}>Clear</button>
-            </ParcelsList>
-          </Parcels> 
-          ) : ('') 
+            <Chooser>
+              <span>Choose</span>
+              <img src={PatImg} alt="parcel" height="32" />
+              <ParcelsList>
+                { 
+                  userParcels.map(parcel => {
+                    return (
+                      <ParcelItem 
+                        key={`parcelItem${parcel}`}
+                        onClick={() => this.selectParcel(parcel)}
+                      >
+                        <span>{parcel.address}</span>
+                        
+                      </ParcelItem>
+                    )
+                  })
+                }
+                <button onClick={() => this.deselectParcel()}>Clear</button>
+              </ParcelsList>
+              <span>{assetParcel}</span>
+            </Chooser>
+          ) : (
+            <Chooser>
+              <span>Choose</span>
+              <img src={PatImg} alt="parcel" height="32" />
+              <span>{assetParcel}</span>
+            </Chooser>
+          ) 
         }
-        <span>Chosen parcel: {assetParcel}</span>
+        
         <Ethereum>
-          <span>Choose ethereum amount:</span>
+        <Chooser>
+          <span>Choose</span>
+          <img src={EthImg} alt="ethereum" height="32" />
+        
           {
             this.props.isOwner && !this.isConfirmed() ? (
               <Input 
@@ -210,6 +225,7 @@ class ParcelSelector extends Component<Props, State> {
               <span>{this.props.assets.eth}</span>
             )
           }
+          </Chooser>
         </Ethereum>
         <Confirms>
           <Checkbox 
@@ -227,7 +243,9 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.isConfirmed && (
             !this.props.currentDeal.isCompleted ||
             !this.props.currentDeal.isWithdrawn) ? (
-              <Button onClick={() => this.withdraw()}>Withdraw</Button>
+              <StyledButton>
+                <Button onClick={() => this.withdraw()}>Withdraw</Button>
+              </StyledButton>
             ) : ('')
           }
           {
@@ -235,7 +253,9 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.isConfirmed && (
             !this.props.currentDeal.isCompleted ||
             !this.props.currentDeal.isWithdrawn) ? (
-              <Button onClick={() => this.pay()}>Pay</Button>
+              <StyledButton>
+                <Button onClick={() => this.pay()}>Pay</Button>
+              </StyledButton>
             ) : ('')
           }
           {
@@ -243,7 +263,9 @@ class ParcelSelector extends Component<Props, State> {
             this.props.currentDeal.user1Asset.isConfirmed &&
             this.props.currentDeal.user2Asset.isConfirmed &&
             !this.props.currentDeal.isConfirmed ? (
-              <Button onClick={() => this.confirmDeal()}>Confirm</Button>
+              <StyledButton>
+                <Button onClick={() => this.confirmDeal()}>Confirm</Button>
+              </StyledButton>
             ) : ('')
           }
         </Confirms>

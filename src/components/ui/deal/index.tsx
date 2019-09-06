@@ -12,21 +12,41 @@ import { fetchDeal } from '../../../thunks/deal.thunk';
 import { Loader } from 'semantic-ui-react';
 import ParcelSelector from './parcel-selector';
 import styled from 'styled-components';
+import ConfirmedImg from '../../../assets/certificate.png'
+import NotConfirmedImg from '../../../assets/edit.png'
+import DealImg from '../../../assets/diploma.png'
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  padding: 2em;
+  box-sizing: border-box;
   height: 100%;
   width: 100%;
+`
+
+const TitleImage = styled.div`
+	display: flex;
+	align-items: center;
+  margin-bottom: 2em;
+	> * {
+		margin-right: 2em;
+	}
+`
+
+const Title = styled.h2`
+    margin: 0;
 `
 
 const SelectorsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   height: 100%;
   width: 100%;
 
   > * + * {
-    margin-left: 3em;
+    margin-left: 5em;
   }
 `
 
@@ -77,8 +97,6 @@ class DealPage extends Component<Props, State> {
       this.props.user.address,
     )
 
-      console.log(deal)
-
     if (deal) {
       this.props.fetchDeal(
         this.props.currentDeal.id,
@@ -97,10 +115,12 @@ class DealPage extends Component<Props, State> {
     const userAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user1Asset : deal.user2Asset
     const otherAsset: Asset = deal.user1Asset.userAddress === userId ? deal.user2Asset : deal.user1Asset
 
-    console.log('ASSETS', userAsset, otherAsset)
-
     return (
       <Wrapper>
+        <TitleImage>
+          <img src={DealImg} alt="deals" height='64' />
+          <Title>Deal</Title>
+        </TitleImage>
         {
           this.state.isLoading ? (
             <Loader active />
@@ -109,6 +129,15 @@ class DealPage extends Component<Props, State> {
           ) : (
               <SelectorsWrapper>
                 <ParcelSelector assets={userAsset} isOwner={true} />
+
+                {
+                  deal.isConfirmed ? (
+                    <img src={ConfirmedImg} alt="deal-confirmed" height="200"/>
+                  ) : (
+                    <img src={NotConfirmedImg} alt="deal-not-confirmed" height="200"/>
+                  )
+                }
+
                 <ParcelSelector assets={otherAsset} isOwner={false} />
               </SelectorsWrapper>
           )
