@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
 import './App.css'
-import { connect } from 'react-redux';
-import { AnyAction, bindActionCreators } from "redux";
+import { connect } from 'react-redux'
+import { AnyAction, bindActionCreators } from 'redux'
 import { push, RouterState } from 'connected-react-router'
-import { AppState } from './store';
-import User from './models/user.model';
-import { ConnectedRouter } from 'connected-react-router';
-import { history } from './store';
-import Routes from './routes';
-import { enableEthereum } from './services/ethereum.service';
-import { loadUserAndRoute } from './thunks/auth.thunk';
+import { AppState } from './store'
+import User from './models/user.model'
+import { ConnectedRouter } from 'connected-react-router'
+import { history } from './store'
+import Routes from './routes'
+import { enableEthereum } from './services/ethereum.service'
+import { loadUserAndRoute } from './thunks/auth.thunk'
 import { loadEthereumProvider, loadWeb3 } from './store/ethereum/actions'
-import { ThunkDispatch } from 'redux-thunk';
+import { ThunkDispatch } from 'redux-thunk'
 import Web3 from 'web3'
 import 'semantic-ui-css/semantic.min.css'
-import { Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const LoadingScreen = styled.div`
 	display: flex;
@@ -24,9 +24,9 @@ const LoadingScreen = styled.div`
 
 declare global {
 	interface Window { 
-		ethereum: any,
-		web3: Web3,
-		__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any,
+		ethereum: any
+		web3: Web3
+		__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
 	}
 }
 
@@ -35,13 +35,13 @@ interface State {
 }
 
 interface Props {
-	push: typeof push,
-	loadUserAndRoute: typeof loadUserAndRoute,
-	loadEthereumProvider: typeof loadEthereumProvider,
-	loadWeb3: typeof loadWeb3,
-	user: User,
-	ethereum: any,
-	web3: Web3 | null,
+	push: typeof push
+	loadUserAndRoute: typeof loadUserAndRoute
+	loadEthereumProvider: typeof loadEthereumProvider
+	loadWeb3: typeof loadWeb3
+	user: User
+	ethereum: any
+	web3: Web3 | null
 	router: RouterState
 }
 
@@ -106,7 +106,7 @@ const mapStateToProps = (state: AppState) => ({
 	user: state.user,
 	ethereum: state.ethereumWeb3.ethereum,
 	web3: state.ethereumWeb3.web3,
-	router: state.router
+	router: state.router,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

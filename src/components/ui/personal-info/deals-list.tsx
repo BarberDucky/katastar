@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { bindActionCreators, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import bind from 'bind-decorator';
-import User from '../../../models/user.model';
-import Deal from '../../../models/deal.model';
-import { withdrawDeal } from '../../../services/deal.service';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { bindActionCreators, AnyAction } from 'redux'
+import { ThunkDispatch } from 'redux-thunk'
+import bind from 'bind-decorator'
+import User from '../../../models/user.model'
+import Deal from '../../../models/deal.model'
+import { withdrawDeal } from '../../../services/deal.service'
 import Web3 from 'web3'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import DealImg from '../../../assets/diploma.png'
-import { Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -64,16 +64,6 @@ class DealsList extends Component<Props, State> {
   private openDetails(deal: Deal) {
     this.props.push(`/main/deals/${deal.id}`)
   }
-
-  @bind
-  private withdrawDeal(deal: Deal) {
-    if (this.props.web3) {
-      withdrawDeal(deal, this.props.user.address, this.props.web3)
-    } else {
-      alert('no web3')
-    }
-  }
-
 
   render() {
     return (

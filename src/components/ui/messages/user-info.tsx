@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import { match } from 'react-router';
-import bind from 'bind-decorator';
-import { Loader, Button, List, Image } from 'semantic-ui-react';
-import User from '../../../models/user.model';
-import { readUser } from '../../../services/user.service';
-import styled from 'styled-components';
-import { createDeal } from '../../../services/deal.service';
-import Deal from '../../../models/deal.model';
-import { generateIdenticon } from '../../../helper';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { match } from 'react-router'
+import bind from 'bind-decorator'
+import { Loader, Button, List, Image } from 'semantic-ui-react'
+import User from '../../../models/user.model'
+import { readUser } from '../../../services/user.service'
+import styled from 'styled-components'
+import { createDeal } from '../../../services/deal.service'
+import Deal from '../../../models/deal.model'
+import { generateIdenticon } from '../../../helper'
 
 const Wrapper = styled.div`
 	height: 100%;
@@ -60,7 +60,7 @@ interface OwnProps {
 type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
-	isLoading: boolean,
+	isLoading: boolean
 	results?: User
 }
 
@@ -68,7 +68,7 @@ class UserInfo extends Component<Props, State> {
 
 	state: State = {
 		isLoading: true,
-		results: undefined
+		results: undefined,
 	}
 
 	_isMounted = false

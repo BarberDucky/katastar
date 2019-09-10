@@ -1,26 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { FormEvent } from "react";
-import { formDataToJson as formDataToObject } from "../../../../helper";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction, bindActionCreators } from "redux";
-import { connect, MapStateToProps } from "react-redux";
-import { Push, push, RouterState } from "connected-react-router";
+import { formDataToJson as formDataToObject } from '../../../../helper'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { connect, MapStateToProps } from 'react-redux'
+import { Push, push, RouterState } from 'connected-react-router'
 import qs from 'qs'
-import styled from 'styled-components';
-import { AppState } from '../../../../store';
-import { searchAuctions } from '../../../../services/auction.service';
-import Auction from '../../../../models/auction.model';
-import { Input, Button, Table, Loader } from 'semantic-ui-react';
+import styled from 'styled-components'
+import { AppState } from '../../../../store'
+import { searchAuctions } from '../../../../services/auction.service'
+import Auction from '../../../../models/auction.model'
+import { Input, Button, Table, Loader } from 'semantic-ui-react'
 import AuctionImg from '../../../../assets/currency-exchange.png'
 
 const Wrapper = styled.div`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 2em;
-    }
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 2em;
+  }
 `
 
 const TitleImage = styled.div`
@@ -33,22 +32,22 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 ` 
 
 const Form = styled.form`
-    display: flex;
-    > * + * {
-        margin-left: 1em;
-    }
+  display: flex;
+  > * + * {
+    margin-left: 1em;
+  }
 `
 
 const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 0.33em;
-    }
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
 `
 
 const StyledButton = styled.div`
@@ -56,13 +55,11 @@ const StyledButton = styled.div`
 	margin-bottom: 3px;
 `
 
-const Main = styled.main``
-
 export interface AuctionFormData {
-	address: string,
-	owner: string,
-	region: string,
-	municipality: string,
+	address: string
+	owner: string
+	region: string
+	municipality: string
 	cadastreMunicipality: string
 }
 
@@ -170,7 +167,7 @@ class AuctionPageComponent extends Component<Props, State> {
 						</Button>
 					</StyledButton>
 				</Form>
-				<Main>
+				<main>
 					{
 						this.state.isLoading ? (
 							<Loader active />
@@ -209,7 +206,7 @@ class AuctionPageComponent extends Component<Props, State> {
 									</Table>
 								)
 					}
-				</Main>
+				</main>
 			</Wrapper>
 		)
 	}

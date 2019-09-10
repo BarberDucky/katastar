@@ -1,18 +1,13 @@
-import React, { Component } from "react";
-import { MapStateToProps, connect } from "react-redux";
-import { AppState } from "../../../store";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction, bindActionCreators } from "redux";
-import { RouterState, Push, push } from "connected-react-router";
-import styled from 'styled-components'
-import User, { ConversationInfo } from "../../../models/user.model";
-import { Loader, Menu, Icon } from "semantic-ui-react";
-import { match } from "react-router";
-import bind from "bind-decorator";
-
-const Wrapper = styled.div`
-	
-`
+import React, { Component } from 'react'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { RouterState, Push, push } from 'connected-react-router'
+import User, { ConversationInfo } from '../../../models/user.model'
+import { Loader, Menu, Icon } from 'semantic-ui-react'
+import { match } from 'react-router'
+import bind from 'bind-decorator'
 
 interface StateProps {
 	router: RouterState
@@ -41,31 +36,7 @@ class MessagesList extends Component<Props, State> {
 	state: State = {
 		isLoading: false,
 		results: [],
-		activeItem: ''
-	}
-	_isMounted = false
-
-	public componentDidMount() {
-		this._isMounted = true
-		this.onRouteChange()
-	}
-
-	public componentWillUpdate(oldProps: Props) {
-		if (this.props.router.location.pathname !== oldProps.router.location.pathname)
-			this.onRouteChange()
-	}
-
-	public componentWillUnmount() {
-		this._isMounted = false
-	}
-
-	private onRouteChange() {
-		/*
-		this.setState({ isLoading: true })
-		const results = Object.values(this.props.user.conversations)
-		if (this._isMounted)
-			this.setState({ results, isLoading: false })
-		*/
+		activeItem: '',
 	}
 
 	@bind
@@ -83,7 +54,7 @@ class MessagesList extends Component<Props, State> {
 		const activeUser = this.getActiveUser()
 		const conversations = this.props.user.conversations ? Object.values(this.props.user.conversations) : []
 		return (
-			<Wrapper>
+			<div>
 				{
 					this.state.isLoading ? (
 						<Loader active />
@@ -109,7 +80,7 @@ class MessagesList extends Component<Props, State> {
 								</Menu>
 							)
 				}
-			</Wrapper>
+			</div>
 		)
 	}
 }

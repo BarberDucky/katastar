@@ -1,12 +1,12 @@
 import firebase from '../config/firebase'
-import { Dispatch } from 'redux';
-import Conversation from '../models/conversation.model';
-import { LoadConversationAction } from '../store/current-conversation/interfaces';
-import { LOAD_CONVERSATION } from '../store/current-conversation/types';
-import { readConversationFromId } from '../services/conversation.service';
+import { Dispatch } from 'redux'
+import Conversation from '../models/conversation.model'
+import { LoadConversationAction } from '../store/current-conversation/interfaces'
+import { LOAD_CONVERSATION } from '../store/current-conversation/types'
+import { readConversationFromId } from '../services/conversation.service'
 
 export const unsubscribeConversation = async (conversationId: string) => {
-  await firebase.database().ref(`conversations/${conversationId}`).off('value') 
+  await firebase.database().ref(`conversations/${conversationId}`).off('value')
 }
 
 export const fetchConversation = (oldConversationId: string, targetUser: string, currentUserAddress: string) => async (dispatch: Dispatch) => {
@@ -28,7 +28,7 @@ export const fetchConversation = (oldConversationId: string, targetUser: string,
   }
   dispatch(action)
 
-  firebase.database().ref(`conversations/${conversation.address}`).on('value', 
+  firebase.database().ref(`conversations/${conversation.address}`).on('value',
     async snapshot => {
       const conversation: Conversation = snapshot.val()
       conversation.messages = conversation.messages ? Object.values(conversation.messages) : []

@@ -1,6 +1,6 @@
 import firebase from '../config/firebase'
-import User from '../models/user.model';
-import { UserFormData } from '../components/ui/explorer/explorer-entities/user';
+import User from '../models/user.model'
+import { UserFormData } from '../components/ui/explorer/explorer-entities/user'
 
 export const readUser = async (metamaskAddress: string) => {
 	const userValue = await firebase.database().ref('users/' + metamaskAddress).once('value')

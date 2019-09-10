@@ -1,6 +1,6 @@
 import firebase from '../config/firebase'
-import Conversation, { Message } from "../models/conversation.model";
-import User, { ConversationInfo } from "../models/user.model";
+import Conversation, { Message } from '../models/conversation.model'
+import User, { ConversationInfo } from '../models/user.model'
 
 export const createConversation = async (message: Message) => {
 

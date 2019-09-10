@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { createUser } from '../../services/user.service';
-import User from '../../models/user.model';
-import { connect } from 'react-redux';
+import { createUser } from '../../services/user.service'
+import User from '../../models/user.model'
+import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { loadUser } from '../../store/user/actions';
+import { loadUser } from '../../store/user/actions'
 import Web3 from 'web3'
-import { Segment, Input, Button } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Segment, Input, Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 import PatImg from '../../assets/pat-coin-rich.png'
 
 const Wrapper = styled.div`
@@ -39,8 +39,8 @@ const TitleAndImage = styled.div`
 `
 
 const Title = styled.h1`
-    margin: 0;
-    margin-top: -5px;
+  margin: 0;
+  margin-top: -5px;
 `
 
 const Address = styled.span`

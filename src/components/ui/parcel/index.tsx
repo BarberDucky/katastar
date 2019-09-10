@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { match } from 'react-router';
-import Parcel from '../../../models/parcel.model';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import { readParcel } from '../../../services/parcel.service';
-import bind from 'bind-decorator';
-import styled from 'styled-components';
-import { Loader, Segment, Image } from 'semantic-ui-react';
+import { RouterState, Push, push } from 'connected-react-router'
+import { match } from 'react-router'
+import Parcel from '../../../models/parcel.model'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { readParcel } from '../../../services/parcel.service'
+import bind from 'bind-decorator'
+import styled from 'styled-components'
+import { Loader, Segment, Image } from 'semantic-ui-react'
 import PatImg from '../../../assets/pat.png'
-import { generateIdenticon } from '../../../helper';
+import { generateIdenticon } from '../../../helper'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -32,7 +32,7 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 `
 
 const SegmentWrapper = styled.div`
@@ -82,7 +82,7 @@ interface OwnProps {
 type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
-  isLoading: boolean,
+  isLoading: boolean
   results?: Parcel
 }
 
@@ -90,7 +90,7 @@ class ParcelPage extends Component<Props, State> {
   _isMounted = false
   state: State = {
     isLoading: true,
-    results: undefined
+    results: undefined,
   }
 
   public componentDidMount() {

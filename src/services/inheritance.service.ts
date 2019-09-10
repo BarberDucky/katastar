@@ -1,10 +1,10 @@
 import  firebase from '../config/firebase'
-import Inheritance from '../models/inheritance.model';
+import Inheritance from '../models/inheritance.model'
 import InheritanceFactory from './contracts/inheritanceFactory'
 import ParcelToken from './contracts/parcelToken'
 import InheritanceContract from './contracts/inheritance'
 import Web3 from 'web3'
-import { readParcel } from './parcel.service';
+import { readParcel } from './parcel.service'
 
 export const createInheritance = async (inheritance: Inheritance, web3: Web3) => {
   const inheritanceFactory = InheritanceFactory(web3)

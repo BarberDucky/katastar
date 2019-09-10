@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import User from '../../../models/user.model';
-import { match, Switch, Route } from 'react-router';
-import PersonalInfoUpdateForm from './update-form';
-import UserBasicInfo from './basic-info';
-import { readUser } from '../../../services/user.service';
-import ParcelList from './parcel-list';
-import AuctionsList from './auctions-list';
-import bind from 'bind-decorator';
-import InheritancesList from './inheritances-list';
-import DealsList from './deals-list';
-import styled from 'styled-components';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import User from '../../../models/user.model'
+import { match, Switch, Route } from 'react-router'
+import PersonalInfoUpdateForm from './update-form'
+import UserBasicInfo from './basic-info'
+import { readUser } from '../../../services/user.service'
+import ParcelList from './parcel-list'
+import AuctionsList from './auctions-list'
+import bind from 'bind-decorator'
+import InheritancesList from './inheritances-list'
+import DealsList from './deals-list'
+import styled from 'styled-components'
 import UserImg from '../../../assets/cv.png'
 import UserInfoMenu from './menu'
-import { Loader } from 'semantic-ui-react';
+import { Loader } from 'semantic-ui-react'
 
 const Wrapper = styled.div`
 	display: flex;
@@ -110,7 +110,7 @@ class PersonalInfo extends Component<Props, State> {
 			this.setState({
 				results: undefined,
 				isLoading: false,
-				isOwner: false
+				isOwner: false,
 			})
 			return
 		}

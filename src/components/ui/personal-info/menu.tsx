@@ -65,7 +65,7 @@ class UserInfoMenu extends Component<Props> {
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
-  router: state.router
+  router: state.router,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

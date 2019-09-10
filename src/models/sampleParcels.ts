@@ -1,4 +1,4 @@
-import Parcel from "./parcel.model";
+import Parcel from './parcel.model'
 
 const parcels: Parcel[] = [
   {

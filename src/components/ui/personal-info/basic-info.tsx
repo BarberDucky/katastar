@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import User from '../../../models/user.model';
-import { Card, Image, Button } from 'semantic-ui-react';
-import { generateIdenticon } from '../../../helper';
+import User from '../../../models/user.model'
+import { Card, Image, Button } from 'semantic-ui-react'
+import { generateIdenticon } from '../../../helper'
 
 interface Props {
 	user?: User

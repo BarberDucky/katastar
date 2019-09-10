@@ -1,9 +1,9 @@
 import React, { Component, FormEvent } from 'react'
-import User from '../../../models/user.model';
-import bind from 'bind-decorator';
-import { formDataToJson, generateIdenticon } from '../../../helper';
-import { updateUser } from '../../../services/user.service';
-import { Card, Input, Button, Image } from 'semantic-ui-react';
+import User from '../../../models/user.model'
+import bind from 'bind-decorator'
+import { formDataToJson, generateIdenticon } from '../../../helper'
+import { updateUser } from '../../../services/user.service'
+import { Card, Input, Button, Image } from 'semantic-ui-react'
 
 interface Props {
 	user?: User

@@ -1,5 +1,5 @@
-import Web3 from "web3";
-import Inheritance from "../../truffle/build/contracts/Inheritance.json"
+import Web3 from 'web3'
+import Inheritance from '../../truffle/build/contracts/Inheritance.json'
 
 
 export default (web3: Web3, address: string) => {

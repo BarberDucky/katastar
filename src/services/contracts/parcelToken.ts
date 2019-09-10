@@ -1,6 +1,6 @@
-import Web3 from "web3";
-import ParcelToken from "../../truffle/build/contracts/ParcelToken.json"
-import { desiredNetwork } from "../../config/keys";
+import Web3 from 'web3'
+import ParcelToken from '../../truffle/build/contracts/ParcelToken.json'
+import { desiredNetwork } from '../../config/keys'
 
 
 

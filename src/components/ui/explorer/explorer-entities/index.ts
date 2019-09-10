@@ -1,11 +1,9 @@
-import auctions from "./auction"
-import parcels from "./parcel"
-import users from "./user"
-import ads from "./ad"
+import auctions from './auction'
+import parcels from './parcel'
+import users from './user'
 
 export {
-    parcels,
-    users,
-    auctions,
-    ads,
+	parcels,
+	users,
+	auctions,
 }

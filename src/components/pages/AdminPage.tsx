@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { AppState } from '../../store';
-import { connect } from 'react-redux';
-import User from '../../models/user.model';
+import { AppState } from '../../store'
+import { connect } from 'react-redux'
+import User from '../../models/user.model'
 import Web3 from 'web3'
-import { burnAllTokens, generateParcels, readParcelsFromChain } from '../../services/parcel.service';
-import bind from 'bind-decorator';
+import { burnAllTokens, generateParcels, readParcelsFromChain } from '../../services/parcel.service'
+import bind from 'bind-decorator'
 
 const adminUser = '0x0311c5f1722f1cd61e16c6e0cf5cbdd4d0a14ed8'
 

@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { match } from 'react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';import User from '../../../models/user.model';
-import Inheritance from '../../../models/inheritance.model';
-import { readInheritance, withdraw } from '../../../services/inheritance.service';
+import { RouterState, Push, push } from 'connected-react-router'
+import { match } from 'react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import bind from 'bind-decorator';import User from '../../../models/user.model'
+import Inheritance from '../../../models/inheritance.model'
+import { readInheritance, withdraw } from '../../../services/inheritance.service'
 import Web3 from 'web3'
-import { Button, Segment, Loader } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { Button, Segment, Loader } from 'semantic-ui-react'
+import styled from 'styled-components'
 import InheritanceImg from '../../../assets/payment.png'
 
 const Wrapper = styled.div`
@@ -32,7 +32,7 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 `
 
 const AuctionInfo = styled.div`
@@ -94,7 +94,6 @@ interface State {
   isOwner: boolean
   isLoading: boolean
   results?: Inheritance
-  remainingTime: number
 }
 
 class InheritancePage extends Component<Props, State> {
@@ -103,7 +102,6 @@ class InheritancePage extends Component<Props, State> {
     isLoading: true,
     results: undefined,
     isOwner: false,
-    remainingTime: 1000
   }
 
   public componentDidMount() {
@@ -118,8 +116,6 @@ class InheritancePage extends Component<Props, State> {
   private async onRouteChange() {
     this.setState({isLoading: true})
     const inheritance = await readInheritance(this.props.match.params.inheritanceId, this.props.user.address)
-
-    let remainingTime = -1
     
     if (this._isMounted) {
       this.setState({
@@ -129,7 +125,6 @@ class InheritancePage extends Component<Props, State> {
           this.props.user.address === inheritance.from ||
           this.props.user.address === inheritance.to
           : false,
-        remainingTime
       })
     }
   }
@@ -236,7 +231,7 @@ class InheritancePage extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
   user: state.user,
-  web3: state.ethereumWeb3.web3
+  web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

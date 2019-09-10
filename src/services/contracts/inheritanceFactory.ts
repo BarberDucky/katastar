@@ -1,6 +1,6 @@
-import Web3 from "web3";
-import InheritanceFactory from "../../truffle/build/contracts/InheritanceFactory.json"
-import {desiredNetwork} from "../../config/keys"
+import Web3 from 'web3'
+import InheritanceFactory from '../../truffle/build/contracts/InheritanceFactory.json'
+import {desiredNetwork} from '../../config/keys'
 
 
 export default (web3: Web3) => {

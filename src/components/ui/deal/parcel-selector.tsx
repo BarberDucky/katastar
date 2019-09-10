@@ -1,15 +1,15 @@
 import React, { Component, ChangeEvent } from 'react'
-import styled from 'styled-components';
-import { Input, Button, Checkbox } from 'semantic-ui-react';
-import User from '../../../models/user.model';
-import Deal, { Asset } from '../../../models/deal.model';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';
-import Parcel from '../../../models/parcel.model';
-import { updateDeal, putDealOnChain, payDeal, withdrawDeal } from '../../../services/deal.service';
+import styled from 'styled-components'
+import { Input, Button, Checkbox } from 'semantic-ui-react'
+import User from '../../../models/user.model'
+import Deal, { Asset } from '../../../models/deal.model'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import bind from 'bind-decorator'
+import Parcel from '../../../models/parcel.model'
+import { updateDeal, putDealOnChain, payDeal, withdrawDeal } from '../../../services/deal.service'
 import Web3 from 'web3'
 import PatImg from '../../../assets/pat-coin-rich.png'
 import EthImg from '../../../assets/eth.png'
@@ -62,22 +62,14 @@ interface StateProps {
   web3: Web3 | null
 }
 
-interface DispatchProps {
-
-}
-
 interface OwnProps {
   isOwner: boolean
   assets: Asset
 }
 
-type Props = StateProps & DispatchProps & OwnProps
+type Props = StateProps & OwnProps
 
-interface State {
-
-}
-
-class ParcelSelector extends Component<Props, State> {
+class ParcelSelector extends Component<Props> {
 
   private isConfirmed() {
     return this.props.currentDeal.isConfirmed ||

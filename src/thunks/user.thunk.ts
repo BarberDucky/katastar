@@ -1,7 +1,7 @@
 import firebase from '../config/firebase'
-import { Dispatch } from 'redux';
-import { LOAD_USER } from '../store/user/types';
-import { LoadUserAction } from '../store/user/interfaces';
+import { Dispatch } from 'redux'
+import { LOAD_USER } from '../store/user/types'
+import { LoadUserAction } from '../store/user/interfaces'
 
 export const fetchUser = (userId: string) => async (dispatch: Dispatch) => {
   firebase.database().ref(`users/${userId}`).on('value', 

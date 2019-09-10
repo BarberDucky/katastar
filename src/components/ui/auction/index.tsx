@@ -1,18 +1,18 @@
 import React, { Component, FormEvent } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { match } from 'react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
+import { RouterState, Push, push } from 'connected-react-router'
+import { match } from 'react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';
-import Auction from '../../../models/auction.model';
-import { readAuction, submitBid, readHighestBid, withdrawBids, endAuction, withdrawParcel } from '../../../services/auction.service';
-import User from '../../../models/user.model';
-import { formDataToJson } from '../../../helper';
-import { Button, Loader, Segment, Input } from 'semantic-ui-react';
+import { AnyAction, bindActionCreators } from 'redux'
+import bind from 'bind-decorator'
+import Auction from '../../../models/auction.model'
+import { readAuction, submitBid, readHighestBid, withdrawBids, endAuction, withdrawParcel } from '../../../services/auction.service'
+import User from '../../../models/user.model'
+import { formDataToJson } from '../../../helper'
+import { Button, Loader, Segment, Input } from 'semantic-ui-react'
 import Web3 from 'web3'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import AuctionImg from '../../../assets/currency-exchange.png'
 
 const Wrapper = styled.div`
@@ -34,7 +34,7 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 `
 
 const AuctionInfo = styled.div`
@@ -66,7 +66,6 @@ const SegmentWrapper = styled.div`
 
 const StyledSegment = styled(Segment)`
   display: flex;
-
   flex-direction: row;
   height: 100%;
   justify-content: space-between;
@@ -290,7 +289,7 @@ class AuctionPage extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
   user: state.user,
-  web3: state.ethereumWeb3.web3
+  web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

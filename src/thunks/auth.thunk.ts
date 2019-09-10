@@ -1,9 +1,9 @@
-import { Dispatch } from "redux";
-import { readUser } from "../services/user.service";
-import { desiredNetwork } from "../config/keys";
-import { push } from "connected-react-router";
-import { LOAD_USER } from "../store/user/types";
-import { LoadUserAction } from "../store/user/interfaces";
+import { Dispatch } from 'redux'
+import { readUser } from '../services/user.service'
+import { desiredNetwork } from '../config/keys'
+import { push } from 'connected-react-router'
+import { LOAD_USER } from '../store/user/types'
+import { LoadUserAction } from '../store/user/interfaces'
 import firebase from '../config/firebase'
 
 export function loadUserAndRoute(currentRoute: string) {

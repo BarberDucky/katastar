@@ -1,20 +1,20 @@
 import React, { Component, FormEvent } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { bindActionCreators, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import bind from 'bind-decorator';
-import Parcel from '../../../models/parcel.model';
-import { formDataToJson } from '../../../helper';
-import User from '../../../models/user.model';
-import Inheritance from '../../../models/inheritance.model';
-import { createInheritance } from '../../../services/inheritance.service';
-import { searchUsers } from '../../../services/user.service';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { bindActionCreators, AnyAction } from 'redux'
+import { ThunkDispatch } from 'redux-thunk'
+import bind from 'bind-decorator'
+import Parcel from '../../../models/parcel.model'
+import { formDataToJson } from '../../../helper'
+import User from '../../../models/user.model'
+import Inheritance from '../../../models/inheritance.model'
+import { createInheritance } from '../../../services/inheritance.service'
+import { searchUsers } from '../../../services/user.service'
 import Web3 from 'web3'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import InheritanceImg from '../../../assets/payment.png'
-import { Input, Select, Button, Table } from 'semantic-ui-react';
+import { Input, Select, Button, Table } from 'semantic-ui-react'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -34,7 +34,7 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 `
 
 const Form = styled.form`
@@ -45,11 +45,11 @@ const Form = styled.form`
 `
 
 const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 0.33em;
-    }
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
 `
 
 const StyledButton = styled.div`
@@ -85,7 +85,7 @@ class InheritancesList extends Component<Props, State> {
   _isMounted = false
   state: State = {
     users: [],
-    isLoading: false
+    isLoading: false,
   }
 
   async componentDidMount() {

@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { match } from 'react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import User from '../../../models/user.model';
-import Deal, { Asset } from '../../../models/deal.model';
-import { readDeal } from '../../../services/deal.service';
-import { fetchDeal } from '../../../thunks/deal.thunk';
-import { Loader } from 'semantic-ui-react';
-import ParcelSelector from './parcel-selector';
-import styled from 'styled-components';
+import { RouterState, Push, push } from 'connected-react-router'
+import { match } from 'react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import User from '../../../models/user.model'
+import Deal, { Asset } from '../../../models/deal.model'
+import { readDeal } from '../../../services/deal.service'
+import { fetchDeal } from '../../../thunks/deal.thunk'
+import { Loader } from 'semantic-ui-react'
+import ParcelSelector from './parcel-selector'
+import styled from 'styled-components'
 import ConfirmedImg from '../../../assets/certificate.png'
 import NotConfirmedImg from '../../../assets/edit.png'
 import DealImg from '../../../assets/diploma.png'
@@ -151,7 +151,7 @@ class DealPage extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
   router: state.router,
   user: state.user,
-  currentDeal: state.currentDeal
+  currentDeal: state.currentDeal,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

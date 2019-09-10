@@ -1,11 +1,11 @@
-import Deal, { Asset } from "../models/deal.model";
+import Deal, { Asset } from '../models/deal.model'
 import firebase from '../config/firebase'
 import Web3 from 'web3'
-import DealContract from "./contracts/deal"
-import ParcelToken from "./contracts/parcelToken"
+import DealContract from './contracts/deal'
+import ParcelToken from './contracts/parcelToken'
 import DealAbi from '../truffle/build/contracts/Deal.json'
-import Contract from "web3/eth/contract";
-import { readParcel } from "./parcel.service";
+import Contract from 'web3/eth/contract'
+import { readParcel } from './parcel.service'
 
 export const createDeal = async (deal: Deal) => {
   deal.id = Date.now().toString()

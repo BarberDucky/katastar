@@ -1,16 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { FormEvent } from "react";
-import { formDataToJson as formDataToObject, sleep } from "../../../../helper";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction, bindActionCreators } from "redux";
-import { connect, MapStateToProps } from "react-redux";
-import { Push, push, RouterState } from "connected-react-router";
+import { formDataToJson as formDataToObject, sleep } from '../../../../helper'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { connect, MapStateToProps } from 'react-redux'
+import { Push, push, RouterState } from 'connected-react-router'
 import qs from 'qs'
-import styled from 'styled-components';
-import { AppState } from '../../../../store';
-import Parcel from '../../../../models/parcel.model';
-import { searchParcels } from '../../../../services/parcel.service';
+import styled from 'styled-components'
+import { AppState } from '../../../../store'
+import Parcel from '../../../../models/parcel.model'
+import { searchParcels } from '../../../../services/parcel.service'
 import { Table, Loader, Button, Input } from 'semantic-ui-react'
 import PatImg from '../../../../assets/pat.png'
 
@@ -59,10 +58,10 @@ const StyledButton = styled.div`
 const Main = styled.main``
 
 export interface ParcelFormData {
-	address: string,
-	owner: string,
-	region: string,
-	municipality: string,
+	address: string
+	owner: string
+	region: string
+	municipality: string
 	cadastreMunicipality: string
 }
 

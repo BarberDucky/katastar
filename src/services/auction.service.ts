@@ -1,10 +1,10 @@
-import Auction from "../models/auction.model";
+import Auction from '../models/auction.model'
 import firebase from '../config/firebase'
-import { AuctionFormData } from "../components/ui/explorer/explorer-entities/auction";
-import AuctionFactory from "./contracts/auctionFactory"
-import ParcelToken from "./contracts/parcelToken"
+import { AuctionFormData } from '../components/ui/explorer/explorer-entities/auction'
+import AuctionFactory from './contracts/auctionFactory'
+import ParcelToken from './contracts/parcelToken'
 import Web3 from 'web3'
-import { readParcel } from "./parcel.service";
+import { readParcel } from './parcel.service'
 import AuctionContract from './contracts/auction'
 
 export const createAuction = async (auction: Auction, parcelId: string, web3: Web3) => {

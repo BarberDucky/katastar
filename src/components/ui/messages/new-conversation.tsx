@@ -1,17 +1,17 @@
 import React, { Component, FormEvent } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import { match } from 'react-router';
-import { formDataToJson } from '../../../helper';
-import bind from 'bind-decorator';
-import { readConversationFromId, createConversation } from '../../../services/conversation.service';
-import User from '../../../models/user.model';
-import { Message } from '../../../models/conversation.model';
-import { Loader, Input, Button } from 'semantic-ui-react';
-import styled from 'styled-components';
+import { AnyAction, bindActionCreators } from 'redux'
+import { match } from 'react-router'
+import { formDataToJson } from '../../../helper'
+import bind from 'bind-decorator'
+import { readConversationFromId, createConversation } from '../../../services/conversation.service'
+import User from '../../../models/user.model'
+import { Message } from '../../../models/conversation.model'
+import { Loader, Input, Button } from 'semantic-ui-react'
+import styled from 'styled-components'
 
 const Segment = styled.div`
 	height: 100%;
@@ -49,7 +49,7 @@ interface OwnProps {
 type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
-	isLoading: boolean,
+	isLoading: boolean
 }
 
 class NewConversation extends Component<Props, State> {
@@ -85,10 +85,8 @@ class NewConversation extends Component<Props, State> {
 		if (conversation) {
       this.props.push(`/main/messages/${this.props.match.params.userId}`)
       return
-    }
-      
-
-
+		}
+		
 		if (this._isMounted)
 			this.setState({ isLoading: false })
 	}
@@ -134,7 +132,7 @@ class NewConversation extends Component<Props, State> {
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
 	router: state.router,
-	currentUser: state.user
+	currentUser: state.user,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

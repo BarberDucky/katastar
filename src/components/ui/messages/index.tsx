@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import MessagesList from './list'
-import { Route, Switch, match } from "react-router";
-import Chat from "./chat";
-import UserInfo from "./user-info"
-import NewConversation from "./new-conversation";
+import { Route, Switch, match } from 'react-router'
+import Chat from './chat';
+import UserInfo from './user-info'
+import NewConversation from './new-conversation'
 import styled from 'styled-components'
 import Envelope from '../../../assets/envelope.png'
 

@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import Parcel from '../../../models/parcel.model';
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import bind from 'bind-decorator';
-import { Table } from 'semantic-ui-react';
-import styled from 'styled-components';
+import Parcel from '../../../models/parcel.model'
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import bind from 'bind-decorator'
+import { Table } from 'semantic-ui-react'
+import styled from 'styled-components'
 import PatImg from '../../../assets/pat.png'
 
 const Wrapper = styled.div`
@@ -44,11 +44,7 @@ interface OwnProps {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-interface State {
-
-}
-
-class ParcelList extends Component<Props, State> {
+class ParcelList extends Component<Props> {
 
 	@bind
 	private openDetails(parcel: Parcel) {
@@ -100,7 +96,7 @@ class ParcelList extends Component<Props, State> {
 }
 
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
-	router: state.router
+	router: state.router,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>

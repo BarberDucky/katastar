@@ -1,28 +1,28 @@
 import React, { Component } from 'react'
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { AppState } from '../../../store';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import { push } from 'connected-react-router';
+import { AppState } from '../../../store'
+import { connect } from 'react-redux'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { push } from 'connected-react-router'
 import * as Pages from './explorer-entities'
 import MagGlas from '../../../assets/search-file.png'
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    padding: 2em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 2em;
 `
 
 const Header = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    box-sizing: border-box;
-    margin: 1em 0 4em 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  margin: 1em 0 4em 0;
 `
 
 const TitleImage = styled.div`
@@ -61,8 +61,8 @@ const MenuItem = styled(Link)`
 `
 
 interface Props {
-	pathname: string,
-	push: typeof push,
+	pathname: string
+	push: typeof push
 }
 
 class Explorer extends Component<Props> {
@@ -78,14 +78,12 @@ class Explorer extends Component<Props> {
 						<MenuItem to="/main/explorer/parcels">Parcels</MenuItem>
 						<MenuItem to="/main/explorer/users">Users</MenuItem>
 						<MenuItem to="/main/explorer/auctions">Auctions</MenuItem>
-						{/*<MenuItem to="/main/explorer/ads">Ads</MenuItem>*/}
 					</Menu>
 				</Header>
 				<Switch>
 					<Route path={'/main/explorer/auctions'} component={Pages.auctions} />
 					<Route path={'/main/explorer/parcels'} component={Pages.parcels} />
 					<Route path={'/main/explorer/users'} component={Pages.users} />
-					{/*<Route path={'/main/explorer/ads'} component={Pages.ads}/>*/}
 				</Switch>
 			</Container>
 		)

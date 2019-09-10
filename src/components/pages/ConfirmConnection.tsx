@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { push } from 'connected-react-router';
-import { loadUser } from '../../store/user/actions';
-import User from '../../models/user.model';
-import { connect } from 'react-redux';
-import { enableEthereum } from '../../services/ethereum.service';
-import { loadUserAndRoute } from '../../thunks/auth.thunk';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
+import { push } from 'connected-react-router'
+import { loadUser } from '../../store/user/actions'
+import User from '../../models/user.model'
+import { connect } from 'react-redux'
+import { enableEthereum } from '../../services/ethereum.service'
+import { loadUserAndRoute } from '../../thunks/auth.thunk'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
 
 interface ConfirmConnectionProps {
-  push: typeof push,
-  loadUser: typeof loadUser,
-  loadUserAndRoute: typeof loadUserAndRoute,
-  user: User,
+  push: typeof push
+  loadUser: typeof loadUser
+  loadUserAndRoute: typeof loadUserAndRoute
+  user: User
   pathname: string
 }
 
@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
     {
       push,
       loadUser,
-      loadUserAndRoute
+      loadUserAndRoute,
     },
     dispatch
   )

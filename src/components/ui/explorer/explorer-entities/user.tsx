@@ -1,26 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { FormEvent } from "react";
-import { formDataToJson as formDataToObject } from "../../../../helper";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction, bindActionCreators } from "redux";
-import { connect, MapStateToProps } from "react-redux";
-import { Push, push, RouterState } from "connected-react-router";
+import { formDataToJson as formDataToObject } from '../../../../helper'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { connect, MapStateToProps } from 'react-redux'
+import { Push, push, RouterState } from 'connected-react-router'
 import qs from 'qs'
-import styled from 'styled-components';
-import { AppState } from '../../../../store';
-import { searchUsers } from '../../../../services/user.service';
-import User from '../../../../models/user.model';
-import { Input, Table, Button, Loader } from 'semantic-ui-react';
+import styled from 'styled-components'
+import { AppState } from '../../../../store'
+import { searchUsers } from '../../../../services/user.service'
+import User from '../../../../models/user.model'
+import { Input, Table, Button, Loader } from 'semantic-ui-react'
 import UsersImg from '../../../../assets/network.png'
 
 const Wrapper = styled.div`
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 2em;
-    }
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 2em;
+  }
 `
 
 const TitleImage = styled.div`
@@ -33,22 +32,22 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 ` 
 
 const Form = styled.form`
-    display: flex;
-    > * + * {
-        margin-left: 1em;
-    }
+  display: flex;
+  > * + * {
+    margin-left: 1em;
+  }
 `
 
 const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 0.33em;
-    }
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
 `
 
 const StyledButton = styled.div`
@@ -59,9 +58,9 @@ const StyledButton = styled.div`
 const Main = styled.main``
 
 export interface UserFormData {
-	address: string,
-	firstName: string,
-	lastName: string,
+	address: string
+	firstName: string
+	lastName: string
 	location: string
 }
 

@@ -1,9 +1,9 @@
 import firebase from '../config/firebase'
-import Parcel from '../models/parcel.model';
-import { ParcelFormData } from '../components/ui/explorer/explorer-entities/parcel';
+import Parcel from '../models/parcel.model'
+import { ParcelFormData } from '../components/ui/explorer/explorer-entities/parcel'
 import Web3 from 'web3'
 import ParcelTokenContract from './contracts/parcelToken'
-import parcels from '../models/sampleParcels';
+import parcels from '../models/sampleParcels'
 
 export const readParcel = async (parcelId: string) => {
   const parcelValue = await firebase.database().ref('parcels/' + parcelId).once('value')

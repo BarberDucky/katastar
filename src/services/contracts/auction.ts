@@ -1,5 +1,5 @@
-import Web3 from "web3";
-import Auction from "../../truffle/build/contracts/Auction.json"
+import Web3 from 'web3'
+import Auction from '../../truffle/build/contracts/Auction.json'
 
 
 export default (web3: Web3, address: string) => {

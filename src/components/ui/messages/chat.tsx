@@ -1,18 +1,18 @@
 import React, { Component, FormEvent } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, bindActionCreators } from 'redux';
-import { match } from 'react-router';
-import { formDataToJson } from '../../../helper';
-import bind from 'bind-decorator';
-import { pushMessage } from '../../../services/conversation.service';
-import User from '../../../models/user.model';
-import Conversation, { Message } from '../../../models/conversation.model';
-import { Loader, Button, Input } from 'semantic-ui-react';
-import styled from 'styled-components';
-import { fetchConversation, unsubscribeConversation } from '../../../thunks/conversation.thunk';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
+import { match } from 'react-router'
+import { formDataToJson } from '../../../helper'
+import bind from 'bind-decorator'
+import { pushMessage } from '../../../services/conversation.service'
+import User from '../../../models/user.model'
+import Conversation, { Message } from '../../../models/conversation.model'
+import { Loader, Button, Input } from 'semantic-ui-react'
+import styled from 'styled-components'
+import { fetchConversation, unsubscribeConversation } from '../../../thunks/conversation.thunk'
 
 const Segment = styled.div`
 	height: 100%;

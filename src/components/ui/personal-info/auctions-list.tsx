@@ -1,19 +1,19 @@
 import React, { Component, FormEvent } from 'react'
-import { RouterState, Push, push } from 'connected-react-router';
-import { MapStateToProps, connect } from 'react-redux';
-import { AppState } from '../../../store';
-import { bindActionCreators, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import Auction from '../../../models/auction.model';
-import bind from 'bind-decorator';
-import Parcel from '../../../models/parcel.model';
-import { formDataToJson } from '../../../helper';
-import User from '../../../models/user.model';
-import { createAuction } from '../../../services/auction.service';
+import { RouterState, Push, push } from 'connected-react-router'
+import { MapStateToProps, connect } from 'react-redux'
+import { AppState } from '../../../store'
+import { bindActionCreators, AnyAction } from 'redux'
+import { ThunkDispatch } from 'redux-thunk'
+import Auction from '../../../models/auction.model'
+import bind from 'bind-decorator'
+import Parcel from '../../../models/parcel.model'
+import { formDataToJson } from '../../../helper'
+import User from '../../../models/user.model'
 import Web3 from 'web3'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import AuctionImg from '../../../assets/currency-exchange.png'
-import { Table, Input, Button, Select } from 'semantic-ui-react';
+import { Table, Input, Button, Select } from 'semantic-ui-react'
+import { createAuction } from '../../../services/auction.service'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -32,7 +32,7 @@ const TitleImage = styled.div`
 `
 
 const Title = styled.h3`
-    margin: 0;
+  margin: 0;
 `
 
 const Form = styled.form`
@@ -43,11 +43,11 @@ const Form = styled.form`
 `
 
 const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    > * + * {
-        margin-top: 0.33em;
-    }
+  display: flex;
+  flex-direction: column;
+  > * + * {
+    margin-top: 0.33em;
+  }
 `
 
 const StyledButton = styled.div`
@@ -73,11 +73,7 @@ interface OwnProps {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-interface State {
-
-}
-
-class AuctionsList extends Component<Props, State> {
+class AuctionsList extends Component<Props> {
 
 	@bind
 	private openDetails(auction: Auction) {
@@ -97,6 +93,7 @@ class AuctionsList extends Component<Props, State> {
 			owner: this.props.user.address,
 			...obj
 		}
+		console.log(obj)
 		if (this.props.web3) {
 			await createAuction(auction, obj.parcel, this.props.web3)
 		} else {
@@ -185,7 +182,7 @@ class AuctionsList extends Component<Props, State> {
 const mapStateToProps: MapStateToProps<StateProps, OwnProps, AppState> = state => ({
 	router: state.router,
 	user: state.user,
-	web3: state.ethereumWeb3.web3
+	web3: state.ethereumWeb3.web3,
 })
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
