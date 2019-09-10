@@ -65,6 +65,7 @@ export const burnAllTokens = async (web3: Web3, adminUser: string) => {
 }
 
 export const generateParcels = async (web3: Web3, adminUser: string) => {
+  await firebase.database().ref('/').set(null)
   Promise.all(
     parcels.map(parcel => {
       return createParcel(parcel, web3, parcel.owner, adminUser) 
