@@ -121,13 +121,12 @@ const withdrawPayed = async (deal: Deal, userId: string, web3: Web3, dealContrac
     if (assetsForPayment.parcels !== '') {
       const parcel = await readParcel(assetsForPayment.parcels)
       await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)
-
-      assetsForPayment.isPayed = false
-      await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/${payingUser}/isPayed`).set(false)
-      await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/${payingUser}/isPayed`).set(false)
-
     }
-
+    
+    assetsForPayment.isPayed = false
+    await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/${payingUser}/isPayed`).set(false)
+    await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/${payingUser}/isPayed`).set(false)
+    
   } catch (error) {
     alert(error)
     return false

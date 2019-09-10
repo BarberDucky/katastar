@@ -256,7 +256,7 @@ class ParcelSelector extends Component<Props> {
             this.props.isOwner &&
             this.props.currentDeal.isConfirmed && 
             this.props.assets.isPayed &&
-            (!this.props.currentDeal.isCompleted ||
+            (this.props.currentDeal.isCompleted &&
             !this.props.assets.isWithdrawn) ? (
               <StyledButton>
                 <Button onClick={() => this.withdraw()}>Collect Assets</Button>
