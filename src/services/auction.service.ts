@@ -14,17 +14,18 @@ export const createAuction = async (auction: Auction, parcelId: string, web3: We
   const parcel = await readParcel(parcelId)
   auction.parcel = parcel
 
+  console.log(parcel, parcelId)
   const owner = auction.owner
+
+  const now = Date.now()
+  const duration = Math.floor((auction.deadline - now) / 1000)
+  auction.duration = duration
 
   await parcelToken.methods.approve(auctionFactory.options.address, auction.parcel.address).send({ from: owner })
   await auctionFactory.methods.createAuction(auction.parcel.address, auction.startingPrice, auction.duration).send({ from: owner })
 
-  const now = Date.now()
-  const deadline = now + Number(auction.duration) * 1000
-
   const auctionId = await auctionFactory.methods.getAuctionByParcelId(auction.parcel.address).call()
 
-  auction.deadline = deadline
   auction.address = auctionId
 
   await firebase.database().ref('users/' + owner + '/auctions/' + auction.address).set(auction)

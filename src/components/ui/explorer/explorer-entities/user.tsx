@@ -1,6 +1,6 @@
 import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { formDataToJson as formDataToObject } from '../../../../helper'
+import { formDataToJson as formDataToObject, generateIdenticon } from '../../../../helper'
 import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction, bindActionCreators } from 'redux'
 import { connect, MapStateToProps } from 'react-redux'
@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { AppState } from '../../../../store'
 import { searchUsers } from '../../../../services/user.service'
 import User from '../../../../models/user.model'
-import { Input, Table, Button, Loader } from 'semantic-ui-react'
+import { Input, Table, Button, Loader, Image } from 'semantic-ui-react'
 import UsersImg from '../../../../assets/network.png'
 
 const Wrapper = styled.div`
@@ -173,6 +173,7 @@ class UserPageComponent extends Component<Props, State> {
 									<Table striped selectable>
 										<Table.Header>
 											<Table.Row>
+												<Table.HeaderCell>Identicon</Table.HeaderCell>
 												<Table.HeaderCell>User Address</Table.HeaderCell>
 												<Table.HeaderCell>First Name</Table.HeaderCell>
 												<Table.HeaderCell>Last Name</Table.HeaderCell>
@@ -184,6 +185,9 @@ class UserPageComponent extends Component<Props, State> {
 												this.state.results.map(result => {
 													return (
 														<Table.Row key={result.address} onClick={() => this.openDetails(result)}>
+															<Table.Cell>
+																<Image src={generateIdenticon(result.address)} size='mini'/>
+															</Table.Cell>
 															<Table.Cell>{result.address}</Table.Cell>
 															<Table.Cell>{result.firstName}</Table.Cell>
 															<Table.Cell>{result.lastName}</Table.Cell>

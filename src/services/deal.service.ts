@@ -142,7 +142,14 @@ const withdrawReceived = async (deal: Deal, userId: string, web3: Web3, dealCont
 
     await dealContract.methods.withdraw().send({from: userId})
 
+    const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
+
+    
+    await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/${payingUser}/isWithdrawn`).set(true)
+    await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/${payingUser}/isWithdrawn`).set(true)
+
     if (assetsToReceive.parcels !== '') {
+
       await firebase.database().ref(`parcels/${assetsToReceive.parcels}/owner`).set(userId)
       const parcel = await readParcel(assetsToReceive.parcels)
       await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)

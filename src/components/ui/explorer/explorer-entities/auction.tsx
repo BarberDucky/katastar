@@ -1,6 +1,6 @@
 import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { formDataToJson as formDataToObject } from '../../../../helper'
+import { formDataToJson as formDataToObject, generateIdenticon } from '../../../../helper'
 import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction, bindActionCreators } from 'redux'
 import { connect, MapStateToProps } from 'react-redux'
@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { AppState } from '../../../../store'
 import { searchAuctions } from '../../../../services/auction.service'
 import Auction from '../../../../models/auction.model'
-import { Input, Button, Table, Loader } from 'semantic-ui-react'
+import { Input, Button, Table, Loader, Image } from 'semantic-ui-react'
 import AuctionImg from '../../../../assets/currency-exchange.png'
 
 const Wrapper = styled.div`
@@ -191,9 +191,11 @@ class AuctionPageComponent extends Component<Props, State> {
 												this.state.results.map(result => {
 													return (
 														<Table.Row key={result.address} onClick={() => this.openDetails(result)}>
-															<Table.Cell>{result.address}</Table.Cell>
+															<Table.Cell>
+																<Image src={generateIdenticon(result.address)} size='mini'/>
+															</Table.Cell>
 															<Table.Cell>{result.owner}</Table.Cell>
-															<Table.Cell>{result.duration}</Table.Cell>
+															<Table.Cell>{(new Date(result.deadline)).toLocaleString()}</Table.Cell>
 															<Table.Cell>{result.parcel.address}</Table.Cell>
 															<Table.Cell>{result.parcel.region}</Table.Cell>
 															<Table.Cell>{result.parcel.municipality}</Table.Cell>

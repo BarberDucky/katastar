@@ -24,7 +24,8 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 			} else {
 				dispatch(push('/'))
 			}
-			firebase.database().ref(`users`).off('value')
+			const previousUser = getState().user.address
+			firebase.database().ref(`users/${previousUser}`).off('value')
 			firebase.database().ref(`users/${userFromDB.address}`).on('value',
 				snapshot => {
 					const action: LoadUserAction = {

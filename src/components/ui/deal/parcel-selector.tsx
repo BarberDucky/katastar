@@ -65,6 +65,7 @@ interface StateProps {
 interface OwnProps {
   isOwner: boolean
   assets: Asset
+  userName: string
 }
 
 type Props = StateProps & OwnProps
@@ -167,7 +168,7 @@ class ParcelSelector extends Component<Props> {
     userParcels = userParcels ? Object.values(userParcels) : []
     return (
       <Wrapper>
-        <h3>{`User offers:`}</h3>
+        <h3>{`User ${this.props.userName} offers:`}</h3>
         {
           this.props.isOwner && !this.isConfirmed() ? (
             <Chooser>
@@ -230,20 +231,53 @@ class ParcelSelector extends Component<Props> {
               !this.props.isOwner
             }
           />
+          <span>
+            {
+              this.props.currentDeal.isConfirmed &&
+              this.props.assets.isPayed ? (
+                'Assets payed'
+              ) : (
+                'Assets not payed'
+              )
+            }
+          </span>
+          <span>
+            {
+              this.props.currentDeal.isConfirmed &&
+              this.props.currentDeal.isCompleted &&
+              this.props.assets.isWithdrawn ? (
+                'Assets withdrawn from other user'
+              ) : (
+                'Assets now withdrawn from other user'
+              )
+            }
+          </span>
           {
             this.props.isOwner &&
-            this.props.currentDeal.isConfirmed && (
-            !this.props.currentDeal.isCompleted ||
-            !this.props.currentDeal.isWithdrawn) ? (
+            this.props.currentDeal.isConfirmed && 
+            this.props.assets.isPayed &&
+            (!this.props.currentDeal.isCompleted ||
+            !this.props.assets.isWithdrawn) ? (
               <StyledButton>
-                <Button onClick={() => this.withdraw()}>Withdraw</Button>
+                <Button onClick={() => this.withdraw()}>Collect Assets</Button>
               </StyledButton>
             ) : ('')
           }
           {
             this.props.isOwner &&
-            this.props.currentDeal.isConfirmed && (
-            !this.props.currentDeal.isCompleted ||
+            this.props.currentDeal.isConfirmed && 
+            this.props.assets.isPayed &&
+            !this.props.currentDeal.isCompleted ? (
+              <StyledButton>
+                <Button onClick={() => this.withdraw()}>Withdraw Payment</Button>
+              </StyledButton>
+            ) : ('')
+          }
+          {
+            this.props.isOwner &&
+            this.props.currentDeal.isConfirmed && 
+            !this.props.assets.isPayed &&
+            (!this.props.currentDeal.isCompleted ||
             !this.props.currentDeal.isWithdrawn) ? (
               <StyledButton>
                 <Button onClick={() => this.pay()}>Pay</Button>

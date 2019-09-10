@@ -204,8 +204,12 @@ class AuctionPage extends Component<Props, State> {
   render () {
     const auction = this.state.results
     let deadline = 'error loading deadline'
+    let highestBid = this.state.highestBid
     if(auction) {
       deadline = (new Date(auction.deadline)).toLocaleString()
+      if (this.state.highestBid === auction.startingPrice) {
+        highestBid = 0
+      }
     }
     return (
       <Wrapper>
@@ -237,7 +241,7 @@ class AuctionPage extends Component<Props, State> {
                 </InfoEntry>
                 <InfoEntry>
                   <span>Highest Bid</span>
-                  <span>{this.state.highestBid}</span>
+                  <span>{highestBid}</span>
                 </InfoEntry>
                 <InfoEntry>
                   <span>Starting Price</span>
@@ -269,7 +273,16 @@ class AuctionPage extends Component<Props, State> {
                     }
                   </div>
                 ) :  auction.deadline <= Date.now() ? (
-                  <Button onClick={() => this.endAuction()}>Withdraw Eth</Button>
+                  <Button onClick={() => this.endAuction()}>
+                    {
+                      highestBid === 0 ? (
+                        'Withdraw Parcel'
+                      ) : (
+                        'Withdraw Eth'
+                      )
+                    }
+                    
+                  </Button>
                 ) : (
                   'Auction is not over yet.'
                 )

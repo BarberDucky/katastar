@@ -12,7 +12,7 @@ import User from '../../../models/user.model'
 import Web3 from 'web3'
 import styled from 'styled-components'
 import AuctionImg from '../../../assets/currency-exchange.png'
-import { Table, Input, Button, Select } from 'semantic-ui-react'
+import { Table, Input, Button } from 'semantic-ui-react'
 import { createAuction } from '../../../services/auction.service'
 
 const Wrapper = styled.div`
@@ -55,6 +55,15 @@ const StyledButton = styled.div`
 	margin-bottom: 3px;
 `
 
+const StyledSelect = styled.select`
+	padding: .67857143em 1em;
+	border: 1px solid rgba(34,36,38,.15);
+	border-radius: .28571429rem;
+	transition: box-shadow .1s ease, border-color .1s ease;
+	line-height: 1.21428571em;
+	font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+`
+
 interface StateProps {
 	router: RouterState
 	user: User
@@ -87,13 +96,15 @@ class AuctionsList extends Component<Props> {
 		const target = event.target as HTMLFormElement
 		const formData = new FormData(target)
 		const obj = formDataToJson<any>(formData)
+		const deadline = new Date(obj.deadline).valueOf()
 		const auction: Auction = {
 			isDone: false,
 			address: '',
 			owner: this.props.user.address,
-			...obj
+			...obj,
+			deadline,
 		}
-		console.log(obj)
+		console.log(obj, deadline, Date.now())
 		if (this.props.web3) {
 			await createAuction(auction, obj.parcel, this.props.web3)
 		} else {
@@ -102,6 +113,8 @@ class AuctionsList extends Component<Props> {
 	}
 
 	render() {
+		const auctions = this.props.auctions ? Object.values(this.props.auctions) : []
+		const parcels = this.props.parcels ? Object.values(this.props.parcels) : []
 		return (
 			<Wrapper>
 				<TitleImage>
@@ -118,20 +131,25 @@ class AuctionsList extends Component<Props> {
 									<Input name="startingPrice" type="number" min="0" placeholder="eg. 1000" required />
 								</Label>
 								<Label>
-									<span>Duration (seconds)</span>
-									<Input name="duration" type="number" min="0" placeholder="eg. 300" required />
+									<span>Deadline</span>
+									<Input name="deadline" type="datetime-local" required />
 								</Label>
 								<Label>
 									<span>Parcel</span>
-									<Select name="parcel" required
-										options={
-											this.props.parcels.map(parcel => ({
-													key: `auctionParcel${parcel.address}`,
-													value: parcel.address,
-													text: parcel.address,
-											}))
+									<StyledSelect name="parcel" required>
+										{
+											parcels.map(parcel => {
+												return (
+													<option
+													key={`auctionParcel${parcel.address}`}
+													value={parcel.address}
+													>
+														{parcel.address}
+													</option>
+												)
+											})
 										}
-									/>
+									</StyledSelect>
 								</Label>
 								<StyledButton>
 									<Button>Create New Auction</Button>
@@ -143,7 +161,7 @@ class AuctionsList extends Component<Props> {
 						)
 				}
 				{
-					this.props.auctions.length === 0 ? (
+					auctions.length === 0 ? (
 						'User has no auctions.'
 					) : (
 							<Table striped selectable>
@@ -157,7 +175,7 @@ class AuctionsList extends Component<Props> {
 								</Table.Header>
 								<Table.Body>
 									{
-										this.props.auctions.map(auction => {
+										auctions.map(auction => {
 											const deadline = new Date(auction.deadline)
 											return (
 												<Table.Row key={`userAuction${auction.address}`} onClick={() => this.openDetails(auction)}>

@@ -1,6 +1,6 @@
 import React, { Component, FormEvent } from 'react'
 import bind from 'bind-decorator'
-import { formDataToJson as formDataToObject, sleep } from '../../../../helper'
+import { formDataToJson as formDataToObject, sleep, generateIdenticon } from '../../../../helper'
 import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction, bindActionCreators } from 'redux'
 import { connect, MapStateToProps } from 'react-redux'
@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { AppState } from '../../../../store'
 import Parcel from '../../../../models/parcel.model'
 import { searchParcels } from '../../../../services/parcel.service'
-import { Table, Loader, Button, Input } from 'semantic-ui-react'
+import { Table, Loader, Button, Input, Image } from 'semantic-ui-react'
 import PatImg from '../../../../assets/pat.png'
 
 const Wrapper = styled.div`
@@ -179,6 +179,7 @@ class ParcelPageComponent extends Component<Props, State> {
 									<Table striped selectable>
 										<Table.Header>
 											<Table.Row>
+												<Table.HeaderCell>Identicon</Table.HeaderCell>
 												<Table.HeaderCell>Parcel Id</Table.HeaderCell>
 												<Table.HeaderCell>Owner</Table.HeaderCell>
 												<Table.HeaderCell>Region</Table.HeaderCell>
@@ -191,6 +192,9 @@ class ParcelPageComponent extends Component<Props, State> {
 												this.state.results.map(result => {
 													return (
 														<Table.Row key={result.address} onClick={() => this.openDetails(result)}>
+															<Table.Cell>
+																<Image src={generateIdenticon(result.address)} size='mini'/>
+															</Table.Cell>
 															<Table.Cell>{result.address}</Table.Cell>
 															<Table.Cell>{result.owner}</Table.Cell>
 															<Table.Cell>{result.region}</Table.Cell>

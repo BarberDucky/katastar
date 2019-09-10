@@ -12,15 +12,17 @@ export const createInheritance = async (inheritance: Inheritance, web3: Web3) =>
   
   const owner = inheritance.from
   try {
+
+    const now = Date.now()
+    const duration = Math.floor((inheritance.deadline - now) / 1000)
+    inheritance.duration = duration
+
     await parcelToken.methods.approve(inheritanceFactory.options.address, inheritance.parcel).send({from: owner})
     await inheritanceFactory.methods.createInheritance(inheritance.parcel, inheritance.to, inheritance.duration).send({from: owner})
 
-    const deadline = Date.now() + Number(inheritance.duration)
-
-    const auctionId = await inheritanceFactory.methods.getInheritanceByParcelId(inheritance.parcel).call()
+    const inheritanceId = await inheritanceFactory.methods.getInheritanceByParcelId(inheritance.parcel).call()
     
-    inheritance.address = auctionId
-    inheritance.deadline = deadline
+    inheritance.address = inheritanceId
 
     await firebase.database().ref(`users/${inheritance.from}/inheritances/${inheritance.address}`).set(inheritance)
     await firebase.database().ref(`users/${inheritance.to}/inheritances/${inheritance.address}`).set(inheritance)

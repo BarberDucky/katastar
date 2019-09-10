@@ -4,6 +4,7 @@ export interface Asset {
   parcels: string
   isConfirmed: boolean
   isPayed: boolean
+  isWithdrawn: boolean
 }
 
 export default interface Deal {

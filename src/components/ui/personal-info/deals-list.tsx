@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk'
 import bind from 'bind-decorator'
 import User from '../../../models/user.model'
 import Deal from '../../../models/deal.model'
-import { withdrawDeal } from '../../../services/deal.service'
 import Web3 from 'web3'
 import styled from 'styled-components'
 import DealImg from '../../../assets/diploma.png'
@@ -66,6 +65,8 @@ class DealsList extends Component<Props, State> {
   }
 
   render() {
+
+    const deals = this.props.deals ? Object.values(this.props.deals) : []
     return (
       <Wrapper>
         <TitleImage>
@@ -73,7 +74,7 @@ class DealsList extends Component<Props, State> {
 					<Title>Deals</Title>
 				</TitleImage>
         {
-          this.props.deals.length === 0 ? (
+          deals.length === 0 ? (
             'User has made no deals.'
           ) : (
               <Table striped selectable>
@@ -89,7 +90,7 @@ class DealsList extends Component<Props, State> {
                 </Table.Header>
                 <Table.Body>
                   {
-                    this.props.deals.map(deal => {
+                    deals.map(deal => {
                       return (
                         <Table.Row key={`userDeals${deal.address}`}
                           onClick={() => this.openDetails(deal)}

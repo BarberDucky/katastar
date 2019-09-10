@@ -15,6 +15,7 @@ import styled from 'styled-components'
 import ConfirmedImg from '../../../assets/certificate.png'
 import NotConfirmedImg from '../../../assets/edit.png'
 import DealImg from '../../../assets/diploma.png'
+import { readUser } from '../../../services/user.service'
 
 const Wrapper = styled.div`
   display: flex;
@@ -73,12 +74,16 @@ type Props = StateProps & DispatchProps & OwnProps
 
 interface State {
   isLoading: boolean
+  currentUser: string
+  otherUser: string
 }
 
 class DealPage extends Component<Props, State> {
   _isMounted = false
   state: State = {
     isLoading: true,
+    currentUser: '',
+    otherUser: '',
   }
 
   public componentDidMount() {
@@ -97,15 +102,33 @@ class DealPage extends Component<Props, State> {
       this.props.user.address,
     )
 
+    let currentUser = ''
+    let otherUser = ''
+
     if (deal) {
-      this.props.fetchDeal(
+      await this.props.fetchDeal(
         this.props.currentDeal.id,
         deal.id,
         this.props.user.address)
+
+      
+      const user1 = await readUser(this.props.currentDeal.user1Asset.userAddress)
+      const user2 = await readUser(this.props.currentDeal.user2Asset.userAddress)
+
+      currentUser = user1.address === this.props.user.address ? this.getName(user1) : this.getName(user2)
+      otherUser = user1.address === this.props.user.address ? this.getName(user2) : this.getName(user1)
     }
 
     if (this._isMounted)
-      this.setState({ isLoading: false })
+      this.setState({ 
+        isLoading: false,
+        currentUser,
+        otherUser,
+      })
+  }
+
+  getName(user: User) {
+    return `${user.firstName} ${user.lastName}`
   }
 
   render() {
@@ -128,7 +151,7 @@ class DealPage extends Component<Props, State> {
             'Error loading deal.'
           ) : (
               <SelectorsWrapper>
-                <ParcelSelector assets={userAsset} isOwner={true} />
+                <ParcelSelector assets={userAsset} isOwner={true} userName={this.state.currentUser} />
 
                 {
                   deal.isConfirmed ? (
@@ -138,7 +161,7 @@ class DealPage extends Component<Props, State> {
                   )
                 }
 
-                <ParcelSelector assets={otherAsset} isOwner={false} />
+                <ParcelSelector assets={otherAsset} isOwner={false} userName={this.state.otherUser} />
               </SelectorsWrapper>
           )
         }

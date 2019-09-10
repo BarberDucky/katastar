@@ -52,6 +52,7 @@ class ParcelList extends Component<Props> {
 	}
 
 	render() {
+		const parcels = this.props.parcels ? Object.values(this.props.parcels) : []
 		return (
 			<Wrapper>
 				<TitleImage>
@@ -59,7 +60,7 @@ class ParcelList extends Component<Props> {
 					<Title>Parcels</Title>
 				</TitleImage>
 				{
-					this.props.parcels.length === 0 ? (
+					parcels.length === 0 ? (
 						'User owns no parcels.'
 					) : (
 							<Table striped selectable>
@@ -74,7 +75,7 @@ class ParcelList extends Component<Props> {
 								</Table.Header>
 								<Table.Body>
 									{
-										this.props.parcels.map(parcel => {
+										parcels.map(parcel => {
 											return (
 												<Table.Row key={`userParcel${parcel.address}`} onClick={() => this.openDetails(parcel)}>
 													<Table.Cell>{parcel.address}</Table.Cell>

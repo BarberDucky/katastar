@@ -13,14 +13,16 @@ const initialState: Deal = {
 		eth: 0,
 		parcels: '',
 		isConfirmed: false,
-		isPayed: false
+		isPayed: false,
+		isWithdrawn: false,
 	},
 	user2Asset: {
 		userAddress: '',
 		eth: 0,
 		parcels: '',
 		isConfirmed: false,
-		isPayed: false
+		isPayed: false,
+		isWithdrawn: false,
 	},
 }
 

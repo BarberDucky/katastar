@@ -149,6 +149,7 @@ class InheritancePage extends Component<Props, State> {
         )
       if (result) {
         alert('inheritance withdrawn')
+        this.props.push(`/main/users/${this.props.user.address}/inheritances`)
       } else {
         alert('could not withdraw')
       }

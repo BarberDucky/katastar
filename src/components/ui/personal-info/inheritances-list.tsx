@@ -14,7 +14,7 @@ import { searchUsers } from '../../../services/user.service'
 import Web3 from 'web3'
 import styled from 'styled-components'
 import InheritanceImg from '../../../assets/payment.png'
-import { Input, Select, Button, Table } from 'semantic-ui-react'
+import { Input, Button, Table } from 'semantic-ui-react'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -55,6 +55,15 @@ const Label = styled.label`
 const StyledButton = styled.div`
 	align-self: flex-end;
 	margin-bottom: 3px;
+`
+
+const StyledSelect = styled.select`
+	padding: .67857143em 1em;
+	border: 1px solid rgba(34,36,38,.15);
+	border-radius: .28571429rem;
+	transition: box-shadow .1s ease, border-color .1s ease;
+	line-height: 1.21428571em;
+	font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 `
 
 interface StateProps {
@@ -118,11 +127,13 @@ class InheritancesList extends Component<Props, State> {
     const target = event.target as HTMLFormElement
     const formData = new FormData(target)
     let obj = formDataToJson<Inheritance>(formData)
+		const deadline = new Date(obj.deadline).valueOf()
     obj = {
       from: this.props.user.address,
       address: '',
       isWithdrawn: false,
-      ...obj
+      ...obj,
+      deadline,
     }
     if (this.props.web3) {
       await createInheritance(obj, this.props.web3)
@@ -132,6 +143,9 @@ class InheritancesList extends Component<Props, State> {
   }
 
   render() {
+    const inheritances = this.props.inheritances ? Object.values(this.props.inheritances) : []
+    const parcels = this.props.parcels ? Object.values(this.props.parcels) : []
+
     return (
       <Wrapper>
         <TitleImage>
@@ -144,35 +158,47 @@ class InheritancesList extends Component<Props, State> {
               <h4>Create new Inheritance</h4>
               <Form onSubmit={this.handleSubmit}>
                 <Label>
-                  <span>Duration (seconds)</span>
-                  <Input name="duration" type="number" min="0" placeholder="eg. 300" required />
+                  <span>Deadline</span>
+                  <Input name="deadline" type="datetime-local" required />
                 </Label>
                 <Label>
                   <span>Parcel</span>
-                  <Select name="parcel" required
-                    options={
-                      this.props.parcels.map(parcel => ({
-                        key: `inheritanceParcel${parcel.address}`,
-                        value: parcel.address,
-                        text: parcel.address,
-                      }))
+                  <StyledSelect name="parcel" required>
+                    {
+                      parcels.map(parcel => {
+                        return (
+                          <option
+                            key={`inheritanceParcel${parcel.address}`}
+                            value={parcel.address}
+                          >
+                            {parcel.address}
+                          </option>
+                        )
+                      })
                     }
-                  />
+                  </StyledSelect>
                 </Label>
                 <Label>
                   <span>To User</span>
-                  <Select name="to" required loading={this.state.isLoading}
-                    options={
-                      this.state.users.map(user => ({
-                        key: `inheritanceUser${user.address}`,
-                        value: user.address,
-                        text: `${user.firstName} ${user.lastName}, ${user.location}`,
-                      }))
+                  <StyledSelect name="to" required>
+                    {
+                      this.state.users
+                        .filter(user => user.address !== this.props.user.address)
+                        .map(user => {
+                          return (
+                            <option
+                              key={`inheritanceUser${user.address}`}
+                              value={user.address}
+                            >
+                              {`${user.firstName} ${user.lastName}, ${user.location}`}
+                            </option>
+                        )
+                      })
                     }
-                  />
+                  </StyledSelect>
                 </Label>
                 <StyledButton>
-									<Button>Create New Auction</Button>
+									<Button>Create New Inheritance</Button>
 								</StyledButton>
 							</Form>
             </div>
@@ -195,7 +221,7 @@ class InheritancesList extends Component<Props, State> {
                 </Table.Header>
                 <Table.Body>
                   {
-                    this.props.inheritances.map(inheritance => {
+                    inheritances.map(inheritance => {
                       const deadline = new Date(inheritance.deadline)
                       return (
                         <Table.Row key={`userInheritance${inheritance.address}`}

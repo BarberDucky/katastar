@@ -6,8 +6,6 @@ import Web3 from 'web3'
 import { burnAllTokens, generateParcels, readParcelsFromChain } from '../../services/parcel.service'
 import bind from 'bind-decorator'
 
-const adminUser = '0x0311c5f1722f1cd61e16c6e0cf5cbdd4d0a14ed8'
-
 interface Props {
   user: User
   ethereum: any
@@ -38,12 +36,8 @@ class AdminPage extends Component<Props> {
 
   @bind
   async generateParcels() {
-    if (this.props.user.address !== adminUser) {
-      alert('must be admin user')
-      return
-    }
     if (this.props.web3) {
-      await generateParcels(this.props.web3, adminUser)
+      await generateParcels(this.props.web3, this.props.user.address)
     } else {
       alert('no web3')
     }
@@ -51,10 +45,6 @@ class AdminPage extends Component<Props> {
 
   @bind
   async deleteAllParcels() {
-    if (this.props.user.address !== adminUser) {
-      alert('must be admin user')
-      return
-    }
     if (this.props.web3) {
       await burnAllTokens(this.props.web3, this.props.user.address)
     } else {

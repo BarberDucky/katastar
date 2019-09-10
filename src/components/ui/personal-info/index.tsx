@@ -106,7 +106,7 @@ class PersonalInfo extends Component<Props, State> {
 	private async onRouteChange() {
 		this.setState({ isLoading: true, isOwner: false })
 		const results = await readUser(this.props.match.params.userId)
-		if (!results && this._isMounted) {
+		if ((!results || !results.address) && this._isMounted) {
 			this.setState({
 				results: undefined,
 				isLoading: false,
@@ -131,7 +131,8 @@ class PersonalInfo extends Component<Props, State> {
 	}
 
 	render() {
-		const user = this.state.results
+		console.log(this.props.user)
+		const user = this.props.user
 		return (
 			<Wrapper>
 				<TitleImage>
@@ -142,7 +143,7 @@ class PersonalInfo extends Component<Props, State> {
 					this.state.isLoading ? (
 						<Loader active/>
 					) : user === undefined ? (
-						'Error loading user'
+						'This user has not registered yet.'
 					) : (
 								<Main>
 									<InfoAndMenu>
