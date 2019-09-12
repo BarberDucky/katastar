@@ -57,7 +57,7 @@ export const putDealOnChain = async (deal: Deal, web3: Web3, currentUser: string
 export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
   const dealContract = DealContract(web3, deal.address)
   const parcelToken = ParcelToken(web3)
-
+  
   let isSettled = await dealContract.methods.isSettled().call()
   if (isSettled) return false
 
@@ -73,7 +73,7 @@ export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
     alert(error)
     return false
   }
-  
+
   try { 
     if (parcels !== '') {
       await parcelToken.methods.safeTransferFrom(userId, deal.address, parcels).send({from: userId})
@@ -92,7 +92,7 @@ export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
     await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/isCompleted`).set(true)
     await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/isCompleted`).set(true)  
   }
-
+  
   return true
 }
 

@@ -207,7 +207,7 @@ class InheritancesList extends Component<Props, State> {
             )
         }
         {
-          this.props.inheritances.length === 0 ? (
+          inheritances.length === 0 ? (
             'User has no inheritance.'
           ) : (
               <Table striped selectable>

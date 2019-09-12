@@ -131,8 +131,11 @@ class PersonalInfo extends Component<Props, State> {
 	}
 
 	render() {
-		console.log(this.props.user)
-		const user = this.props.user
+		const user = 
+			this.state.results && 
+			this.state.results.address === this.props.user.address ? 
+			this.props.user : this.state.results
+		
 		return (
 			<Wrapper>
 				<TitleImage>
