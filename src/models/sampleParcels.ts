@@ -7,7 +7,12 @@ const parcels: Parcel[] = [
     region: 'East Serbia',
     municipality: 'Sokobanja',
     cadastreMunicipality: 'Muzinac',
-    coordinates: [{x: 1, y: 10}, {x: 5, y: 100}, {x: 100, y: 10}]
+    coordinates: [
+      {x: 43.700331, y: 21.843904}, 
+      {x: 43.700233, y: 21.843781}, 
+      {x: 43.699574, y: 21.845797},
+      {x: 43.699707, y: 21.845859},
+    ]
   },
   {
     address: '',
@@ -15,7 +20,14 @@ const parcels: Parcel[] = [
     region: 'East Serbia',
     municipality: 'Nis',
     cadastreMunicipality: 'Komren',
-    coordinates: [{x: 1, y: 10}, {x: 5, y: 100}, {x: 100, y: 10}]
+    coordinates: [
+      {x: 43.375451, y: 21.859597}, 
+      {x: 43.375696, y: 21.861178}, 
+      {x: 43.374911, y: 21.862019},
+      {x: 43.373572, y: 21.862598},
+      {x: 43.373334, y: 21.861882},
+      {x: 43.373986, y: 21.860649},
+    ]
   },
   {
     address: '',
@@ -23,7 +35,12 @@ const parcels: Parcel[] = [
     region: 'East Serbia',
     municipality: 'Nis',
     cadastreMunicipality: 'Nis',
-    coordinates: [{x: 1, y: 10}, {x: 5, y: 100}, {x: 100, y: 10}]
+    coordinates: [
+      {x: 43.319047, y: 21.880929}, 
+      {x: 43.319076, y: 21.881969}, 
+      {x: 43.318522, y: 21.881978},
+      {x: 43.318512, y: 21.880988},
+    ]
   },
   {
     address: '',
@@ -31,7 +48,12 @@ const parcels: Parcel[] = [
     region: 'East Serbia',
     municipality: 'Aleksinac',
     cadastreMunicipality: 'Gornja Trnava',
-    coordinates: [{x: 1, y: 10}, {x: 5, y: 100}, {x: 100, y: 10}]
+    coordinates: [
+      {x: 43.432768, y: 21.814416}, 
+      {x: 43.432930, y: 21.815290}, 
+      {x: 43.431389, y: 21.815907},
+      {x: 43.431165, y: 21.814749},
+    ]
   },
 ]
 

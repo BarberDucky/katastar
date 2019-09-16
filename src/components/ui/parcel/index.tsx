@@ -11,7 +11,8 @@ import bind from 'bind-decorator'
 import styled from 'styled-components'
 import { Loader, Segment, Image } from 'semantic-ui-react'
 import PatImg from '../../../assets/pat.png'
-import { generateIdenticon } from '../../../helper'
+import { generateIdenticon, coordinatesToArray } from '../../../helper'
+import { Map, TileLayer, Polygon } from 'react-leaflet'
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -42,6 +43,13 @@ const SegmentWrapper = styled.div`
   box-sizing: border-box;
 `
 
+const StyledSegment = styled(Segment)`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+`
+
 const ParcelInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -60,7 +68,15 @@ const InfoEntry = styled.div`
   }
 `
 
-const Map = styled.div`
+const MapWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+  margin-left: 3em;
+
+  > * {
+    height: 100%;
+    width: 100%;
+  }
 `
 
 interface StateProps {
@@ -121,6 +137,10 @@ class ParcelPage extends Component<Props, State> {
 
   render () {
     const parcel = this.state.results
+    let coordinates: [number, number][] = []
+    if (parcel) {
+      coordinates = coordinatesToArray(parcel)
+    }
     return (
       <Wrapper>
         <TitleImage>
@@ -134,7 +154,7 @@ class ParcelPage extends Component<Props, State> {
             'Error loading user.'
           ) : (
             <SegmentWrapper>
-              <Segment>
+              <StyledSegment>
                 <ParcelInfo>
                   <TitleImage>
                     <Image src={generateIdenticon(parcel.address)} size='mini'/>
@@ -161,10 +181,17 @@ class ParcelPage extends Component<Props, State> {
                     <span>{parcel.cadastreMunicipality}</span>
                   </InfoEntry>
                 </ParcelInfo>
-                <Map>
-
-                </Map>
-              </Segment>
+                <MapWrapper>
+                  <Map center={coordinates[0]} zoom={15}>
+                    <TileLayer
+                      attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    >
+                    </TileLayer>
+                    <Polygon color="purple" positions={coordinatesToArray(parcel)} />
+                  </Map>
+                </MapWrapper>
+              </StyledSegment>
             </SegmentWrapper>
           )
         }

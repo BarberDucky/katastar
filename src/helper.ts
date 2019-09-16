@@ -1,5 +1,6 @@
 import Identicon from 'identicon.js'
 import jsSHA from 'jssha'
+import Parcel from './models/parcel.model'
 
 export function formDataToJson<T>(formData: FormData): T {
 	const obj: any = {}
@@ -20,3 +21,12 @@ export const generateIdenticon = (address: string) => {
 	const data = new Identicon(formatedString.slice(2), 240)
 	return `data:image/png;base64,${data}`
 }
+
+export const coordinatesToArray = (parcel: Parcel) => {
+	type Coords = [number, number] 
+	const array: Array<Coords> = parcel.coordinates
+		.map(cooridnates => {
+			return [cooridnates.x, cooridnates.y]
+		})
+	return array
+} 

@@ -56,6 +56,15 @@ const StyledButton = styled.div`
   margin-top: 2em;
 `
 
+const StyledSelect = styled.select`
+	padding: .67857143em 1em;
+	border: 1px solid rgba(34,36,38,.15);
+	border-radius: .28571429rem;
+	transition: box-shadow .1s ease, border-color .1s ease;
+	line-height: 1.21428571em;
+	font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+`
+
 interface StateProps {
   user: User
   currentDeal: Deal
@@ -90,17 +99,6 @@ class ParcelSelector extends Component<Props> {
     await updateDeal(newDeal)
   }
 
-  @bind
-  async deselectParcel() {
-    let newDeal = this.props.currentDeal
-    if (newDeal.user1Asset.userAddress === this.props.user.address) {
-      newDeal.user1Asset.parcels = ''
-    } else {
-      newDeal.user2Asset.parcels = ''
-    }
-    await updateDeal(newDeal)
-  }
-
   @bind 
   async checkDeal() {
     let newDeal = this.props.currentDeal
@@ -108,6 +106,18 @@ class ParcelSelector extends Component<Props> {
       newDeal.user1Asset.isConfirmed = !newDeal.user1Asset.isConfirmed
     } else {
       newDeal.user2Asset.isConfirmed = !newDeal.user2Asset.isConfirmed
+    }
+    await updateDeal(newDeal)
+  }
+
+  @bind
+  async changeParcel(ev: ChangeEvent<HTMLSelectElement>) {
+    const parcelAddress = ev.target.value 
+    let newDeal = this.props.currentDeal
+    if (newDeal.user1Asset.userAddress === this.props.user.address) {
+      newDeal.user1Asset.parcels = parcelAddress
+    } else {
+      newDeal.user2Asset.parcels = parcelAddress
     }
     await updateDeal(newDeal)
   }
@@ -174,29 +184,35 @@ class ParcelSelector extends Component<Props> {
             <Chooser>
               <span>Choose</span>
               <img src={PatImg} alt="parcel" height="32" />
-              <ParcelsList>
+              <StyledSelect onChange={(ev) => this.changeParcel(ev)}>
+                <option
+                  value={''}
+                >
+                  No parcel
+                </option>
                 { 
                   userParcels.map(parcel => {
                     return (
-                      <ParcelItem 
-                        key={`parcelItem${parcel}`}
-                        onClick={() => this.selectParcel(parcel)}
+                      <option
+                        key={`inheritanceParcel${parcel.address}`}
+                        value={parcel.address}
                       >
-                        <span>{parcel.address}</span>
-                        
-                      </ParcelItem>
+                        {parcel.address}
+                      </option>
                     )
                   })
                 }
-                <button onClick={() => this.deselectParcel()}>Clear</button>
-              </ParcelsList>
-              <span>{assetParcel}</span>
+              </StyledSelect>
             </Chooser>
           ) : (
             <Chooser>
               <span>Choose</span>
               <img src={PatImg} alt="parcel" height="32" />
-              <span>{assetParcel}</span>
+              <span>
+              {
+                assetParcel === '' ? 'No parcel' : assetParcel  
+              }
+              </span>
             </Chooser>
           ) 
         }
