@@ -34,7 +34,7 @@ class Main extends Component<MainProps> {
 	render() {
 		return (
 			<Wrapper>
-				<Header userId={this.props.user.address} />
+				<Header userId={this.props.user.address} userFirstName={this.props.user.firstName}/>
 
 				<Switch>
 					<Route path="/main/explorer/:searchEntity" component={Explorer}></Route>

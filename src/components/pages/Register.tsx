@@ -8,6 +8,9 @@ import Web3 from 'web3'
 import { Segment, Input, Button } from 'semantic-ui-react'
 import styled from 'styled-components'
 import PatImg from '../../assets/pat-coin-rich.png'
+import { fetchUser } from '../../thunks/user.thunk'
+import { ThunkDispatch } from 'redux-thunk'
+import { AnyAction, bindActionCreators } from 'redux'
 
 const Wrapper = styled.div`
 	display: flex;
@@ -57,6 +60,7 @@ const Form = styled.form`
 interface RegisterProps {
 	push: typeof push
 	loadUser: typeof loadUser
+	fetchUser: typeof fetchUser
 	user: User
 	web3: Web3
 }
@@ -65,6 +69,7 @@ class Register extends Component<RegisterProps> {
 
 	async handleSubmit(event: any) {
 		event.preventDefault()
+		const previousUserAddress = this.props.user ? this.props.user.address : ''
 		const user: User = {
 			address: window.ethereum.selectedAddress,
 			firstName: event.target.firstName.value,
@@ -78,8 +83,8 @@ class Register extends Component<RegisterProps> {
 		}
 
 		await createUser(user)
+		await this.props.fetchUser(user.address, previousUserAddress)
 		this.props.push('/')
-		this.props.loadUser(user)
 	}
 
 	render() {
@@ -121,4 +126,14 @@ class Register extends Component<RegisterProps> {
 	}
 }
 
-export default connect(null, { push, loadUser })(Register)
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
+  bindActionCreators(
+    {
+      push,
+      fetchUser,
+    },
+    dispatch,
+  )
+
+
+export default connect(null, mapDispatchToProps)(Register)

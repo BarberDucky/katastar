@@ -141,6 +141,7 @@ class ChatPage extends Component<Props, State> {
 			toUser: this.props.match.params.userId,
 			...obj,
 		}
+		target.reset()
 		pushMessage(obj, this.props.currentConversation.address)
 	}
 
@@ -171,10 +172,11 @@ class ChatPage extends Component<Props, State> {
 						)
 				}
 
-				<Form onSubmit={ev => this.sendMessage(ev)}>
+				<Form onSubmit={ev => this.sendMessage(ev)} autoComplete="off">
 					<Input
 						name="content"
 						placeholder="Type message..."
+						autoComplete="off"
 					/>
 					<Button circular primary icon="paper plane outline" />
 				</Form>

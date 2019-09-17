@@ -3,22 +3,16 @@ import { Dispatch } from 'redux'
 import { LOAD_USER } from '../store/user/types'
 import { LoadUserAction } from '../store/user/interfaces'
 
-export const fetchUser = (userId: string) => async (dispatch: Dispatch) => {
-  firebase.database().ref(`users/${userId}`).on('value', 
+export const fetchUser = (userId: string, previousUserId: string) => async (dispatch: Dispatch) => {
+  console.log('prev user', previousUserId)
+  firebase.database().ref(`users/${previousUserId}`).off('value')
+  firebase.database().ref(`users/${userId}`).on('value',
     snapshot => {
-      const user = snapshot.val()
-      if (user) {
-        user.parcels = user.parcels ? Object.values(user.parcels) : []
-        user.auctions = user.auctions ? Object.values(user.auctions) : []
-        user.inheritances = user.inheritances ? Object.values(user.inheritances) : []
-        user.deals = user.deals ? Object.values(user.deals) : []
-      }
-
       const action: LoadUserAction = {
         type: LOAD_USER,
-        payload: user
+        payload: snapshot.val()
       }
-
+      console.log(userId, snapshot.val())
       dispatch(action)
     }
   )

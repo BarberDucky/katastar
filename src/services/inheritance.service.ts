@@ -39,7 +39,7 @@ export const createInheritance = async (inheritance: Inheritance, web3: Web3) =>
 
 export const readInheritance = async (inheritanceId: string, userId:string) => {
   const inheritanceValue = await firebase.database().ref(`users/${userId}/inheritances/${inheritanceId}`).once('value')
-  const inheritance: Inheritance = inheritanceValue.val()
+  const inheritance: Inheritance | null = inheritanceValue.val()
 
   return inheritance
 }

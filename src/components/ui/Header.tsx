@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
 import PatImg from '../../assets/pat-coin-rich.png'
+import { Image } from 'semantic-ui-react'
+import { generateIdenticon } from '../../helper'
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -35,7 +37,6 @@ const Menu = styled.div`
 
 const MenuItem = styled(NavLink)`
   height: 100%;
-  width: 6em;
   padding: 0 10px 0 10px;
   display: flex;
   align-items: center;
@@ -51,7 +52,8 @@ const MenuItem = styled(NavLink)`
 `
 
 interface OwnProps {
-	userId: string
+  userId: string
+  userFirstName: string
 }
 
 type Props = OwnProps
@@ -68,7 +70,10 @@ class Header extends Component<Props> {
 				<Menu>
 					<MenuItem to="/main/explorer" >Explore</MenuItem>
 					<MenuItem to="/main/messages" >Messages</MenuItem>
-					<MenuItem to={`/main/users/${this.props.userId}`} >Personal</MenuItem>
+					<MenuItem to={`/main/users/${this.props.userId}`} >
+              <Image src={generateIdenticon(this.props.userId)} size="mini" avatar/>
+              {this.props.userFirstName}
+          </MenuItem>
 				</Menu>
 			</HeaderContainer>
 		)

@@ -32,17 +32,6 @@ const Confirms = styled.div`
   flex-direction: column;
 `
 
-const ParcelsList = styled.div`
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-`
-
-const ParcelItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
-
 const Chooser = styled.div`
   display: flex;
   align-items: center;

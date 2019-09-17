@@ -11,6 +11,9 @@ type StoreGetState = () => AppState
 
 export default function (dispatch: Dispatch, getState: StoreGetState) {
 	window.ethereum.on('accountsChanged', async (accounts: Array<string>) => {
+		const previousUser = getState().user.address
+		console.log('prev user', previousUser)
+		firebase.database().ref(`users/${previousUser}`).off('value')
 		const userFromDB = await readUser(accounts[0])
 		if (!userFromDB || !userFromDB.address) {
 			if (window.ethereum.networkVersion !== desiredNetwork) {
@@ -19,8 +22,6 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 				dispatch(push('/register'))
 			}
 		} else {
-			const previousUser = getState().user.address
-			firebase.database().ref(`users/${previousUser}`).off('value')
 			firebase.database().ref(`users/${userFromDB.address}`).on('value',
 				snapshot => {
 					const action: LoadUserAction = {
@@ -47,6 +48,7 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 				dispatch(push('/register'))
 			} else {
 				const previousUser = getState().user.address
+				console.log('prev user', previousUser)
 				firebase.database().ref(`users/${previousUser}`).off('value')
 				firebase.database().ref(`users/${userFromDB.address}`).on('value',
 				snapshot => {

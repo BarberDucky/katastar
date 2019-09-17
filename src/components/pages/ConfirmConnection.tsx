@@ -25,7 +25,8 @@ class ConfirmConnection extends Component<ConfirmConnectionProps> {
       return
     }
     
-    await this.props.loadUserAndRoute(this.props.pathname)
+    const previousUserAddress = this.props.user ? this.props.user.address : ''
+    await this.props.loadUserAndRoute(this.props.pathname, previousUserAddress)
 
   }
 

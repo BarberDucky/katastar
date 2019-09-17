@@ -18,7 +18,7 @@ export const createDeal = async (deal: Deal) => {
 
 export const readDeal = async (dealId: string, userId: string) => {
   const dealRes = await firebase.database().ref(`users/${userId}/deals/${dealId}`).once('value')
-  const deal: Deal = dealRes.val()
+  const deal: Deal | null = dealRes.val()
 
   return deal
 }

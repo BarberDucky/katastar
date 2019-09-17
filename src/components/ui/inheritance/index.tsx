@@ -93,14 +93,14 @@ type Props = StateProps & DispatchProps & OwnProps
 interface State {
   isOwner: boolean
   isLoading: boolean
-  results?: Inheritance
+  results: Inheritance | null
 }
 
 class InheritancePage extends Component<Props, State> {
   _isMounted = false
   state: State = {
     isLoading: true,
-    results: undefined,
+    results: null,
     isOwner: false,
   }
 

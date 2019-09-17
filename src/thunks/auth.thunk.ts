@@ -6,7 +6,7 @@ import { LOAD_USER } from '../store/user/types'
 import { LoadUserAction } from '../store/user/interfaces'
 import firebase from '../config/firebase'
 
-export function loadUserAndRoute(currentRoute: string) {
+export function loadUserAndRoute(currentRoute: string, previousUserId: string) {
 	return async (dispatch: Dispatch) => {
 		const userFromDB = await readUser(window.ethereum.selectedAddress)
 
@@ -18,12 +18,13 @@ export function loadUserAndRoute(currentRoute: string) {
 		if (!userFromDB || !userFromDB.address) {
 			dispatch(push('/register'))
 		} else {
-			const action: LoadUserAction = {
-				type: LOAD_USER,
-				payload: userFromDB
-			}
-			dispatch(action)
-
+			// const action: LoadUserAction = {
+			// 	type: LOAD_USER,
+			// 	payload: userFromDB
+			// }
+			// dispatch(action)
+			console.log('prev user', previousUserId)
+			firebase.database().ref(`users/${previousUserId}`).off('value')
 			firebase.database().ref(`users/${userFromDB.address}`).on('value',
 				snapshot => {
 					const action: LoadUserAction = {

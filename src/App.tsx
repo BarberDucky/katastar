@@ -70,7 +70,9 @@ class App extends Component<Props, State> {
 
 		const web3 = new Web3(window.web3.currentProvider)
 		
-		await this.props.loadUserAndRoute(this.props.router.location.pathname)
+		const prevUserAddress = this.props.user ? this.props.user.address : ''
+
+		await this.props.loadUserAndRoute(this.props.router.location.pathname, prevUserAddress)
 
 		this.props.loadEthereumProvider(window.ethereum)
 

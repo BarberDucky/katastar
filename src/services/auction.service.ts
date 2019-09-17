@@ -36,7 +36,7 @@ export const createAuction = async (auction: Auction, parcelId: string, web3: We
 
 export const readAuction = async (auctionId: string) => {
   const auctionValue = await firebase.database().ref('auctions/' + auctionId).once('value')
-  const auction: Auction = auctionValue.val()
+  const auction: Auction | null = auctionValue.val()
 
   return auction
 }

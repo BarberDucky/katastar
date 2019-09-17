@@ -102,7 +102,7 @@ type Props = StateProps & DispatchProps & OwnProps
 interface State {
   isOwner: boolean
   isLoading: boolean
-  results?: Auction
+  results: Auction | null
   highestBid: number
 }
 
@@ -110,7 +110,7 @@ class AuctionPage extends Component<Props, State> {
   _isMounted = false
   state: State = {
     isLoading: true,
-    results: undefined,
+    results: null,
     isOwner: false,
     highestBid: -1,
   }
@@ -130,10 +130,10 @@ class AuctionPage extends Component<Props, State> {
 
     let highestBid = -1
 
-    if (this.props.web3) {
+    if (this.props.web3 && auction) {
       highestBid = await readHighestBid(auction.address, this.props.web3)
     } else {
-      alert('no web3')
+      alert('no web3 or auction')
     }
     
     if (this._isMounted) {

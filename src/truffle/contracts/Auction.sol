@@ -54,6 +54,10 @@ contract Auction is IERC721Receiver {
         return _isBid;
     }
      
+    function getHighestBidder() public view returns (address) {
+        return _highestBidder;
+    }
+
     function getHighestBid() public view returns (uint256) {
         return _highestBid;
     }
