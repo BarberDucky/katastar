@@ -45,7 +45,8 @@ const MenuItem = styled(NavLink)`
 
   &:hover {
     cursor: pointer;
-    background-color: blue;
+    background-color: #1678c2;
+    color: white;
   }
 `
 

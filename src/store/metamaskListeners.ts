@@ -19,11 +19,6 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 				dispatch(push('/register'))
 			}
 		} else {
-			if (window.ethereum.networkVersion !== desiredNetwork) {
-				dispatch(push('/wrong-network'))
-			} else {
-				dispatch(push('/'))
-			}
 			const previousUser = getState().user.address
 			firebase.database().ref(`users/${previousUser}`).off('value')
 			firebase.database().ref(`users/${userFromDB.address}`).on('value',
@@ -35,6 +30,11 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 					dispatch(action)
 				}
 			)
+			if (window.ethereum.networkVersion !== desiredNetwork) {
+				dispatch(push('/wrong-network'))
+			} else {
+				dispatch(push('/'))
+			}
 		}
 	})
 
@@ -46,10 +46,17 @@ export default function (dispatch: Dispatch, getState: StoreGetState) {
 			if (!userFromDB || !userFromDB.address) {
 				dispatch(push('/register'))
 			} else {
-				dispatch({
-					type: LOAD_USER,
-					payload: userFromDB
-				})
+				const previousUser = getState().user.address
+				firebase.database().ref(`users/${previousUser}`).off('value')
+				firebase.database().ref(`users/${userFromDB.address}`).on('value',
+				snapshot => {
+					const action: LoadUserAction = {
+						type: LOAD_USER,
+						payload: snapshot.val()
+					}
+					dispatch(action)
+				}
+			)
 				dispatch(push('/'))
 			}
 		}
