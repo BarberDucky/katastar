@@ -155,7 +155,6 @@ class ParcelSelector extends Component<Props> {
         this.props.user.address,
         this.props.web3,
         )
-        alert(res)
     } else {
       alert('no web3')
     }
@@ -173,7 +172,7 @@ class ParcelSelector extends Component<Props> {
             <Chooser>
               <span>Choose</span>
               <img src={PatImg} alt="parcel" height="32" />
-              <StyledSelect onChange={(ev) => this.changeParcel(ev)}>
+              <StyledSelect onChange={(ev) => this.changeParcel(ev)} value={this.props.assets.parcels}>
                 <option
                   value={''}
                 >
@@ -253,7 +252,7 @@ class ParcelSelector extends Component<Props> {
               this.props.assets.isWithdrawn ? (
                 'Assets withdrawn from other user'
               ) : (
-                'Assets now withdrawn from other user'
+                'Assets not withdrawn from other user'
               )
             }
           </span>

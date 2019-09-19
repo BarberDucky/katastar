@@ -128,7 +128,7 @@ class AuctionPage extends Component<Props, State> {
     this.setState({isLoading: true})
     const auction = await readAuction(this.props.match.params.auctionId)
 
-    let highestBid = -1
+    let highestBid = '-1'
 
     if (this.props.web3 && auction) {
       highestBid = await readHighestBid(auction.address, this.props.web3)
@@ -141,7 +141,7 @@ class AuctionPage extends Component<Props, State> {
         isLoading: false,
         results: auction,
         isOwner: auction ? this.props.user.address === auction.owner : false,
-        highestBid,
+        highestBid: +highestBid,
       })
     }
   }
@@ -165,7 +165,6 @@ class AuctionPage extends Component<Props, State> {
     let obj = formDataToJson<any>(formData)
     if (this.state.results && this.props.web3) {
       const result = await submitBid(this.state.results, obj.bid, this.props.user.address, this.props.web3)
-      alert(result)
     } else {
       alert('no auction or no web3')
     }
@@ -175,7 +174,6 @@ class AuctionPage extends Component<Props, State> {
   async withdrawBids() {
     if (this.state.results && this.props.web3) {
       const result = await withdrawBids(this.state.results, this.props.user.address, this.props.web3)
-      alert(result)
     } else {
       alert('no auction or no web3')
     }
@@ -185,7 +183,6 @@ class AuctionPage extends Component<Props, State> {
   async withdrawWinner() {
     if (this.state.results && this.props.web3) {
       const result = await withdrawParcel(this.state.results, this.props.user.address, this.props.web3)
-      alert(result)
     } else {
       alert('no auction or no web3')
     }
@@ -195,7 +192,6 @@ class AuctionPage extends Component<Props, State> {
   async endAuction() {
     if (this.state.results && this.props.web3) {
       const result = await endAuction(this.state.results, this.props.user.address, this.props.web3)
-      alert(result)
     } else {
       alert('no auction or no web3')
     }
@@ -275,7 +271,7 @@ class AuctionPage extends Component<Props, State> {
                 ) :  auction.deadline <= Date.now() ? (
                   <Button onClick={() => this.endAuction()}>
                     {
-                      highestBid === 0 ? (
+                      highestBid === auction.startingPrice ? (
                         'Withdraw Parcel'
                       ) : (
                         'Withdraw Eth'

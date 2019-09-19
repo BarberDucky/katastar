@@ -33,13 +33,16 @@ export const putDealOnChain = async (deal: Deal, web3: Web3, currentUser: string
   const dealContract = DealContract(web3)
   const parcelToken = ParcelToken(web3)
 
+  const weiEth1 = web3.utils.toWei(deal.user1Asset.eth.toString())
+  const weiEth2 = web3.utils.toWei(deal.user2Asset.eth.toString())
+
 
   const res = await dealContract.deploy({
     data: DealAbi.bytecode,
     arguments: [
       parcelToken.options.address,
       deal.user1Asset.userAddress, deal.user2Asset.userAddress,
-      deal.user1Asset.eth, deal.user2Asset.eth,
+      weiEth1, weiEth2,
       deal.user1Asset.parcels, deal.user2Asset.parcels
     ]
   }).send({from: currentUser})
@@ -59,18 +62,22 @@ export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
   const parcelToken = ParcelToken(web3)
   
   let isSettled = await dealContract.methods.isSettled().call()
-  if (isSettled) return false
-
+  if (isSettled) {
+    alert('Deal not yet settled')
+    return false
+  }
   const assetsForPayment: Asset = userId === deal.user1Asset.userAddress ? deal.user1Asset : deal.user2Asset 
   const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
 
   const {parcels, eth} = assetsForPayment
   
   try {
-    if (eth > 0)
-      await dealContract.methods.payEth().send({from: userId, value: eth})
+    if (eth > 0) {
+      const weiEth = web3.utils.toWei(eth.toString())
+      await dealContract.methods.payEth().send({from: userId, value: weiEth})
+    }
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 
@@ -80,7 +87,7 @@ export const payDeal = async (deal: Deal, userId: string, web3: Web3) => {
       await firebase.database().ref(`users/${userId}/parcels/${parcels}`).remove()
     }
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
   
@@ -112,8 +119,10 @@ const withdrawPayed = async (deal: Deal, userId: string, web3: Web3, dealContrac
   const assetsForPayment: Asset = userId === deal.user1Asset.userAddress ? deal.user1Asset : deal.user2Asset 
   const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
 
-  if (!assetsForPayment.isPayed) return false
-
+  if (!assetsForPayment.isPayed) {
+    alert(`User didn't pay yet`)
+    return false
+  }
   try {
 
     await dealContract.methods.withdraw().send({from: userId})
@@ -128,7 +137,7 @@ const withdrawPayed = async (deal: Deal, userId: string, web3: Web3, dealContrac
     await firebase.database().ref(`users/${deal.user2Asset.userAddress}/deals/${deal.id}/${payingUser}/isPayed`).set(false)
     
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 
@@ -142,6 +151,7 @@ const withdrawReceived = async (deal: Deal, userId: string, web3: Web3, dealCont
     await dealContract.methods.withdraw().send({from: userId})
 
     const payingUser: string = userId === deal.user1Asset.userAddress ? 'user1Asset' : 'user2Asset'
+    const otherUser: string = userId === deal.user1Asset.userAddress ? deal.user2Asset.userAddress : deal.user1Asset.userAddress
 
     
     await firebase.database().ref(`users/${deal.user1Asset.userAddress}/deals/${deal.id}/${payingUser}/isWithdrawn`).set(true)
@@ -152,10 +162,11 @@ const withdrawReceived = async (deal: Deal, userId: string, web3: Web3, dealCont
       await firebase.database().ref(`parcels/${assetsToReceive.parcels}/owner`).set(userId)
       const parcel = await readParcel(assetsToReceive.parcels)
       await firebase.database().ref(`users/${userId}/parcels/${parcel.address}`).set(parcel)
+      await firebase.database().ref(`users/${otherUser}/parcels/${parcel.address}`).remove()
     }
 
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }

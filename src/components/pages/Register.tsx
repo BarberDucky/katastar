@@ -83,6 +83,7 @@ class Register extends Component<RegisterProps> {
 		}
 
 		await createUser(user)
+		this.props.loadUser(user)
 		await this.props.fetchUser(user.address, previousUserAddress)
 		this.props.push('/')
 	}
@@ -129,7 +130,8 @@ class Register extends Component<RegisterProps> {
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AnyAction>) =>
   bindActionCreators(
     {
-      push,
+			push,
+			loadUser,
       fetchUser,
     },
     dispatch,

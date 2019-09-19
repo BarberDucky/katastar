@@ -148,10 +148,10 @@ class InheritancePage extends Component<Props, State> {
         this.props.user.address,
         )
       if (result) {
-        alert('inheritance withdrawn')
+        alert('Inheritance withdrawn')
         this.props.push(`/main/users/${this.props.user.address}/inheritances`)
       } else {
-        alert('could not withdraw')
+        alert('Could not withdraw')
       }
     } else {
       alert('no inheritance selected or no web3')

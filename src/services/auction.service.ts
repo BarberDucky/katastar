@@ -21,8 +21,10 @@ export const createAuction = async (auction: Auction, parcelId: string, web3: We
   const duration = Math.floor((auction.deadline - now) / 1000)
   auction.duration = duration
 
+  const weiStartingPrice = web3.utils.toWei(auction.startingPrice.toString())
+
   await parcelToken.methods.approve(auctionFactory.options.address, auction.parcel.address).send({ from: owner })
-  await auctionFactory.methods.createAuction(auction.parcel.address, auction.startingPrice, auction.duration).send({ from: owner })
+  await auctionFactory.methods.createAuction(auction.parcel.address, weiStartingPrice, auction.duration).send({ from: owner })
 
   const auctionId = await auctionFactory.methods.getAuctionByParcelId(auction.parcel.address).call()
 
@@ -67,43 +69,67 @@ export const readHighestBid = async (auctionId: string, web3: Web3) => {
   const auctionContract = AuctionContract(web3, auctionId)
   const highestBid = await auctionContract.methods.getHighestBid().call()
 
-  return highestBid
+  const ethHighestBid = await web3.utils.fromWei(highestBid)
+
+  return ethHighestBid
+}
+
+export const readHighestBidder = async (auctionId: string, web3: Web3) => {
+  const auctionContract = AuctionContract(web3, auctionId)
+  const highestBidder = await auctionContract.methods.getHighestBidder().call()
+
+  return highestBidder
 }
 
 export const submitBid = async (auction: Auction, bid: number, userId: string, web3: Web3) => {
-  if (auction.owner === userId) return false
+  if (auction.owner === userId) {
+    alert(`Owner can't bid`)
+    return false
+  } 
 
   const now = Date.now()
   const auctionRemainingTime = auction.deadline - now
 
   
-  if (auctionRemainingTime <= 0) return false
+  if (auctionRemainingTime <= 0) {
+    alert(`Auction is over`)
+    return false
+  }
   const auctionContract = AuctionContract(web3, auction.address)
 
   const highestBid = await auctionContract.methods.getHighestBid().call()
-  if (bid <= Number(highestBid)) return false
-
+  const ethHighestBid = web3.utils.fromWei(highestBid)
+  console.log(highestBid, bid, Number(ethHighestBid))
+  if (bid <= Number(ethHighestBid)) {
+    alert(`Bid too low`)
+    return false
+  }
   try {
-    await auctionContract.methods.bid().send({from: userId, value: bid})
+    const weiValue = web3.utils.toWei(bid.toString())
+    await auctionContract.methods.bid().send({from: userId, value: weiValue})
     await firebase.database().ref(`users/${userId}/auctions/${auction.address}`).set(auction)
     
     return true
   
   } catch (error) {
 
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }
 
 export const withdrawBids = async (auction: Auction, userId: string, web3: Web3) => {
-  if (auction.owner === userId) return false
-
+  if (auction.owner === userId) {
+    alert(`Owner didn't bid`)
+    return false
+  }
   const now = Date.now()
   const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime > 0) return false
-
+  if (auctionRemainingTime > 0) {
+    alert(`Auction isn't over`)
+    return false
+  }
   const auctionContract = AuctionContract(web3, auction.address)
   try{ 
     await auctionContract.methods.withdrawBids().send({from: userId})
@@ -112,22 +138,40 @@ export const withdrawBids = async (auction: Auction, userId: string, web3: Web3)
 
   } catch (error) {
 
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }
 
 export const withdrawParcel = async (auction: Auction, userId: string, web3: Web3) => {
-  if (auction.owner === userId) return false
+  if (auction.owner === userId) {
+    alert(`Owner didn't bid`)
+    return false
+  }
 
   const now = Date.now()
   const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime > 0) return false
+  if (auctionRemainingTime > 0) {
+    alert(`Auction isn't over`)
+    return false
+  }
 
   const auctionContract = AuctionContract(web3, auction.address)
 
   try{ 
+    const highestBidder = await readHighestBidder(auction.address, web3)
+    console.log(highestBidder)
+    const userAddress = web3.utils.toChecksumAddress(userId)
+    if (userAddress !== highestBidder) {
+      alert(`Current user didn't win`)
+      return false
+    }
+    const isWithdrawn = await auctionContract.methods.getIsWithdrawnWinner().call()
+    if (isWithdrawn) {
+      alert(`Parcel already withdrawn`)
+      return false
+    }
     await auctionContract.methods.withdrawParcel().send({from: userId})
     await firebase.database().ref(`parcels/${auction.parcel.address}/owner`).set(userId)
     const parcel = await readParcel(auction.parcel.address)
@@ -136,23 +180,34 @@ export const withdrawParcel = async (auction: Auction, userId: string, web3: Web
     return true 
 
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }
 
 export const endAuction = async (auction: Auction, userId: string, web3: Web3) => {
-  if (auction.owner !== userId) return false
-
+  if (auction.owner !== userId) {
+    alert(`Only owner can end auction`)
+    return false
+  }
   const now = Date.now()
   const auctionRemainingTime = auction.deadline - now
 
-  if (auctionRemainingTime > 0) return false
+  if (auctionRemainingTime > 0) {
+    alert(`Auction isn't over`)
+    return false
+  }
 
   const auctionContract = AuctionContract(web3, auction.address)
   const parcelToken = ParcelToken(web3)
 
   try{
+    const isWithdrawn = await auctionContract.methods.getIsWithdrawnOwner().call()
+    if (isWithdrawn) {
+      alert('Auction owner already withdrew')
+      return false
+    }
+
     await auctionContract.methods.endAuction().send({from: userId})
 
     let newTokenOwner = await parcelToken.methods.ownerOf(auction.parcel.address).call()
@@ -167,7 +222,7 @@ export const endAuction = async (auction: Auction, userId: string, web3: Web3) =
     return true
   }
   catch(error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }

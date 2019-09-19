@@ -28,7 +28,7 @@ export const createConversation = async (message: Message) => {
 
   
   if (!conversationId) {
-    alert('error creating conversation')
+    alert('Error creating conversation')
     return
   }
 

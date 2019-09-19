@@ -32,7 +32,7 @@ export const createInheritance = async (inheritance: Inheritance, web3: Web3) =>
     return true
 
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }
@@ -54,6 +54,7 @@ export const readInheritanceTime = async (inheritanceId: string, web3: Web3) => 
 export const withdraw = async (inheritance: Inheritance, web3: Web3, userId: string) => {
   const inheritanceContract = InheritanceContract(web3, inheritance.address)
   if (inheritance.isWithdrawn) {
+    alert(`Inheritance already withdrawn`)
     return false
   }
   const now = Date.now()
@@ -62,7 +63,11 @@ export const withdraw = async (inheritance: Inheritance, web3: Web3, userId: str
   if (
     (remainingTime > 0 && userId !== inheritance.from) ||
     (remainingTime <= 0 && userId !== inheritance.to) 
-    ) return false
+    ) 
+  {
+    alert(`Unable to withdraw at the current time`)
+    return false
+  }
 
   try {
     await inheritanceContract.methods.withdraw().send({from: userId})
@@ -78,7 +83,7 @@ export const withdraw = async (inheritance: Inheritance, web3: Web3, userId: str
   
     return true
   } catch (error) {
-    alert(error)
+    alert(`Transaction unsuccessful`)
     return false
   }
 }
