@@ -109,7 +109,7 @@ class UserInfo extends Component<Props, State> {
 
 	@bind
 	private selectUser(userId: string) {
-		this.props.push(`/users/${userId}`)
+		this.props.push(`/main/users/${userId}`)
 	}
 
 	@bind

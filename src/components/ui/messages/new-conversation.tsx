@@ -116,10 +116,11 @@ class NewConversation extends Component<Props, State> {
 					this.state.isLoading ? (
 						<Loader active />
 					) : (
-						<Form onSubmit={ev => this.sendMessage(ev)}>
+						<Form onSubmit={ev => this.sendMessage(ev)} autoComplete="off">
 							<Input
 								name="sentMessage"
 								placeholder="Type message..."
+								autoComplete="off"
 							/>
 							<Button circular primary icon="paper plane outline" />
 						</Form>

@@ -46,7 +46,7 @@ const parcels: Parcel[] = [
     address: '',
     owner: '0x5e365ff238e2f0f9a764bb267f7d43a01605f0c4',
     region: 'East Serbia',
-    municipality: 'Aleksinac',
+    municipality: 'Nis',
     cadastreMunicipality: 'Gornja Trnava',
     coordinates: [
       {x: 43.432768, y: 21.814416}, 
